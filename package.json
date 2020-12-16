@@ -1,0 +1,41 @@
+{
+  "name": "@zora/sdk",
+  "description": "An SDK for using the Zora Media Protocol",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "Zora",
+  "license": "ARR",
+  "private": true,
+  "scripts": {
+    "clean": "trash dist",
+    "build": "yarn clean && tsc"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "dependencies": {
+    "tiny-invariant": "^1.1.0",
+    "tiny-warning": "^1.0.3"
+  },
+  "peerDependencies": {
+    "@ethersproject/address": "^5.0.5",
+    "@ethersproject/contracts": "^5.0.5",
+    "@ethersproject/networks": "^5.0.4",
+    "@ethersproject/providers": "^5.0.14",
+    "@ethersproject/solidity": "^5.0.5"
+  },
+  "devDependencies": {
+    "@ethersproject/address": "^5.0.5",
+    "@ethersproject/contracts": "^5.0.5",
+    "@ethersproject/networks": "^5.0.4",
+    "@ethersproject/providers": "^5.0.14",
+    "@ethersproject/solidity": "^5.0.5",
+    "ethers": "^5.0.19",
+    "trash": "^6.1.1",
+    "typescript": "^4.0.5"
+  }
+}
