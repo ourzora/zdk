@@ -1,7 +1,7 @@
 {
   "name": "@zora/sdk",
   "description": "An SDK for using the Zora Media Protocol",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "dist/src/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -11,15 +11,26 @@
   "license": "ARR",
   "private": true,
   "scripts": {
+    "test": "mocha --timeout 10000 -r ts-node/register tests/**/*.test.ts",
     "clean": "trash dist",
-    "build": "yarn clean && tsc"
+    "build": "yarn clean && tsc",
+    "chain": "ganache-cli --networkId 50 --accounts 20 -e 10000000000 -l 10000000 -m 'concert load couple harbor equip island argue ramp clarify fence smart topic'"
   },
   "engines": {
     "node": ">=10"
   },
   "dependencies": {
+    "@types/chai": "^4.2.14",
+    "@types/chai-spies": "^1.0.3",
+    "@types/mocha": "^8.2.0",
+    "@zoralabs/core": "^1.0.0",
+    "chai": "^4.2.0",
+    "chai-spies": "^1.0.0",
+    "husky": "^4.3.6",
+    "mocha": "^8.2.1",
     "tiny-invariant": "^1.1.0",
-    "tiny-warning": "^1.0.3"
+    "tiny-warning": "^1.0.3",
+    "ts-node": "^9.1.1"
   },
   "peerDependencies": {
     "@ethersproject/address": "^5.0.5",
@@ -37,5 +48,13 @@
     "ethers": "^5.0.19",
     "trash": "^6.1.1",
     "typescript": "^4.0.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,md}": "prettier --write"
   }
 }
