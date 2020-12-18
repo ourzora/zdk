@@ -45,7 +45,7 @@ jobs:
 orbs:
   node: circleci/node@4.1.0
 workflows:
-  best:
+  test:
     jobs:
       - prepare:
           pre-steps:

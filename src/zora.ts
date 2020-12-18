@@ -1,4 +1,4 @@
-import { Ask, Bid, BidShares, EIP721Signature, MediaData } from './types'
+import { Ask, Bid, BidShares, EIP712Signature, MediaData } from './types'
 import { Signer, BigNumber, BigNumberish, ContractTransaction } from 'ethers'
 import { Provider } from '@ethersproject/providers'
 import { Media, MediaFactory, Market, MarketFactory } from '@zoralabs/core/dist/typechain'
@@ -7,6 +7,7 @@ import { chainIdToNetworkName, validateAndParseAddress } from './utils'
 import invariant from 'tiny-invariant'
 
 export class Zora {
+  public chainId: number
   public mediaAddress: string
   public marketAddress: string
   public signerOrProvider: Signer | Provider
@@ -34,6 +35,7 @@ export class Zora {
     }
 
     this.signerOrProvider = signerOrProvider
+    this.chainId = chainId
 
     if (mediaAddress && marketAddress) {
       const parsedMediaAddress = validateAndParseAddress(mediaAddress)
@@ -181,7 +183,7 @@ export class Zora {
     creator: string,
     mediaData: MediaData,
     bidShares: BidShares,
-    sig: EIP721Signature
+    sig: EIP712Signature
   ): Promise<ContractTransaction> {
     this.ensureNotReadOnly()
 
@@ -250,7 +252,7 @@ export class Zora {
   public async permit(
     spender: string,
     mediaId: BigNumberish,
-    sig: EIP721Signature
+    sig: EIP712Signature
   ): Promise<ContractTransaction> {
     this.ensureNotReadOnly()
 

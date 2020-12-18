@@ -1,6 +1,6 @@
 import chai, { expect } from 'chai'
 import asPromised from 'chai-as-promised'
-import { Ask, Bid, BidShares, EIP721Signature, MediaData, Zora } from '../src/index'
+import { Ask, Bid, BidShares, EIP712Signature, MediaData, Zora } from '../src/index'
 import { ethers, Wallet, Bytes } from 'ethers'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { addresses as ZoraAddresses } from '../src/addresses'
@@ -260,7 +260,7 @@ describe('Zora', async () => {
       let defaultBidShares: BidShares
       let defaultAsk: Ask
       let defaultBid: Bid
-      let eipSig: EIP721Signature
+      let eipSig: EIP712Signature
 
       before(async () => {
         metadataHex = ethers.utils.formatBytes32String('{}')
