@@ -9,7 +9,7 @@
   ],
   "author": "Zora",
   "license": "UNLICENSED",
-  "private": true,
+  "private": false,
   "scripts": {
     "test": "mocha --timeout 10000 -r ts-node/register tests/**/*.test.ts",
     "clean": "trash dist",
