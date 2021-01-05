@@ -8,7 +8,7 @@
     "dist"
   ],
   "author": "Zora",
-  "license": "ARR",
+  "license": "UNLICENSED",
   "private": true,
   "scripts": {
     "test": "mocha --timeout 10000 -r ts-node/register tests/**/*.test.ts",
@@ -61,5 +61,16 @@
   },
   "lint-staged": {
     "*.{ts,md}": "prettier --write"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ourzora/zora-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ourzora/zora-sdk/issues"
+  },
+  "homepage": "https://github.com/ourzora/zora-sdk#readme"
 }
