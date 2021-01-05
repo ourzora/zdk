@@ -24,13 +24,21 @@
     "@types/chai-spies": "^1.0.3",
     "@types/mocha": "^8.2.0",
     "@zoralabs/core": "^1.0.0",
+    "@types/sjcl": "^1.0.29",
+    "@zoralabs/core": "^1.0.0",
     "chai": "^4.2.0",
     "chai-spies": "^1.0.0",
+    "eth-sig-util": "^3.0.0",
+    "ethereumjs-util": "^7.0.7",
+    "fs-extra": "^9.0.1",
+    "fs-promise": "^2.0.3",
     "husky": "^4.3.6",
     "mocha": "^8.2.1",
+    "sjcl": "^1.0.8",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "ts-stream": "^2.0.2"
   },
   "peerDependencies": {
     "@ethersproject/address": "^5.0.5",

@@ -41,9 +41,9 @@ export type MediaData = {
 }
 
 /**
- * EIP721 Signature
+ * EIP712 Signature
  */
-export type EIP721Signature = {
+export type EIP712Signature = {
   deadline: BigNumberish
   v: BigNumberish
   r: BytesLike
