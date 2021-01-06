@@ -3,7 +3,9 @@ import {
   MediaFactory,
   BaseErc20Factory,
 } from '@zoralabs/core/dist/typechain'
-import { Wallet, BigNumber, ContractTransaction } from 'ethers'
+import { Wallet } from '@ethersproject/wallet'
+import { BigNumber } from '@ethersproject/bignumber'
+import { ContractTransaction } from '@ethersproject/contracts'
 import { MaxUint256 } from '@ethersproject/constants'
 
 export type ZoraConfiguredAddresses = {

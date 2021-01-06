@@ -1,4 +1,5 @@
-import { BigNumber, BigNumberish, BytesLike } from 'ethers'
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
+import { BytesLike } from '@ethersproject/bytes'
 
 export type DecimalValue = { value: BigNumber }
 

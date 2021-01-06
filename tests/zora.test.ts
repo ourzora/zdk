@@ -1,15 +1,16 @@
 import chai, { expect } from 'chai'
 import asPromised from 'chai-as-promised'
-import { Ask, Bid, BidShares, EIP712Signature, MediaData, Zora } from '../src/index'
-import { ethers, Wallet, Bytes } from 'ethers'
+import { Ask, Bid, BidShares, EIP712Signature, MediaData, Zora } from '../src'
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { Bytes } from '@ethersproject/bytes'
+import { Wallet } from '@ethersproject/wallet'
 import { addresses as ZoraAddresses } from '../src/addresses'
 import { ZoraConfiguredAddresses } from './helpers'
 import { generatedWallets } from '@zoralabs/core/dist/utils'
 import spies from 'chai-spies'
 import { MarketFactory, MediaFactory } from '@zoralabs/core/dist/typechain'
 import Decimal from '@zoralabs/core/dist/utils/Decimal'
-import { sha256 } from 'ethers/lib/utils'
+import { utils } from 'ethers'
 
 chai.use(asPromised)
 chai.use(spies)
@@ -263,13 +264,13 @@ describe('Zora', async () => {
       let eipSig: EIP712Signature
 
       before(async () => {
-        metadataHex = ethers.utils.formatBytes32String('{}')
-        metadataHash = await sha256(metadataHex)
-        metadataHashBytes = ethers.utils.arrayify(metadataHash)
+        metadataHex = utils.formatBytes32String('{}')
+        metadataHash = await utils.sha256(metadataHex)
+        metadataHashBytes = utils.arrayify(metadataHash)
 
-        contentHex = ethers.utils.formatBytes32String('invert')
-        contentHash = await sha256(contentHex)
-        contentHashBytes = ethers.utils.arrayify(contentHash)
+        contentHex = utils.formatBytes32String('invert')
+        contentHash = await utils.sha256(contentHex)
+        contentHashBytes = utils.arrayify(contentHash)
 
         defaultMediaData = {
           tokenURI: 'example.com',
