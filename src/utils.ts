@@ -1,7 +1,6 @@
 import { getAddress } from '@ethersproject/address'
 import warning from 'tiny-warning'
 import invariant from 'tiny-invariant'
-import fs from 'fs'
 import sjcl from 'sjcl'
 
 /**
@@ -71,12 +70,17 @@ export function sha256FromHexString(data: string): string {
  * @param chunkSize (Bytes)
  */
 export function sha256FromFile(pathToFile: string, chunkSize: number): Promise<string> {
-  const hash = new sjcl.hash.sha256()
+  if (typeof window !== 'undefined') {
+    throw new Error('This method is not available in a browser context')
+  }
 
+  const fs = require('fs')
+
+  const hash = new sjcl.hash.sha256()
   const readStream = fs.createReadStream(pathToFile, { highWaterMark: chunkSize })
 
   return new Promise<string>((resolve, reject) => {
-    readStream.on('data', (chunk) => {
+    readStream.on('data', (chunk: Buffer | string) => {
       hash.update(sjcl.codec.hex.toBits(chunk.toString('hex')))
     })
 
@@ -84,7 +88,7 @@ export function sha256FromFile(pathToFile: string, chunkSize: number): Promise<s
       resolve(sjcl.codec.hex.fromBits(hash.finalize()))
     })
 
-    readStream.on('error', (err) => {
+    readStream.on('error', (err: Error) => {
       reject(err)
     })
   })
