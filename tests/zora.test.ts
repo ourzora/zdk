@@ -9,7 +9,7 @@ import { ZoraConfiguredAddresses } from './helpers'
 import { generatedWallets } from '@zoralabs/core/dist/utils'
 import spies from 'chai-spies'
 import { MarketFactory, MediaFactory } from '@zoralabs/core/dist/typechain'
-import Decimal from '@zoralabs/core/dist/utils/Decimal'
+import { Decimal } from '../src/types'
 import { utils } from 'ethers'
 
 chai.use(asPromised)

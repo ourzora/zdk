@@ -42,10 +42,20 @@ jobs:
           command: yarn run test
           name: Run Tests
 
+  build:
+    <<: *env_defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          command: yarn run build
+          name: Build
+
 orbs:
   node: circleci/node@4.1.0
 workflows:
-  test:
+  testAndBuild:
     jobs:
       - prepare:
           pre-steps:
@@ -54,4 +64,8 @@ workflows:
       - test:
           requires:
             - prepare
+      - build:
+          requires:
+            - test
+
 
