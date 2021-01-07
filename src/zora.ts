@@ -141,7 +141,11 @@ export class Zora {
     mediaId: BigNumberish,
     tokenURI: string
   ): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.updateTokenURI(mediaId, tokenURI)
   }
@@ -155,7 +159,11 @@ export class Zora {
     mediaId: BigNumberish,
     metadataURI: string
   ): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.updateTokenMetadataURI(mediaId, metadataURI)
   }
@@ -169,7 +177,11 @@ export class Zora {
     mediaData: MediaData,
     bidShares: BidShares
   ): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.mint(mediaData, bidShares)
   }
@@ -187,7 +199,11 @@ export class Zora {
     bidShares: BidShares,
     sig: EIP712Signature
   ): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.mintWithSig(creator, mediaData, bidShares, sig)
   }
@@ -198,7 +214,11 @@ export class Zora {
    * @param ask
    */
   public async setAsk(mediaId: BigNumberish, ask: Ask): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.setAsk(mediaId, ask)
   }
@@ -209,7 +229,11 @@ export class Zora {
    * @param bid
    */
   public async setBid(mediaId: BigNumberish, bid: Bid): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.setBid(mediaId, bid)
   }
@@ -219,7 +243,11 @@ export class Zora {
    * @param mediaId
    */
   public async removeAsk(mediaId: BigNumberish): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.removeAsk(mediaId)
   }
@@ -229,7 +257,11 @@ export class Zora {
    * @param mediaId
    */
   public async removeBid(mediaId: BigNumberish): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.removeBid(mediaId)
   }
@@ -240,7 +272,11 @@ export class Zora {
    * @param bid
    */
   public async acceptBid(mediaId: BigNumberish, bid: Bid): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.acceptBid(mediaId, bid)
   }
@@ -256,7 +292,11 @@ export class Zora {
     mediaId: BigNumberish,
     sig: EIP712Signature
   ): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.permit(spender, mediaId, sig)
   }
@@ -266,7 +306,11 @@ export class Zora {
    * @param mediaId
    */
   public async revokeApproval(mediaId: BigNumberish): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.revokeApproval(mediaId)
   }
@@ -276,7 +320,11 @@ export class Zora {
    * @param mediaId
    */
   public async burn(mediaId: BigNumberish): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.burn(mediaId)
   }
@@ -357,7 +405,11 @@ export class Zora {
    * @param mediaId
    */
   public async approve(to: string, mediaId: BigNumberish): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.approve(to, mediaId)
   }
@@ -371,7 +423,11 @@ export class Zora {
     operator: string,
     approved: boolean
   ): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.setApprovalForAll(operator, approved)
   }
@@ -387,7 +443,11 @@ export class Zora {
     to: string,
     mediaId: BigNumberish
   ): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.transferFrom(from, to, mediaId)
   }
@@ -403,7 +463,11 @@ export class Zora {
     to: string,
     mediaId: BigNumberish
   ): Promise<ContractTransaction> {
-    this.ensureNotReadOnly()
+    try {
+      this.ensureNotReadOnly()
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
 
     return this.media.safeTransferFrom(from, to, mediaId)
   }
@@ -418,9 +482,10 @@ export class Zora {
    * @private
    */
   private ensureNotReadOnly() {
-    invariant(
-      !this.readOnly,
-      'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
-    )
+    if (this.readOnly) {
+      throw new Error(
+        'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
+      )
+    }
   }
 }
