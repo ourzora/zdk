@@ -4,7 +4,12 @@ module.exports = {
   testRegex: '/tests/.*\\.(test|spec)?\\.(ts|tsx)$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   collectCoverage: true,
-  collectCoverageFrom: ['**/*.{ts,tsx,js,jsx}', '!**/node_modules/**', '!**/vendor/**'],
+  collectCoverageFrom: [
+    '**/*.{ts,tsx,js,jsx}',
+    '!**/node_modules/**',
+    '!**/dist/**',
+    '!**/vendor/**'
+  ],
   coverageReporters: ['json-summary'],
   coverageDirectory: 'coverage'
 }
