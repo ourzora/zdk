@@ -1,7 +1,7 @@
 {
   "name": "@zoralabs/zdk",
   "description": "An SDK for using the Zora Media Protocol",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "files": [
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@zoralabs/core": "^1.0.1",
+    "@zoralabs/media-metadata-schemas": "^0.0.6",
     "sjcl": "^1.0.8",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
