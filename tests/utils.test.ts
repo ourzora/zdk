@@ -158,7 +158,7 @@ describe('Utils', () => {
   })
 
   describe('#constructAsk', () => {
-    const dai = '0x6b175474e89094c44da98b954eedeac495271d0f'
+    const dai = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
     const decimal100 = Decimal.new(100)
 
     it('creates an ask', () => {
@@ -175,13 +175,13 @@ describe('Utils', () => {
   })
 
   describe('#constructBid', () => {
-    const dai = '0x6b175474e89094c44da98b954eedeac495271d0f'
+    const dai = '0x6B175474E89094C44Da98b954EedeAC495271d0F'
     const decimal100 = Decimal.new(100)
     const bidder = '0xf13090cC20613BF9b5F0b3E6E83CCAdB5Cd0FbD5'
 
     it('creates a Bid', () => {
       const bid = constructBid(dai, decimal100.value, bidder, bidder, 10)
-      expect(bid.currency.toLowerCase()).toBe(dai)
+      expect(bid.currency.toLowerCase()).toBe(dai.toLowerCase())
       expect(bid.amount.toString()).toBe(decimal100.value.toString())
       expect(bid.bidder.toLowerCase()).toBe(bidder.toLowerCase())
       expect(bid.recipient.toLowerCase()).toBe(bidder.toLowerCase())

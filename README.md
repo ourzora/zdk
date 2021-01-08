@@ -2,7 +2,7 @@
 
 | Statements                  | Branches                | Functions                 | Lines             |
 | --------------------------- | ----------------------- | ------------------------- | ----------------- |
-| ![Statements](https://img.shields.io/badge/Coverage-73.3%25-red.svg) | ![Branches](https://img.shields.io/badge/Coverage-84.62%25-yellow.svg) | ![Functions](https://img.shields.io/badge/Coverage-62.75%25-red.svg) | ![Lines](https://img.shields.io/badge/Coverage-73.3%25-red.svg) |
+| ![Statements](https://img.shields.io/badge/Coverage-75.23%25-red.svg) | ![Branches](https://img.shields.io/badge/Coverage-84.62%25-yellow.svg) | ![Functions](https://img.shields.io/badge/Coverage-61.4%25-red.svg) | ![Lines](https://img.shields.io/badge/Coverage-75%25-red.svg) |
 
 ### Installation
 

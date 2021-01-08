@@ -115,12 +115,7 @@ describe('Zora', () => {
       expect(zora.marketAddress).toBe(marketAddress)
       expect(zora.mediaAddress).toBe(mediaAddress)
 
-      const zora1 = new Zora(
-        wallet,
-        50,
-        mediaAddress.toLowerCase(),
-        marketAddress.toLowerCase()
-      )
+      const zora1 = new Zora(wallet, 50, mediaAddress, marketAddress)
       expect(zora1.readOnly).toBe(false)
       expect(zora1.marketAddress).toBe(marketAddress)
       expect(zora1.mediaAddress).toBe(mediaAddress)
