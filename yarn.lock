@@ -953,10 +953,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@zoralabs/core@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@zoralabs/core/-/core-1.0.1.tgz#8335acbd1485962896cb28a7dbd3588672fc5626"
-  integrity sha512-cW4f3gY1O0iiWA6UhzljkSQXPvCS0aKK2V0j2a3LRzbJ6Px2OpFjdB5V0pN9jRMOQyKd+kH/sewhZ9lkcTl6SA==
+"@zoralabs/core@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@zoralabs/core/-/core-1.0.2.tgz#0a7e8f5a2f2ecfab843f8162970a262c773265d0"
+  integrity sha512-ITIxIV6rvHnCLi+/7bJDOlU55cCP56d6I7jGi8cgeEnQ4Ud5ICJU78LY9ieWi5SYriSc6I+0C4Z8Rli+c7Ky9w==
 
 "@zoralabs/media-metadata-schemas@^0.0.6":
   version "0.0.6"
