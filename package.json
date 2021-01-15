@@ -14,13 +14,14 @@
     "make-badges": "istanbul-badges-readme --coverageDir=./coverage",
     "test": "jest",
     "clean": "trash dist",
-    "build": "yarn clean && tsc"
+    "build": "yarn clean && tsc",
+    "ci": "rm -rf node_modules && yarn install --frozen-lockfile"
   },
   "engines": {
     "node": ">=10"
   },
   "dependencies": {
-    "@zoralabs/core": "^1.0.1",
+    "@zoralabs/core": "^1.0.2",
     "@zoralabs/media-metadata-schemas": "^0.0.6",
     "sjcl": "^1.0.8",
     "tiny-invariant": "^1.1.0",
