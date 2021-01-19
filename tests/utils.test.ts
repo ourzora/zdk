@@ -6,6 +6,8 @@ import {
   sha256FromBuffer,
   sha256FromFile,
   sha256FromHexString,
+  stripHexPrefix,
+  validateBytes32,
 } from '../src/utils'
 import { promises as fs } from 'fs'
 import { ethers } from 'ethers'
@@ -16,8 +18,8 @@ describe('Utils', () => {
   let kanyeHash: string
 
   beforeAll(() => {
-    hash = '7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069'
-    kanyeHash = 'e5dc4ed07fa1a3464d618a5d52a983880bb908b99ffff479eb7ebb7f7b11dabb'
+    hash = '0x7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069'
+    kanyeHash = '0xe5dc4ed07fa1a3464d618a5d52a983880bb908b99ffff479eb7ebb7f7b11dabb'
   })
 
   describe('#sha256FromFile', () => {
@@ -42,7 +44,7 @@ describe('Utils', () => {
   describe('#sha256FromHexString', () => {
     it('it properly hashes from hex string', async () => {
       const kanyeBuf = await fs.readFile('./fixtures/kanye.jpg')
-      const hexString = kanyeBuf.toString('hex')
+      const hexString = '0x'.concat(kanyeBuf.toString('hex'))
       expect(sha256FromHexString(hexString)).toBe(kanyeHash)
     })
 
@@ -50,7 +52,7 @@ describe('Utils', () => {
       const invalidHex = '0x23kbrkjfshldkjfh34zazanzanwbq'
       expect(() => {
         sha256FromHexString(invalidHex)
-      }).toThrow(`${invalidHex} is not valid hex`)
+      }).toThrow(`${invalidHex} is not valid 0x prefixed hex`)
     })
   })
 
@@ -85,7 +87,9 @@ describe('Utils', () => {
           metadataHash.concat('42n3jk')
         )
       }).toThrow(
-        `Invariant failed: ${contentHash.concat('zmxnx')} is not exactly 32 bytes`
+        `Invariant failed: ${contentHash.concat(
+          'zmxnx'
+        )} is not a 0x prefixed 32 bytes hex string`
       )
     })
 
@@ -101,7 +105,12 @@ describe('Utils', () => {
           contentHash.substr(0, 62),
           metadataHash
         )
-      }).toThrow(`Invariant failed: ${contentHash.substr(0, 62)} is not exactly 32 bytes`)
+      }).toThrow(
+        `Invariant failed: ${contentHash.substr(
+          0,
+          62
+        )} is not a 0x prefixed 32 bytes hex string`
+      )
     })
 
     it('throws an error if the content hash is byte array less than 32 bytes', () => {
@@ -117,7 +126,7 @@ describe('Utils', () => {
           badContentHash,
           metadataHash
         )
-      }).toThrow(`Invariant failed: ${badContentHash} is not exactly 32 bytes`)
+      }).toThrow(`value is not a length 32 byte array`)
     })
 
     it('throws an error if the content hash is byte array greater than 32 bytes', () => {
@@ -133,7 +142,7 @@ describe('Utils', () => {
           badContentHash,
           metadataHash
         )
-      }).toThrow(`Invariant failed: ${badContentHash} is not exactly 32 bytes`)
+      }).toThrow(`value is not a length 32 byte array`)
     })
   })
 
@@ -228,6 +237,76 @@ describe('Utils', () => {
           0,
           10
         )} is not a valid address.`
+      )
+    })
+  })
+
+  describe('#validateBytes32', () => {
+    it('returns when exactly 32 bytes are passed', async () => {
+      const sha256 = await sha256FromHexString('0x7a6f7261')
+      expect(() => {
+        validateBytes32(Buffer.from(stripHexPrefix(sha256), 'hex'))
+      }).not.toThrow()
+    })
+
+    it('raises when more than 32 bytes are passed', () => {
+      const buf = Buffer.from(
+        stripHexPrefix(
+          'b3c06ba3db658c3fe9e4530d033c102c556ff25166a0fc442cf6a1ced025022fab434b'
+        ),
+        'hex'
+      )
+      expect(() => {
+        validateBytes32(buf)
+      }).toThrow('value is not a length 32 byte array')
+    })
+
+    it('raises when less than 32 bytes are passed', () => {
+      const buf = Buffer.from(
+        stripHexPrefix('b3c06ba3db658c3fe9e4530d033c102c556ff25166a0fc442cf'),
+        'hex'
+      )
+      expect(() => {
+        validateBytes32(buf)
+      }).toThrow('value is not a length 32 byte array')
+    })
+
+    it('returns when a valid hex string of length 32 bytes is passed', () => {
+      const validHex =
+        '0xb3c06ba3db658c3fe9e4530d033c102c556ff25166a0fc442cf6a1ced025022f'
+      expect(() => {
+        validateBytes32(validHex)
+      }).not.toThrow(
+        `Invariant failed: ${validHex} is not a 0x prefixed 32 bytes hex string`
+      )
+    })
+
+    it('raises when a hex string without a 0x prefix is passed', () => {
+      const nonPrefixedHex =
+        'b3c06ba3db658c3fe9e4530d033c102c556ff25166a0fc442cf6a1ced025022f'
+      expect(() => {
+        validateBytes32(nonPrefixedHex)
+      }).toThrow(
+        `Invariant failed: ${nonPrefixedHex} is not a 0x prefixed 32 bytes hex string`
+      )
+    })
+
+    it('raises when a hex string greater than 32 bytes characters is passed', () => {
+      const tooLargeHex =
+        '0xb3c06ba3db658c3fe9e4530d033c102c556ff25166a0fc442cf6a1ced025022fab434b'
+      expect(() => {
+        validateBytes32(tooLargeHex)
+      }).toThrow(
+        `Invariant failed: ${tooLargeHex} is not a 0x prefixed 32 bytes hex string`
+      )
+    })
+
+    it('raises when a hex string less than 32 bytes is passed', () => {
+      const tooSmallHex = 'b3c06ba3db658c3fe9e4530d033c102c556ff25166a0fc442cf6a1ced02502'
+      expect(() => {
+        validateBytes32(tooSmallHex)
+      }).toThrow(
+        `Invariant failed: ${tooSmallHex} is not a 0x prefixed 32 bytes hex string`
       )
     })
   })
