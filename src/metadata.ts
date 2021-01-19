@@ -10,7 +10,7 @@ import * as MetadataTypes from '@zoralabs/media-metadata-schemas/dist/types/type
 
 export { MetadataTypes }
 export { validateVersion, supportedVersions, supportedVersionsTypeMapping }
-export type JSONLike = { [key: string]: {} }
+export type JSONLike = { [key: string]: any }
 
 /**
  * Generates alphabetized, minified JSON for the specified Zora Metadata Schema Version.

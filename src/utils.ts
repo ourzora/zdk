@@ -4,6 +4,7 @@ import invariant from 'tiny-invariant'
 import sjcl from 'sjcl'
 import { Ask, Bid, BidShares, Decimal, MediaData } from './types'
 import { BigNumberish, BytesLike } from 'ethers'
+import { hexlify, hexDataLength, isHexString } from '@ethersproject/bytes'
 
 /**
  * Constructs a MediaData type.
@@ -168,23 +169,23 @@ export function chainIdToNetworkName(chainId: number): string {
 export function sha256FromBuffer(buffer: Buffer): string {
   const bitArray = sjcl.codec.hex.toBits(buffer.toString('hex'))
   const hashArray = sjcl.hash.sha256.hash(bitArray)
-  return sjcl.codec.hex.fromBits(hashArray)
+  return '0x'.concat(sjcl.codec.hex.fromBits(hashArray))
 }
 
 /**
- * Generates a sha256 hash from a hex string and returns the hash hex-encoded.
+ * Generates a sha256 hash from a 0x prefixed hex string and returns the hash hex-encoded.
  * Throws an error if `data` is not a hex string.
  *
  * @param data
  */
 export function sha256FromHexString(data: string): string {
   if (!isHexString(data)) {
-    throw new Error(`${data} is not valid hex`)
+    throw new Error(`${data} is not valid 0x prefixed hex`)
   }
 
   const bitArray = sjcl.codec.hex.toBits(data)
   const hashArray = sjcl.hash.sha256.hash(bitArray)
-  return sjcl.codec.hex.fromBits(hashArray)
+  return '0x'.concat(sjcl.codec.hex.fromBits(hashArray))
 }
 
 /**
@@ -213,7 +214,7 @@ export function sha256FromFile(pathToFile: string, chunkSize: number): Promise<s
     })
 
     readStream.on('end', () => {
-      resolve(sjcl.codec.hex.fromBits(hash.finalize()))
+      resolve('0x'.concat(sjcl.codec.hex.fromBits(hash.finalize())))
     })
 
     readStream.on('error', (err: Error) => {
@@ -222,16 +223,31 @@ export function sha256FromFile(pathToFile: string, chunkSize: number): Promise<s
   })
 }
 
-function validateBytes32(value: BytesLike) {
-  if (isHexString(value) && value.length == 64) {
-    return
-  } else if (value.length == 32) {
-    return
-  }
+/**
+ * Validates if the input is exactly 32 bytes
+ * Expects a hex string with a 0x prefix or a Bytes type
+ * @param value
+ */
+export function validateBytes32(value: BytesLike) {
+  if (typeof value == 'string') {
+    if (isHexString(value) && hexDataLength(value) == 32) {
+      return
+    }
 
-  invariant(false, `${value.toString()} is not exactly 32 bytes`)
+    invariant(false, `${value} is not a 0x prefixed 32 bytes hex string`)
+  } else {
+    if (hexDataLength(hexlify(value)) == 32) {
+      return
+    }
+
+    invariant(false, `value is not a length 32 byte array`)
+  }
 }
 
-function isHexString(value: any): boolean {
-  return !(typeof value !== 'string' || !new RegExp(/^(0x)?[0-9a-f]+$/i).test(value))
+/**
+ * Removes the hex prefix of the passed string if it exists
+ * @param hex
+ */
+export function stripHexPrefix(hex: string) {
+  return hex.slice(0, 2) == '0x' ? hex.slice(2) : hex
 }
