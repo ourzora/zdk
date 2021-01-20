@@ -2,7 +2,7 @@ import { getAddress } from '@ethersproject/address'
 import warning from 'tiny-warning'
 import invariant from 'tiny-invariant'
 import sjcl from 'sjcl'
-import { Ask, Bid, BidShares, Decimal, MediaData } from './types'
+import { Ask, Bid, BidShares, Decimal, MediaData, DecimalValue } from './types'
 import { BigNumberish, BytesLike } from 'ethers'
 import { hexlify, hexDataLength, isHexString } from '@ethersproject/bytes'
 
@@ -23,6 +23,8 @@ export function constructMediaData(
   // validate the hash to ensure it fits in bytes32
   validateBytes32(contentHash)
   validateBytes32(metadataHash)
+  validateURI(tokenURI)
+  validateURI(metadataURI)
 
   return {
     tokenURI: tokenURI,
@@ -48,20 +50,30 @@ export function constructBidShares(
   const decimalCreator = Decimal.new(parseFloat(creator.toFixed(4)))
   const decimalOwner = Decimal.new(parseFloat(owner.toFixed(4)))
   const decimalPrevOwner = Decimal.new(parseFloat(prevOwner.toFixed(4)))
-  const decimal100 = Decimal.new(100)
 
-  const sum = decimalCreator.value.add(decimalOwner.value).add(decimalPrevOwner.value)
-
-  if (sum.toString() != decimal100.value.toString()) {
-    throw new Error(
-      `The BidShares sum to ${sum.toString()}, but they must sum to ${decimal100.value.toString()}`
-    )
-  }
+  validateBidShares(decimalCreator, decimalOwner, decimalPrevOwner)
 
   return {
     creator: decimalCreator,
     owner: decimalOwner,
     prevOwner: decimalPrevOwner,
+  }
+}
+
+export function validateBidShares(
+  creator: DecimalValue,
+  owner: DecimalValue,
+  prevOwner: DecimalValue
+): void {
+  const decimal100 = Decimal.new(100)
+
+  const sum = creator.value.add(owner.value).add(prevOwner.value)
+
+  if (sum.toString() != decimal100.value.toString()) {
+    invariant(
+      false,
+      `The BidShares sum to ${sum.toString()}, but they must sum to ${decimal100.value.toString()}`
+    )
   }
 }
 
@@ -250,4 +262,14 @@ export function validateBytes32(value: BytesLike) {
  */
 export function stripHexPrefix(hex: string) {
   return hex.slice(0, 2) == '0x' ? hex.slice(2) : hex
+}
+
+/**
+ * Validates the URI is prefixed with `https://`
+ * @param uri
+ */
+export function validateURI(uri: string) {
+  if (!uri.match(/^https:\/\/(.*)/)) {
+    invariant(false, `${uri} must begin with \`https://\``)
+  }
 }

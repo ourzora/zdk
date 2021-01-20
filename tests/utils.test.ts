@@ -7,7 +7,9 @@ import {
   sha256FromFile,
   sha256FromHexString,
   stripHexPrefix,
+  validateBidShares,
   validateBytes32,
+  validateURI,
 } from '../src/utils'
 import { promises as fs } from 'fs'
 import { ethers } from 'ethers'
@@ -16,10 +18,14 @@ import { Decimal } from '../src'
 describe('Utils', () => {
   let hash: string
   let kanyeHash: string
+  let defaultTokenURI: string
+  let defaultMetadataURI: string
 
   beforeAll(() => {
     hash = '0x7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069'
     kanyeHash = '0xe5dc4ed07fa1a3464d618a5d52a983880bb908b99ffff479eb7ebb7f7b11dabb'
+    defaultTokenURI = 'https://example.com'
+    defaultMetadataURI = 'https://metadata.com'
   })
 
   describe('#sha256FromFile', () => {
@@ -48,7 +54,7 @@ describe('Utils', () => {
       expect(sha256FromHexString(hexString)).toBe(kanyeHash)
     })
 
-    it('throws an error if the hex string is invalid', async () => {
+    it('raises if the hex string is invalid', async () => {
       const invalidHex = '0x23kbrkjfshldkjfh34zazanzanwbq'
       expect(() => {
         sha256FromHexString(invalidHex)
@@ -63,26 +69,26 @@ describe('Utils', () => {
       const contentHash = sha256FromHexString(contentHex)
       const metadataHash = sha256FromHexString(metadataHex)
       const media = constructMediaData(
-        'some content uri',
-        'some metadata uri',
+        defaultTokenURI,
+        defaultMetadataURI,
         contentHash,
         metadataHash
       )
-      expect(media.tokenURI).toBe('some content uri')
-      expect(media.metadataURI).toBe('some metadata uri')
+      expect(media.tokenURI).toBe(defaultTokenURI)
+      expect(media.metadataURI).toBe(defaultMetadataURI)
       expect(media.contentHash).toBe(contentHash)
       expect(media.metadataHash).toBe(metadataHash)
     })
 
-    it('throws an error if the content hash is hexstring greater than 32 bytes', () => {
+    it('raises if the content hash is hexstring greater than 32 bytes', () => {
       const metadataHex = ethers.utils.formatBytes32String('some metadata')
       const contentHex = ethers.utils.formatBytes32String('some content')
       const contentHash = sha256FromHexString(contentHex)
       const metadataHash = sha256FromHexString(metadataHex)
       expect(() => {
         constructMediaData(
-          'some content uri',
-          'some metadata uri',
+          defaultTokenURI,
+          defaultMetadataURI,
           contentHash.concat('zmxnx'),
           metadataHash.concat('42n3jk')
         )
@@ -93,15 +99,15 @@ describe('Utils', () => {
       )
     })
 
-    it('throws an error if the content hash is hexstring less than 32 bytes', () => {
+    it('raises if the content hash is hexstring less than 32 bytes', () => {
       const metadataHex = ethers.utils.formatBytes32String('some metadata')
       const contentHex = ethers.utils.formatBytes32String('some content')
       const contentHash = sha256FromHexString(contentHex)
       const metadataHash = sha256FromHexString(metadataHex)
       expect(() => {
         constructMediaData(
-          'some content uri',
-          'some metadata uri',
+          defaultTokenURI,
+          defaultMetadataURI,
           contentHash.substr(0, 62),
           metadataHash
         )
@@ -113,7 +119,7 @@ describe('Utils', () => {
       )
     })
 
-    it('throws an error if the content hash is byte array less than 32 bytes', () => {
+    it('raises if the content hash is byte array less than 32 bytes', () => {
       const contentHex = ethers.utils.formatBytes32String('some content')
       const contentHash = sha256FromHexString(contentHex)
       const badContentHash = Uint8Array.from(Buffer.from(contentHash.substr(0, 62)))
@@ -121,7 +127,39 @@ describe('Utils', () => {
       const metadataHash = sha256FromHexString(metadataHex)
       expect(() => {
         constructMediaData(
-          'some content uri',
+          defaultTokenURI,
+          defaultMetadataURI,
+          badContentHash,
+          metadataHash
+        )
+      }).toThrow(`value is not a length 32 byte array`)
+    })
+
+    it('raises if the content hash is byte array greater than 32 bytes', () => {
+      const metadataHex = ethers.utils.formatBytes32String('some metadata')
+      const contentHex = ethers.utils.formatBytes32String('some content')
+      const contentHash = sha256FromHexString(contentHex)
+      const badContentHash = Uint8Array.from(Buffer.from(contentHash.concat('87cz')))
+      const metadataHash = sha256FromHexString(metadataHex)
+      expect(() => {
+        constructMediaData(
+          defaultTokenURI,
+          defaultMetadataURI,
+          badContentHash,
+          metadataHash
+        )
+      }).toThrow(`value is not a length 32 byte array`)
+    })
+
+    it('raises if metadataURI does not begin with `https://`', () => {
+      const metadataHex = ethers.utils.formatBytes32String('some metadata')
+      const contentHex = ethers.utils.formatBytes32String('some content')
+      const contentHash = sha256FromHexString(contentHex)
+      const badContentHash = Uint8Array.from(Buffer.from(contentHash.concat('87cz')))
+      const metadataHash = sha256FromHexString(metadataHex)
+      expect(() => {
+        constructMediaData(
+          'https://example.com',
           'some metadata uri',
           badContentHash,
           metadataHash
@@ -129,7 +167,7 @@ describe('Utils', () => {
       }).toThrow(`value is not a length 32 byte array`)
     })
 
-    it('throws an error if the content hash is byte array greater than 32 bytes', () => {
+    it('raises if contentURI does not begin with `https://`', () => {
       const metadataHex = ethers.utils.formatBytes32String('some metadata')
       const contentHex = ethers.utils.formatBytes32String('some content')
       const contentHash = sha256FromHexString(contentHex)
@@ -138,7 +176,7 @@ describe('Utils', () => {
       expect(() => {
         constructMediaData(
           'some content uri',
-          'some metadata uri',
+          'https://metadata.com',
           badContentHash,
           metadataHash
         )
@@ -308,6 +346,74 @@ describe('Utils', () => {
       }).toThrow(
         `Invariant failed: ${tooSmallHex} is not a 0x prefixed 32 bytes hex string`
       )
+    })
+  })
+
+  describe('#validateURI', () => {
+    it('raises if a uri is passed without an `https://` prefix', () => {
+      const invalidURI = 'http://example.com'
+      expect(() => {
+        validateURI(invalidURI)
+      }).toThrow('Invariant failed: http://example.com must begin with `https://`')
+    })
+
+    it('does not raise if a uri is passed with an `https://` prefix', () => {
+      const invalidURI = 'https://example.com'
+      expect(() => {
+        validateURI(invalidURI)
+      }).not.toThrow()
+    })
+  })
+
+  describe('#validateBidShares', () => {
+    it('raises if the bid shares do no sum to `Decimal.new(100).value`', () => {
+      const invalidBidShares = {
+        prevOwner: Decimal.new(10),
+        owner: Decimal.new(70),
+        creator: Decimal.new(10),
+      }
+      expect(() => {
+        validateBidShares(
+          invalidBidShares.creator,
+          invalidBidShares.owner,
+          invalidBidShares.prevOwner
+        )
+      }).toThrow(
+        'Invariant failed: The BidShares sum to 90000000000000000000, but they must sum to 100000000000000000000'
+      )
+    })
+
+    it('does not raise if the bid shares sum to `Decimal.new(100).value', () => {
+      const invalidBidShares = {
+        prevOwner: Decimal.new(10),
+        owner: Decimal.new(80),
+        creator: Decimal.new(10),
+      }
+      expect(() => {
+        validateBidShares(
+          invalidBidShares.creator,
+          invalidBidShares.owner,
+          invalidBidShares.prevOwner
+        )
+      }).not.toThrow()
+    })
+  })
+
+  describe('#stripHexPrefix', () => {
+    let prefixed: string
+    let nonPrefixed: string
+    beforeAll(() => {
+      prefixed = '0x18916e1a2933Cb349145A280473A5DE8EB6630cb'
+      nonPrefixed = '18916e1a2933Cb349145A280473A5DE8EB6630cb'
+    })
+    it('returns the string without a 0x prefix', () => {
+      const result = stripHexPrefix(prefixed)
+      expect(result).toEqual(nonPrefixed)
+    })
+
+    it('returns the string if no 0x prefix exists', () => {
+      const result = stripHexPrefix(nonPrefixed)
+      expect(result).toEqual(nonPrefixed)
     })
   })
 })
