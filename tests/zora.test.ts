@@ -165,8 +165,8 @@ describe('Zora', () => {
         contentHashBytes = utils.arrayify(contentHash)
 
         defaultMediaData = {
-          tokenURI: 'example.com',
-          metadataURI: 'metadata.com',
+          tokenURI: 'https://example.com',
+          metadataURI: 'https://metadata.com',
           contentHash: contentHashBytes,
           metadataHash: metadataHashBytes,
         }
@@ -235,6 +235,50 @@ describe('Zora', () => {
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
         })
+
+        it('throws an error if bid shares do not sum to 100', async () => {
+          const zora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          const invalidBidShares = {
+            prevOwner: Decimal.new(10),
+            owner: Decimal.new(70),
+            creator: Decimal.new(10),
+          }
+          expect(zora.readOnly).toBe(false)
+
+          await expect(zora.mint(defaultMediaData, invalidBidShares)).rejects.toBe(
+            'Invariant failed: The BidShares sum to 90000000000000000000, but they must sum to 100000000000000000000'
+          )
+        })
+
+        it('throws an error if the tokenURI does not begin with `https://`', async () => {
+          const zora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          const invalidMediaData = {
+            tokenURI: 'http://example.com',
+            metadataURI: 'https://metadata.com',
+            contentHash: contentHashBytes,
+            metadataHash: metadataHashBytes,
+          }
+          expect(zora.readOnly).toBe(false)
+
+          await expect(zora.mint(invalidMediaData, defaultBidShares)).rejects.toBe(
+            'Invariant failed: http://example.com must begin with `https://`'
+          )
+        })
+
+        it('throws an error if the metadataURI does not begin with `https://`', async () => {
+          const zora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          const invalidMediaData = {
+            tokenURI: 'https://example.com',
+            metadataURI: 'http://metadata.com',
+            contentHash: contentHashBytes,
+            metadataHash: metadataHashBytes,
+          }
+          expect(zora.readOnly).toBe(false)
+
+          await expect(zora.mint(invalidMediaData, defaultBidShares)).rejects.toBe(
+            'Invariant failed: http://metadata.com must begin with `https://`'
+          )
+        })
       })
 
       describe('#mintWithSig', () => {
@@ -253,6 +297,64 @@ describe('Zora', () => {
             )
           ).rejects.toBe(
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
+          )
+        })
+
+        it('throws an error if bid shares do not sum to 100', async () => {
+          const zora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          const invalidBidShares = {
+            prevOwner: Decimal.new(10),
+            owner: Decimal.new(70),
+            creator: Decimal.new(10),
+          }
+          expect(zora.readOnly).toBe(false)
+
+          await expect(
+            zora.mintWithSig(
+              otherWallet.address,
+              defaultMediaData,
+              invalidBidShares,
+              eipSig
+            )
+          ).rejects.toBe(
+            'Invariant failed: The BidShares sum to 90000000000000000000, but they must sum to 100000000000000000000'
+          )
+        })
+
+        it('throws an error if the tokenURI does not begin with `https://`', async () => {
+          const zora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          const invalidMediaData = {
+            tokenURI: 'http://example.com',
+            metadataURI: 'https://metadata.com',
+            contentHash: contentHashBytes,
+            metadataHash: metadataHashBytes,
+          }
+          expect(zora.readOnly).toBe(false)
+
+          await expect(
+            zora.mintWithSig(
+              otherWallet.address,
+              invalidMediaData,
+              defaultBidShares,
+              eipSig
+            )
+          ).rejects.toBe(
+            'Invariant failed: http://example.com must begin with `https://`'
+          )
+        })
+
+        it('throws an error if the metadataURI does not begin with `https://`', async () => {
+          const zora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          const invalidMediaData = {
+            tokenURI: 'https://example.com',
+            metadataURI: 'http://metadata.com',
+            contentHash: contentHashBytes,
+            metadataHash: metadataHashBytes,
+          }
+          expect(zora.readOnly).toBe(false)
+
+          await expect(zora.mint(invalidMediaData, defaultBidShares)).rejects.toBe(
+            'Invariant failed: http://metadata.com must begin with `https://`'
           )
         })
       })

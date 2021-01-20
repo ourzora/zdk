@@ -1,4 +1,4 @@
-import { BigNumberish } from '@ethersproject/bignumber'
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { BytesLike } from '@ethersproject/bytes'
 import Decimal from '@zoralabs/core/dist/utils/Decimal'
 export { Decimal }
@@ -6,7 +6,7 @@ export { Decimal }
 /**
  * Internal type to represent a Decimal Value
  */
-type DecimalValue = { value: BigNumberish }
+export type DecimalValue = { value: BigNumber }
 
 /**
  * Zora Media Protocol BidShares

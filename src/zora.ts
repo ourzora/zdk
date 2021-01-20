@@ -5,7 +5,12 @@ import { Provider } from '@ethersproject/providers'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Market, MarketFactory, Media, MediaFactory } from '@zoralabs/core/dist/typechain'
 import { addresses } from './addresses'
-import { chainIdToNetworkName, validateAndParseAddress } from './utils'
+import {
+  chainIdToNetworkName,
+  validateAndParseAddress,
+  validateBidShares,
+  validateURI,
+} from './utils'
 import invariant from 'tiny-invariant'
 
 export class Zora {
@@ -179,6 +184,9 @@ export class Zora {
   ): Promise<ContractTransaction> {
     try {
       this.ensureNotReadOnly()
+      validateURI(mediaData.metadataURI)
+      validateURI(mediaData.tokenURI)
+      validateBidShares(bidShares.creator, bidShares.owner, bidShares.prevOwner)
     } catch (err) {
       return Promise.reject(err.message)
     }
@@ -201,6 +209,9 @@ export class Zora {
   ): Promise<ContractTransaction> {
     try {
       this.ensureNotReadOnly()
+      validateURI(mediaData.metadataURI)
+      validateURI(mediaData.tokenURI)
+      validateBidShares(bidShares.creator, bidShares.owner, bidShares.prevOwner)
     } catch (err) {
       return Promise.reject(err.message)
     }
