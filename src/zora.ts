@@ -1,4 +1,4 @@
-import { Ask, Bid, BidShares, EIP712Signature, MediaData } from './types'
+import { Ask, Bid, BidShares, EIP712Domain, EIP712Signature, MediaData } from './types'
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { Provider } from '@ethersproject/providers'
@@ -56,7 +56,7 @@ export class Zora {
     }
 
     this.media = MediaFactory.connect(this.mediaAddress, signerOrProvider)
-    this.market = MarketFactory.connect(this.mediaAddress, signerOrProvider)
+    this.market = MarketFactory.connect(this.marketAddress, signerOrProvider)
   }
 
   /*********************
@@ -130,6 +130,27 @@ export class Zora {
     bidder: string
   ): Promise<Bid> {
     return this.market.bidForTokenBidder(mediaId, bidder)
+  }
+
+  /**
+   * Fetches the permit nonce on the specified media id for the owner address
+   * @param address
+   * @param mediaId
+   */
+  public async fetchPermitNonce(
+    address: string,
+    mediaId: BigNumberish
+  ): Promise<BigNumber> {
+    return this.media.permitNonces(address, mediaId)
+  }
+
+  /**
+   * Fetches the current mintWithSig nonce for the specified address
+   * @param address
+   * @param mediaId
+   */
+  public async fetchMintWithSigNonce(address: string): Promise<BigNumber> {
+    return this.media.mintWithSigNonces(address)
   }
 
   /*********************
@@ -481,6 +502,27 @@ export class Zora {
     }
 
     return this.media.safeTransferFrom(from, to, mediaId)
+  }
+
+  /****************
+   * Miscellaneous
+   * **************
+   */
+
+  /**
+   * Returns the EIP-712 Domain for an instance of the Zora Media Contract
+   */
+  public eip712Domain(): EIP712Domain {
+    // Due to a bug in ganache-core, set the chainId to 1 if its a local blockchain
+    // https://github.com/trufflesuite/ganache-core/issues/515
+    const chainId = this.chainId == 50 ? 1 : this.chainId
+
+    return {
+      name: 'Zora',
+      version: '1',
+      chainId: chainId,
+      verifyingContract: this.mediaAddress,
+    }
   }
 
   /******************

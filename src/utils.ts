@@ -2,9 +2,20 @@ import { getAddress } from '@ethersproject/address'
 import warning from 'tiny-warning'
 import invariant from 'tiny-invariant'
 import sjcl from 'sjcl'
-import { Ask, Bid, BidShares, Decimal, MediaData, DecimalValue } from './types'
-import { BigNumberish, BytesLike } from 'ethers'
-import { hexlify, hexDataLength, isHexString } from '@ethersproject/bytes'
+import {
+  Ask,
+  Bid,
+  BidShares,
+  Decimal,
+  DecimalValue,
+  EIP712Domain,
+  EIP712Signature,
+  MediaData,
+} from './types'
+import { BigNumber, BigNumberish, BytesLike, Wallet } from 'ethers'
+import { arrayify, hexDataLength, hexlify, isHexString } from '@ethersproject/bytes'
+import { recoverTypedSignature, signTypedData_v4 } from 'eth-sig-util'
+import { fromRpcSig, toRpcSig } from 'ethereumjs-util'
 
 /**
  * Constructs a MediaData type.
@@ -238,6 +249,7 @@ export function sha256FromFile(pathToFile: string, chunkSize: number): Promise<s
 /**
  * Validates if the input is exactly 32 bytes
  * Expects a hex string with a 0x prefix or a Bytes type
+ *
  * @param value
  */
 export function validateBytes32(value: BytesLike) {
@@ -258,6 +270,7 @@ export function validateBytes32(value: BytesLike) {
 
 /**
  * Removes the hex prefix of the passed string if it exists
+ *
  * @param hex
  */
 export function stripHexPrefix(hex: string) {
@@ -266,10 +279,261 @@ export function stripHexPrefix(hex: string) {
 
 /**
  * Validates the URI is prefixed with `https://`
+ *
  * @param uri
  */
 export function validateURI(uri: string) {
   if (!uri.match(/^https:\/\/(.*)/)) {
     invariant(false, `${uri} must begin with \`https://\``)
   }
+}
+
+/***************************
+ * EIP-712 Helper Methods
+ ***************************
+ */
+
+/**
+ * Signs a Zora Permit Message as specified by EIP-712
+ *
+ * @param owner
+ * @param toAddress
+ * @param tokenAddress
+ * @param tokenId
+ * @param chainId
+ */
+export async function signPermitMessage(
+  owner: Wallet,
+  toAddress: string,
+  mediaId: number,
+  nonce: number,
+  deadline: number,
+  domain: EIP712Domain
+): Promise<EIP712Signature> {
+  const tokenId = mediaId
+
+  return new Promise<EIP712Signature>(async (res, reject) => {
+    try {
+      const sig = signTypedData_v4(Buffer.from(owner.privateKey.slice(2), 'hex'), {
+        data: {
+          types: {
+            EIP712Domain: [
+              { name: 'name', type: 'string' },
+              { name: 'version', type: 'string' },
+              { name: 'chainId', type: 'uint256' },
+              { name: 'verifyingContract', type: 'address' },
+            ],
+            Permit: [
+              { name: 'spender', type: 'address' },
+              { name: 'tokenId', type: 'uint256' },
+              { name: 'nonce', type: 'uint256' },
+              { name: 'deadline', type: 'uint256' },
+            ],
+          },
+          primaryType: 'Permit',
+          domain: domain,
+          message: {
+            spender: toAddress,
+            tokenId,
+            nonce,
+            deadline,
+          },
+        },
+      })
+
+      const response = fromRpcSig(sig)
+
+      res({
+        r: response.r,
+        s: response.s,
+        v: response.v,
+        deadline: deadline.toString(),
+      })
+    } catch (e) {
+      console.error(e)
+      reject(e)
+    }
+  })
+}
+
+/**
+ * Recovers the address of the private key that signed the Zora Permit Message
+ *
+ * @param toAddress
+ * @param mediaId
+ * @param nonce
+ * @param deadline
+ * @param domain
+ * @param eipSig
+ */
+export async function recoverSignatureFromPermit(
+  toAddress: string,
+  mediaId: number,
+  nonce: number,
+  deadline: number,
+  domain: EIP712Domain,
+  eipSig: EIP712Signature
+) {
+  const r = arrayify(eipSig.r)
+  const s = arrayify(eipSig.s)
+
+  const tokenId = mediaId
+
+  const recovered = recoverTypedSignature({
+    data: {
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Permit: [
+          { name: 'spender', type: 'address' },
+          { name: 'tokenId', type: 'uint256' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'deadline', type: 'uint256' },
+        ],
+      },
+      primaryType: 'Permit',
+      domain: domain,
+      message: {
+        spender: toAddress,
+        tokenId,
+        nonce,
+        deadline,
+      },
+    },
+    sig: toRpcSig(eipSig.v, Buffer.from(r), Buffer.from(s)),
+  })
+  return recovered
+}
+
+/**
+ * Recovers the address of the private key that signed a Zora MintWithSig Message
+ *
+ * @param contentHash
+ * @param metadataHash
+ * @param creatorShareBN
+ * @param nonce
+ * @param deadline
+ * @param domain
+ * @param eipSig
+ */
+export async function recoverSignatureFromMintWithSig(
+  contentHash: BytesLike,
+  metadataHash: BytesLike,
+  creatorShareBN: BigNumber,
+  nonce: number,
+  deadline: number,
+  domain: EIP712Domain,
+  eipSig: EIP712Signature
+) {
+  const r = arrayify(eipSig.r)
+  const s = arrayify(eipSig.s)
+  const creatorShare = creatorShareBN.toString()
+
+  const recovered = recoverTypedSignature({
+    data: {
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        MintWithSig: [
+          { name: 'contentHash', type: 'bytes32' },
+          { name: 'metadataHash', type: 'bytes32' },
+          { name: 'creatorShare', type: 'uint256' },
+          { name: 'nonce', type: 'uint256' },
+          { name: 'deadline', type: 'uint256' },
+        ],
+      },
+      primaryType: 'MintWithSig',
+      domain: domain,
+      message: {
+        contentHash,
+        metadataHash,
+        creatorShare,
+        nonce,
+        deadline,
+      },
+    },
+    sig: toRpcSig(eipSig.v, Buffer.from(r), Buffer.from(s)),
+  })
+  return recovered
+}
+
+/**
+ * Signs a Zora MintWithSig Message as specified by EIP-712
+ *
+ * @param owner
+ * @param mediaAddress
+ * @param creator
+ * @param contentHash
+ * @param metadataHash
+ * @param creatorShare
+ * @param chainId
+ */
+export async function signMintWithSigMessage(
+  owner: Wallet,
+  contentHash: BytesLike,
+  metadataHash: BytesLike,
+  creatorShareBN: BigNumber,
+  nonce: number,
+  deadline: number,
+  domain: EIP712Domain
+): Promise<EIP712Signature> {
+  try {
+    validateBytes32(contentHash)
+    validateBytes32(metadataHash)
+  } catch (err) {
+    return Promise.reject(err.message)
+  }
+
+  const creatorShare = creatorShareBN.toString()
+
+  return new Promise<EIP712Signature>(async (res, reject) => {
+    try {
+      const sig = signTypedData_v4(Buffer.from(owner.privateKey.slice(2), 'hex'), {
+        data: {
+          types: {
+            EIP712Domain: [
+              { name: 'name', type: 'string' },
+              { name: 'version', type: 'string' },
+              { name: 'chainId', type: 'uint256' },
+              { name: 'verifyingContract', type: 'address' },
+            ],
+            MintWithSig: [
+              { name: 'contentHash', type: 'bytes32' },
+              { name: 'metadataHash', type: 'bytes32' },
+              { name: 'creatorShare', type: 'uint256' },
+              { name: 'nonce', type: 'uint256' },
+              { name: 'deadline', type: 'uint256' },
+            ],
+          },
+          primaryType: 'MintWithSig',
+          domain: domain,
+          message: {
+            contentHash,
+            metadataHash,
+            creatorShare,
+            nonce,
+            deadline,
+          },
+        },
+      })
+      const response = fromRpcSig(sig)
+      res({
+        r: response.r,
+        s: response.s,
+        v: response.v,
+        deadline: deadline.toString(),
+      })
+    } catch (e) {
+      console.error(e)
+      reject(e)
+    }
+  })
 }

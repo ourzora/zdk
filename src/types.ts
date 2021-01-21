@@ -1,6 +1,7 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { BytesLike } from '@ethersproject/bytes'
 import Decimal from '@zoralabs/core/dist/utils/Decimal'
+
 export { Decimal }
 
 /**
@@ -51,7 +52,17 @@ export type MediaData = {
  */
 export type EIP712Signature = {
   deadline: BigNumberish
-  v: BigNumberish
+  v: number
   r: BytesLike
   s: BytesLike
+}
+
+/**
+ * EIP712 Domain
+ */
+export type EIP712Domain = {
+  name: string
+  version: string
+  chainId: number
+  verifyingContract: string
 }
