@@ -3,9 +3,13 @@ import {
   constructBid,
   constructBidShares,
   constructMediaData,
+  recoverSignatureFromMintWithSig,
+  recoverSignatureFromPermit,
   sha256FromBuffer,
   sha256FromFile,
   sha256FromHexString,
+  signMintWithSigMessage,
+  signPermitMessage,
   stripHexPrefix,
   validateBidShares,
   validateBytes32,
@@ -13,7 +17,12 @@ import {
 } from '../src/utils'
 import { promises as fs } from 'fs'
 import { ethers } from 'ethers'
-import { Decimal } from '../src'
+import { Decimal, Zora } from '../src'
+import { Blockchain, generatedWallets } from '@zoralabs/core/dist/utils'
+import { JsonRpcProvider } from '@ethersproject/providers'
+import { setupZora, ZoraConfiguredAddresses } from './helpers'
+
+jest.setTimeout(1000000)
 
 describe('Utils', () => {
   let hash: string
@@ -21,11 +30,18 @@ describe('Utils', () => {
   let defaultTokenURI: string
   let defaultMetadataURI: string
 
+  let provider = new JsonRpcProvider()
+  let blockchain = new Blockchain(provider)
+
   beforeAll(() => {
     hash = '0x7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069'
     kanyeHash = '0xe5dc4ed07fa1a3464d618a5d52a983880bb908b99ffff479eb7ebb7f7b11dabb'
     defaultTokenURI = 'https://example.com'
     defaultMetadataURI = 'https://metadata.com'
+  })
+
+  beforeEach(async () => {
+    await blockchain.resetAsync()
   })
 
   describe('#sha256FromFile', () => {
@@ -414,6 +430,277 @@ describe('Utils', () => {
     it('returns the string if no 0x prefix exists', () => {
       const result = stripHexPrefix(nonPrefixed)
       expect(result).toEqual(nonPrefixed)
+    })
+  })
+
+  describe('#signPermitMessage', () => {
+    let zoraConfig: ZoraConfiguredAddresses
+
+    beforeAll(() => {
+      zoraConfig = {
+        market: '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401',
+        media: '0x1dC4c1cEFEF38a777b15aA20260a54E584b16C48',
+        currency: '',
+      }
+    })
+
+    it('signs the message correctly', async () => {
+      const provider = new JsonRpcProvider()
+      const [mainWallet, otherWallet] = generatedWallets(provider)
+      const zora = new Zora(provider, 50, zoraConfig.media, zoraConfig.market)
+      const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 // 24 hours
+      const domain = zora.eip712Domain()
+      const eipSig = await signPermitMessage(
+        mainWallet,
+        otherWallet.address,
+        1,
+        1,
+        deadline,
+        domain
+      )
+
+      const recovered = await recoverSignatureFromPermit(
+        otherWallet.address,
+        1,
+        1,
+        deadline,
+        domain,
+        eipSig
+      )
+
+      expect(recovered.toLowerCase()).toBe(mainWallet.address.toLowerCase())
+    })
+
+    it('signs a permit message that is able to be processed on chain', async () => {
+      const provider = new JsonRpcProvider()
+      const [mainWallet, otherWallet] = generatedWallets(provider)
+      const onChainConfig = await setupZora(mainWallet, [otherWallet])
+      const mainZora = new Zora(mainWallet, 50, onChainConfig.media, onChainConfig.market)
+      const metadataHex = ethers.utils.formatBytes32String('some metadata')
+      const contentHex = ethers.utils.formatBytes32String('some content')
+      const contentHash = sha256FromHexString(contentHex)
+      const metadataHash = sha256FromHexString(metadataHex)
+
+      const mediaData = constructMediaData(
+        'https://token.com',
+        'https://metadata.com',
+        contentHash,
+        metadataHash
+      )
+      const bidShares = constructBidShares(10, 90, 0)
+      await mainZora.mint(mediaData, bidShares)
+
+      const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 // 24 hours
+      const domain = mainZora.eip712Domain()
+      const eipSig = await signPermitMessage(
+        mainWallet,
+        otherWallet.address,
+        0,
+        0,
+        deadline,
+        domain
+      )
+
+      const otherZora = new Zora(
+        mainWallet,
+        50,
+        onChainConfig.media,
+        onChainConfig.market
+      )
+      await otherZora.permit(otherWallet.address, 0, eipSig)
+      const approved = await otherZora.fetchApproved(0)
+      expect(approved.toLowerCase()).toBe(otherWallet.address.toLowerCase())
+    })
+  })
+
+  describe('#recoverSignatureFromPermit', () => {
+    let zoraConfig: ZoraConfiguredAddresses
+
+    beforeAll(() => {
+      zoraConfig = {
+        market: '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401',
+        media: '0x1dC4c1cEFEF38a777b15aA20260a54E584b16C48',
+        currency: '',
+      }
+    })
+
+    it('returns a different recovered address if the message is different', async () => {
+      const provider = new JsonRpcProvider()
+      const [mainWallet, otherWallet] = generatedWallets(provider)
+      const zora = new Zora(provider, 50, zoraConfig.media, zoraConfig.market)
+      const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 // 24 hours
+      const domain = zora.eip712Domain()
+      const eipSig = await signPermitMessage(
+        mainWallet,
+        otherWallet.address,
+        1,
+        1,
+        deadline,
+        domain
+      )
+
+      const recovered = await recoverSignatureFromPermit(
+        otherWallet.address,
+        1,
+        0,
+        deadline,
+        domain,
+        eipSig
+      )
+
+      expect(recovered.toLowerCase()).not.toBe(mainWallet.address.toLowerCase())
+    })
+  })
+
+  describe('#signMintWithSig', () => {
+    let zoraConfig: ZoraConfiguredAddresses
+
+    beforeAll(() => {
+      zoraConfig = {
+        market: '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401',
+        media: '0x1dC4c1cEFEF38a777b15aA20260a54E584b16C48',
+        currency: '',
+      }
+    })
+
+    it('signs the message correctly', async () => {
+      const provider = new JsonRpcProvider()
+      const [mainWallet] = generatedWallets(provider)
+      const zora = new Zora(provider, 50, zoraConfig.media, zoraConfig.market)
+      const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 // 24 hours
+      const domain = zora.eip712Domain()
+
+      const metadataHex = ethers.utils.formatBytes32String('some metadata')
+      const contentHex = ethers.utils.formatBytes32String('some content')
+      const contentHash = sha256FromHexString(contentHex)
+      const metadataHash = sha256FromHexString(metadataHex)
+
+      const eipSig = await signMintWithSigMessage(
+        mainWallet,
+        contentHash,
+        metadataHash,
+        Decimal.new(10).value,
+        1,
+        deadline,
+        domain
+      )
+
+      const recovered = await recoverSignatureFromMintWithSig(
+        contentHash,
+        metadataHash,
+        Decimal.new(10).value,
+        1,
+        deadline,
+        domain,
+        eipSig
+      )
+
+      expect(recovered.toLowerCase()).toBe(mainWallet.address.toLowerCase())
+    })
+
+    it('signs a mintWithSig message that is able to be processed on chain', async () => {
+      // TODO: this
+      const [mainWallet, otherWallet] = generatedWallets(provider)
+      const onChainConfig = await setupZora(mainWallet, [otherWallet])
+      const otherZora = new Zora(
+        otherWallet,
+        50,
+        onChainConfig.media,
+        onChainConfig.market
+      )
+      const metadataHex = ethers.utils.formatBytes32String('some metadata')
+      const contentHex = ethers.utils.formatBytes32String('some content')
+      const contentHash = sha256FromHexString(contentHex)
+      const metadataHash = sha256FromHexString(metadataHex)
+      const contentURI = 'https://token.com'
+      const metadataURI = 'https://metadata.com'
+
+      const mediaData = constructMediaData(
+        contentURI,
+        metadataURI,
+        contentHash,
+        metadataHash
+      )
+      const bidShares = constructBidShares(10, 90, 0)
+      const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 // 24 hours
+      const domain = otherZora.eip712Domain()
+      const nonce = await otherZora.fetchMintWithSigNonce(mainWallet.address)
+      const eipSig = await signMintWithSigMessage(
+        mainWallet,
+        contentHash,
+        metadataHash,
+        Decimal.new(10).value,
+        nonce.toNumber(),
+        deadline,
+        domain
+      )
+
+      await otherZora.mintWithSig(mainWallet.address, mediaData, bidShares, eipSig)
+      const owner = await otherZora.fetchOwnerOf(0)
+      const creator = await otherZora.fetchCreator(0)
+      const onChainContentHash = await otherZora.fetchContentHash(0)
+      const onChainMetadataHash = await otherZora.fetchMetadataHash(0)
+
+      const onChainBidShares = await otherZora.fetchCurrentBidShares(0)
+      const onChainContentURI = await otherZora.fetchContentURI(0)
+      const onChainMetadataURI = await otherZora.fetchMetadataURI(0)
+
+      expect(owner.toLowerCase()).toBe(mainWallet.address.toLowerCase())
+      expect(creator.toLowerCase()).toBe(mainWallet.address.toLowerCase())
+      expect(onChainContentHash).toBe(contentHash)
+      expect(onChainContentURI).toBe(contentURI)
+      expect(onChainMetadataURI).toBe(metadataURI)
+      expect(onChainMetadataHash).toBe(metadataHash)
+      expect(onChainBidShares.creator.value).toEqual(bidShares.creator.value)
+      expect(onChainBidShares.owner.value).toEqual(bidShares.owner.value)
+      expect(onChainBidShares.prevOwner.value).toEqual(bidShares.prevOwner.value)
+    })
+  })
+
+  describe('#recoverSignatureFromMintWithSig', () => {
+    let zoraConfig: ZoraConfiguredAddresses
+
+    beforeAll(() => {
+      zoraConfig = {
+        market: '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401',
+        media: '0x1dC4c1cEFEF38a777b15aA20260a54E584b16C48',
+        currency: '',
+      }
+    })
+
+    it('returns a different recovered address if the message is different', async () => {
+      const provider = new JsonRpcProvider()
+      const [mainWallet] = generatedWallets(provider)
+      const zora = new Zora(provider, 50, zoraConfig.media, zoraConfig.market)
+      const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 // 24 hours
+      const domain = zora.eip712Domain()
+
+      const metadataHex = ethers.utils.formatBytes32String('some metadata')
+      const contentHex = ethers.utils.formatBytes32String('some content')
+      const contentHash = sha256FromHexString(contentHex)
+      const metadataHash = sha256FromHexString(metadataHex)
+
+      const eipSig = await signMintWithSigMessage(
+        mainWallet,
+        contentHash,
+        metadataHash,
+        Decimal.new(10).value,
+        1,
+        deadline,
+        domain
+      )
+
+      const recovered = await recoverSignatureFromMintWithSig(
+        contentHash,
+        metadataHash,
+        Decimal.new(10).value,
+        2,
+        deadline,
+        domain,
+        eipSig
+      )
+
+      expect(recovered.toLowerCase()).not.toBe(mainWallet.address.toLowerCase())
     })
   })
 })

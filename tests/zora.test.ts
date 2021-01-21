@@ -192,7 +192,7 @@ describe('Zora', () => {
 
         eipSig = {
           deadline: 1000,
-          v: '0x00',
+          v: 0,
           r: '0x00',
           s: '0x00',
         }

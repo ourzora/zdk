@@ -39,6 +39,18 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          command: yarn chain
+          name: Start blockchain
+          background: true
+      - run:
+          # Wait for the blockchain to start at port 8545. We expect a 400 response so we
+          # override the shell and have the last command be the : { null } command to force exit code 0.
+          shell: /bin/sh
+          command: |
+                wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:8545
+                :
+                name: Wait for blockchain to start
+      - run:
           command: yarn run test
           name: Run Tests
 

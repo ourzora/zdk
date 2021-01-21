@@ -1,7 +1,7 @@
 import {
+  BaseErc20Factory,
   MarketFactory,
   MediaFactory,
-  BaseErc20Factory,
 } from '@zoralabs/core/dist/typechain'
 import { Wallet } from '@ethersproject/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
