@@ -519,6 +519,30 @@ describe('Zora', () => {
           )
         })
       })
+
+      describe('#eip712Domain', () => {
+        it('returns chainId 1 on a local blockchain', () => {
+          const provider = new JsonRpcProvider()
+
+          const zora = new Zora(provider, 50, zoraConfig.media, zoraConfig.market)
+          const domain = zora.eip712Domain()
+          expect(domain.chainId).toEqual(1)
+          expect(domain.verifyingContract.toLowerCase()).toEqual(
+            zora.mediaAddress.toLowerCase()
+          )
+        })
+
+        it('returns the zora chainId', () => {
+          const provider = new JsonRpcProvider()
+          const zora = new Zora(provider, 4, zoraConfig.media, zoraConfig.market)
+          const domain = zora.eip712Domain()
+
+          expect(domain.chainId).toEqual(4)
+          expect(domain.verifyingContract.toLowerCase()).toEqual(
+            zora.mediaAddress.toLowerCase()
+          )
+        })
+      })
     })
   })
 })
