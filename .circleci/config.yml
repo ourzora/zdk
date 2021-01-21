@@ -49,7 +49,7 @@ jobs:
           command: |
                 wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:8545
                 :
-                name: Wait for blockchain to start
+          name: Wait for blockchain to start
       - run:
           command: yarn run test
           name: Run Tests
