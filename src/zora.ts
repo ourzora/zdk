@@ -504,9 +504,9 @@ export class Zora {
     return this.media.safeTransferFrom(from, to, mediaId)
   }
 
-  /*******************
+  /****************
    * Miscellaneous
-   * *****************
+   * **************
    */
 
   /**

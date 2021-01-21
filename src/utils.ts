@@ -249,6 +249,7 @@ export function sha256FromFile(pathToFile: string, chunkSize: number): Promise<s
 /**
  * Validates if the input is exactly 32 bytes
  * Expects a hex string with a 0x prefix or a Bytes type
+ *
  * @param value
  */
 export function validateBytes32(value: BytesLike) {
@@ -269,6 +270,7 @@ export function validateBytes32(value: BytesLike) {
 
 /**
  * Removes the hex prefix of the passed string if it exists
+ *
  * @param hex
  */
 export function stripHexPrefix(hex: string) {
@@ -277,6 +279,7 @@ export function stripHexPrefix(hex: string) {
 
 /**
  * Validates the URI is prefixed with `https://`
+ *
  * @param uri
  */
 export function validateURI(uri: string) {
@@ -287,11 +290,12 @@ export function validateURI(uri: string) {
 
 /***************************
  * EIP-712 Helper Methods
- * *************************
+ ***************************
  */
 
 /**
  * Signs a Zora Permit Message as specified by EIP-712
+ *
  * @param owner
  * @param toAddress
  * @param tokenAddress
@@ -354,6 +358,7 @@ export async function signPermitMessage(
 
 /**
  * Recovers the address of the private key that signed the Zora Permit Message
+ *
  * @param toAddress
  * @param mediaId
  * @param nonce
@@ -406,6 +411,7 @@ export async function recoverSignatureFromPermit(
 
 /**
  * Recovers the address of the private key that signed a Zora MintWithSig Message
+ *
  * @param contentHash
  * @param metadataHash
  * @param creatorShareBN
@@ -461,6 +467,7 @@ export async function recoverSignatureFromMintWithSig(
 
 /**
  * Signs a Zora MintWithSig Message as specified by EIP-712
+ *
  * @param owner
  * @param mediaAddress
  * @param creator
