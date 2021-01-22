@@ -599,7 +599,6 @@ describe('Utils', () => {
     })
 
     it('signs a mintWithSig message that is able to be processed on chain', async () => {
-      // TODO: this
       const [mainWallet, otherWallet] = generatedWallets(provider)
       const onChainConfig = await setupZora(mainWallet, [otherWallet])
       const otherZora = new Zora(

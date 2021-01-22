@@ -103,6 +103,8 @@ describe('Zora', () => {
       const zora = new Zora(wallet, 4)
       expect(zora.marketAddress).toBe(rinkebyMarketAddress)
       expect(zora.mediaAddress).toBe(rinkebyMediaAddress)
+      expect(zora.market.address).toBe(rinkebyMarketAddress)
+      expect(zora.media.address).toBe(rinkebyMediaAddress)
     })
 
     it('initializes a Zora instance with the specified media and market address if they are passed in', () => {
@@ -114,11 +116,15 @@ describe('Zora', () => {
       expect(zora.readOnly).toBe(false)
       expect(zora.marketAddress).toBe(marketAddress)
       expect(zora.mediaAddress).toBe(mediaAddress)
+      expect(zora.market.address).toBe(marketAddress)
+      expect(zora.media.address).toBe(mediaAddress)
 
       const zora1 = new Zora(wallet, 50, mediaAddress, marketAddress)
       expect(zora1.readOnly).toBe(false)
       expect(zora1.marketAddress).toBe(marketAddress)
       expect(zora1.mediaAddress).toBe(mediaAddress)
+      expect(zora1.market.address).toBe(marketAddress)
+      expect(zora1.media.address).toBe(mediaAddress)
     })
   })
 

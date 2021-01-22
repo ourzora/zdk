@@ -17,6 +17,11 @@ import { arrayify, hexDataLength, hexlify, isHexString } from '@ethersproject/by
 import { recoverTypedSignature, signTypedData_v4 } from 'eth-sig-util'
 import { fromRpcSig, toRpcSig } from 'ethereumjs-util'
 
+/********************
+ * Type Constructors
+ ********************
+ */
+
 /**
  * Constructs a MediaData type.
  *
@@ -71,6 +76,13 @@ export function constructBidShares(
   }
 }
 
+/**
+ * Validates that BidShares sum to 100
+ *
+ * @param creator
+ * @param owner
+ * @param prevOwner
+ */
 export function validateBidShares(
   creator: DecimalValue,
   owner: DecimalValue,
@@ -152,6 +164,39 @@ export function constructBid(
 }
 
 /**
+ * Validates if the input is exactly 32 bytes
+ * Expects a hex string with a 0x prefix or a Bytes type
+ *
+ * @param value
+ */
+export function validateBytes32(value: BytesLike) {
+  if (typeof value == 'string') {
+    if (isHexString(value) && hexDataLength(value) == 32) {
+      return
+    }
+
+    invariant(false, `${value} is not a 0x prefixed 32 bytes hex string`)
+  } else {
+    if (hexDataLength(hexlify(value)) == 32) {
+      return
+    }
+
+    invariant(false, `value is not a length 32 byte array`)
+  }
+}
+
+/**
+ * Validates the URI is prefixed with `https://`
+ *
+ * @param uri
+ */
+export function validateURI(uri: string) {
+  if (!uri.match(/^https:\/\/(.*)/)) {
+    invariant(false, `${uri} must begin with \`https://\``)
+  }
+}
+
+/**
  * Validates and returns the checksummed address
  *
  * @param address
@@ -183,6 +228,11 @@ export function chainIdToNetworkName(chainId: number): string {
 
   invariant(false, `chainId ${chainId} not officially supported by the Zora Protocol`)
 }
+
+/********************
+ * Hashing Utilities
+ ********************
+ */
 
 /**
  * Generates the sha256 hash from a buffer and returns the hash hex-encoded
@@ -247,28 +297,6 @@ export function sha256FromFile(pathToFile: string, chunkSize: number): Promise<s
 }
 
 /**
- * Validates if the input is exactly 32 bytes
- * Expects a hex string with a 0x prefix or a Bytes type
- *
- * @param value
- */
-export function validateBytes32(value: BytesLike) {
-  if (typeof value == 'string') {
-    if (isHexString(value) && hexDataLength(value) == 32) {
-      return
-    }
-
-    invariant(false, `${value} is not a 0x prefixed 32 bytes hex string`)
-  } else {
-    if (hexDataLength(hexlify(value)) == 32) {
-      return
-    }
-
-    invariant(false, `value is not a length 32 byte array`)
-  }
-}
-
-/**
  * Removes the hex prefix of the passed string if it exists
  *
  * @param hex
@@ -277,20 +305,9 @@ export function stripHexPrefix(hex: string) {
   return hex.slice(0, 2) == '0x' ? hex.slice(2) : hex
 }
 
-/**
- * Validates the URI is prefixed with `https://`
- *
- * @param uri
- */
-export function validateURI(uri: string) {
-  if (!uri.match(/^https:\/\/(.*)/)) {
-    invariant(false, `${uri} must begin with \`https://\``)
-  }
-}
-
-/***************************
- * EIP-712 Helper Methods
- ***************************
+/*********************
+ * EIP-712 Utilities
+ *********************
  */
 
 /**
