@@ -11,5 +11,6 @@ module.exports = {
     '!**/vendor/**'
   ],
   coverageReporters: ['json-summary'],
-  coverageDirectory: 'coverage'
+  coverageDirectory: 'coverage',
+  runner: 'jest-serial-runner'
 }

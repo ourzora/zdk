@@ -1,10 +1,29 @@
-import { Ask, Bid, BidShares, Decimal, EIP712Signature, MediaData, Zora } from '../src'
+import {
+  Ask,
+  Bid,
+  BidShares,
+  constructAsk,
+  constructBid,
+  constructBidShares,
+  constructMediaData,
+  Decimal,
+  EIP712Signature,
+  MediaData,
+  signMintWithSigMessage,
+  signPermitMessage,
+  Zora,
+} from '../src'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 import { addresses as ZoraAddresses } from '../src/addresses'
-import { ZoraConfiguredAddresses } from './helpers'
-import { generatedWallets } from '@zoralabs/core/dist/utils'
+import { setupZora, ZoraConfiguredAddresses } from './helpers'
+import { Blockchain, generatedWallets } from '@zoralabs/core/dist/utils'
 import { Bytes, utils } from 'ethers'
+import { formatUnits } from 'ethers/lib/utils'
+import { AddressZero } from '@ethersproject/constants'
+
+let provider = new JsonRpcProvider()
+let blockchain = new Blockchain(provider)
 
 describe('Zora', () => {
   describe('#constructor', () => {
@@ -131,15 +150,12 @@ describe('Zora', () => {
   describe('contract functions', () => {
     let zoraConfig: ZoraConfiguredAddresses
     let provider = new JsonRpcProvider()
-    let [masterWallet, otherWallet] = generatedWallets(provider)
-    //let masterWallet = generatedWallets(provider)[0]
+    let [mainWallet, otherWallet] = generatedWallets(provider)
+    //let mainWallet = generatedWallets(provider)[0]
 
-    beforeAll(() => {
-      zoraConfig = {
-        market: '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401',
-        media: '0x1dC4c1cEFEF38a777b15aA20260a54E584b16C48',
-        currency: '',
-      }
+    beforeEach(async () => {
+      await blockchain.resetAsync()
+      zoraConfig = await setupZora(mainWallet, [otherWallet])
     })
 
     /******************
@@ -170,31 +186,21 @@ describe('Zora', () => {
         contentHash = await utils.sha256(contentHex)
         contentHashBytes = utils.arrayify(contentHash)
 
-        defaultMediaData = {
-          tokenURI: 'https://example.com',
-          metadataURI: 'https://metadata.com',
-          contentHash: contentHashBytes,
-          metadataHash: metadataHashBytes,
-        }
-
-        defaultBidShares = {
-          prevOwner: Decimal.new(10),
-          owner: Decimal.new(80),
-          creator: Decimal.new(10),
-        }
-
-        defaultAsk = {
-          amount: 100,
-          currency: '0x41A322b28D0fF354040e2CbC676F0320d8c8850d',
-        }
-
-        defaultBid = {
-          amount: 100,
-          currency: '0x41A322b28D0fF354040e2CbC676F0320d8c8850d',
-          bidder: otherWallet.address,
-          recipient: otherWallet.address,
-          sellOnShare: Decimal.new(10),
-        }
+        defaultMediaData = constructMediaData(
+          'https://example.com',
+          'https://metadata.com',
+          contentHashBytes,
+          metadataHashBytes
+        )
+        defaultBidShares = constructBidShares(10, 90, 0)
+        defaultAsk = constructAsk(zoraConfig.currency, Decimal.new(100).value)
+        defaultBid = constructBid(
+          zoraConfig.currency,
+          Decimal.new(99).value,
+          otherWallet.address,
+          otherWallet.address,
+          10
+        )
 
         eipSig = {
           deadline: 1000,
@@ -215,6 +221,27 @@ describe('Zora', () => {
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
         })
+
+        it('throws an error if the tokenURI does not begin with `https://`', async () => {
+          const zora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          await zora.mint(defaultMediaData, defaultBidShares)
+          await expect(zora.updateContentURI(0, 'http://example.com')).rejects.toBe(
+            'Invariant failed: http://example.com must begin with `https://`'
+          )
+        })
+
+        it('updates the content uri', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+
+          const tokenURI = await mainZora.fetchContentURI(0)
+          expect(tokenURI).toEqual(defaultMediaData.tokenURI)
+
+          await mainZora.updateContentURI(0, 'https://newURI.com')
+
+          const newTokenURI = await mainZora.fetchContentURI(0)
+          expect(newTokenURI).toEqual('https://newURI.com')
+        })
       })
 
       describe('#updateMetadataURI', () => {
@@ -227,6 +254,27 @@ describe('Zora', () => {
           await expect(zora.updateMetadataURI(0, 'new uri')).rejects.toBe(
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
+        })
+
+        it('throws an error if the metadataURI does not begin with `https://`', async () => {
+          const zora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          await zora.mint(defaultMediaData, defaultBidShares)
+          await expect(zora.updateMetadataURI(0, 'http://example.com')).rejects.toBe(
+            'Invariant failed: http://example.com must begin with `https://`'
+          )
+        })
+
+        it('updates the metadata uri', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+
+          const metadataURI = await mainZora.fetchMetadataURI(0)
+          expect(metadataURI).toEqual(defaultMediaData.metadataURI)
+
+          await mainZora.updateMetadataURI(0, 'https://newMetadataURI.com')
+
+          const newMetadataURI = await mainZora.fetchMetadataURI(0)
+          expect(newMetadataURI).toEqual('https://newMetadataURI.com')
         })
       })
 
@@ -283,6 +331,35 @@ describe('Zora', () => {
 
           await expect(zora.mint(invalidMediaData, defaultBidShares)).rejects.toBe(
             'Invariant failed: http://metadata.com must begin with `https://`'
+          )
+        })
+
+        it('creates a new piece of media', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          const totalSupply = await mainZora.fetchTotalMedia()
+          expect(totalSupply.toNumber()).toEqual(0)
+
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+
+          const owner = await mainZora.fetchOwnerOf(0)
+          const creator = await mainZora.fetchCreator(0)
+          const onChainContentHash = await mainZora.fetchContentHash(0)
+          const onChainMetadataHash = await mainZora.fetchMetadataHash(0)
+
+          const onChainBidShares = await mainZora.fetchCurrentBidShares(0)
+          const onChainContentURI = await mainZora.fetchContentURI(0)
+          const onChainMetadataURI = await mainZora.fetchMetadataURI(0)
+
+          expect(owner.toLowerCase()).toBe(mainWallet.address.toLowerCase())
+          expect(creator.toLowerCase()).toBe(mainWallet.address.toLowerCase())
+          expect(onChainContentHash).toBe(contentHash)
+          expect(onChainContentURI).toBe(defaultMediaData.tokenURI)
+          expect(onChainMetadataURI).toBe(defaultMediaData.metadataURI)
+          expect(onChainMetadataHash).toBe(metadataHash)
+          expect(onChainBidShares.creator.value).toEqual(defaultBidShares.creator.value)
+          expect(onChainBidShares.owner.value).toEqual(defaultBidShares.owner.value)
+          expect(onChainBidShares.prevOwner.value).toEqual(
+            defaultBidShares.prevOwner.value
           )
         })
       })
@@ -363,6 +440,53 @@ describe('Zora', () => {
             'Invariant failed: http://metadata.com must begin with `https://`'
           )
         })
+
+        it('creates a new piece of media', async () => {
+          const otherZora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 // 24 hours
+          const domain = otherZora.eip712Domain()
+          const nonce = await otherZora.fetchMintWithSigNonce(mainWallet.address)
+          const eipSig = await signMintWithSigMessage(
+            mainWallet,
+            contentHash,
+            metadataHash,
+            Decimal.new(10).value,
+            nonce.toNumber(),
+            deadline,
+            domain
+          )
+
+          const totalSupply = await otherZora.fetchTotalMedia()
+          expect(totalSupply.toNumber()).toEqual(0)
+
+          await otherZora.mintWithSig(
+            mainWallet.address,
+            defaultMediaData,
+            defaultBidShares,
+            eipSig
+          )
+
+          const owner = await otherZora.fetchOwnerOf(0)
+          const creator = await otherZora.fetchCreator(0)
+          const onChainContentHash = await otherZora.fetchContentHash(0)
+          const onChainMetadataHash = await otherZora.fetchMetadataHash(0)
+
+          const onChainBidShares = await otherZora.fetchCurrentBidShares(0)
+          const onChainContentURI = await otherZora.fetchContentURI(0)
+          const onChainMetadataURI = await otherZora.fetchMetadataURI(0)
+
+          expect(owner.toLowerCase()).toBe(mainWallet.address.toLowerCase())
+          expect(creator.toLowerCase()).toBe(mainWallet.address.toLowerCase())
+          expect(onChainContentHash).toBe(contentHash)
+          expect(onChainContentURI).toBe(defaultMediaData.tokenURI)
+          expect(onChainMetadataURI).toBe(defaultMediaData.metadataURI)
+          expect(onChainMetadataHash).toBe(metadataHash)
+          expect(onChainBidShares.creator.value).toEqual(defaultBidShares.creator.value)
+          expect(onChainBidShares.owner.value).toEqual(defaultBidShares.owner.value)
+          expect(onChainBidShares.prevOwner.value).toEqual(
+            defaultBidShares.prevOwner.value
+          )
+        })
       })
 
       describe('#setAsk', () => {
@@ -374,6 +498,21 @@ describe('Zora', () => {
 
           await expect(zora.setAsk(0, defaultAsk)).rejects.toBe(
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
+          )
+        })
+
+        it('sets an ask for a piece of media', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+
+          await mainZora.setAsk(0, defaultAsk)
+
+          const onChainAsk = await mainZora.fetchCurrentAsk(0)
+          expect(onChainAsk.currency.toLowerCase()).toEqual(
+            defaultAsk.currency.toLowerCase()
+          )
+          expect(parseFloat(formatUnits(onChainAsk.amount, 'wei'))).toEqual(
+            parseFloat(formatUnits(defaultAsk.amount, 'wei'))
           )
         })
       })
@@ -389,6 +528,37 @@ describe('Zora', () => {
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
         })
+
+        it('creates a new bid on chain', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+
+          const otherZora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          const nullOnChainBid = await otherZora.fetchCurrentBidForBidder(
+            0,
+            otherWallet.address
+          )
+
+          expect(nullOnChainBid.currency).toEqual(AddressZero)
+
+          await otherZora.setBid(0, defaultBid)
+          const onChainBid = await otherZora.fetchCurrentBidForBidder(
+            0,
+            otherWallet.address
+          )
+
+          expect(parseFloat(formatUnits(onChainBid.amount, 'wei'))).toEqual(
+            parseFloat(formatUnits(onChainBid.amount, 'wei'))
+          )
+          expect(onChainBid.currency.toLowerCase()).toEqual(
+            defaultBid.currency.toLowerCase()
+          )
+          expect(onChainBid.bidder.toLowerCase()).toEqual(defaultBid.bidder.toLowerCase())
+          expect(onChainBid.recipient.toLowerCase()).toEqual(
+            defaultBid.recipient.toLowerCase()
+          )
+          expect(onChainBid.sellOnShare.value).toEqual(defaultBid.sellOnShare.value)
+        })
       })
 
       describe('#removeAsk', () => {
@@ -401,6 +571,22 @@ describe('Zora', () => {
           await expect(zora.removeAsk(0)).rejects.toBe(
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
+        })
+
+        it('removes an ask', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+          await mainZora.setAsk(0, defaultAsk)
+
+          const onChainAsk = await mainZora.fetchCurrentAsk(0)
+          expect(onChainAsk.currency.toLowerCase()).toEqual(
+            defaultAsk.currency.toLowerCase()
+          )
+
+          await mainZora.removeAsk(0)
+
+          const nullOnChainAsk = await mainZora.fetchCurrentAsk(0)
+          expect(nullOnChainAsk.currency).toEqual(AddressZero)
         })
       })
 
@@ -415,6 +601,38 @@ describe('Zora', () => {
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
         })
+
+        it('removes a bid', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+          const otherZora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          await otherZora.setBid(0, defaultBid)
+          const onChainBid = await otherZora.fetchCurrentBidForBidder(
+            0,
+            otherWallet.address
+          )
+
+          expect(parseFloat(formatUnits(onChainBid.amount, 'wei'))).toEqual(
+            parseFloat(formatUnits(onChainBid.amount, 'wei'))
+          )
+          expect(onChainBid.currency.toLowerCase()).toEqual(
+            defaultBid.currency.toLowerCase()
+          )
+          expect(onChainBid.bidder.toLowerCase()).toEqual(defaultBid.bidder.toLowerCase())
+          expect(onChainBid.recipient.toLowerCase()).toEqual(
+            defaultBid.recipient.toLowerCase()
+          )
+          expect(onChainBid.sellOnShare.value).toEqual(defaultBid.sellOnShare.value)
+
+          await otherZora.removeBid(0)
+
+          const nullOnChainBid = await otherZora.fetchCurrentBidForBidder(
+            0,
+            otherWallet.address
+          )
+
+          expect(nullOnChainBid.currency).toEqual(AddressZero)
+        })
       })
 
       describe('#acceptBid', () => {
@@ -427,6 +645,16 @@ describe('Zora', () => {
           await expect(zora.acceptBid(0, defaultBid)).rejects.toBe(
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
+        })
+
+        it('accepts a bid', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+          const otherZora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          await otherZora.setBid(0, defaultBid)
+          await mainZora.acceptBid(0, defaultBid)
+          const newOwner = await otherZora.fetchOwnerOf(0)
+          expect(newOwner.toLowerCase()).toEqual(otherWallet.address.toLowerCase())
         })
       })
 
@@ -441,6 +669,27 @@ describe('Zora', () => {
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
         })
+
+        it('grants approval to a different address', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+          const otherZora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+
+          const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 // 24 hours
+          const domain = mainZora.eip712Domain()
+          const eipSig = await signPermitMessage(
+            mainWallet,
+            otherWallet.address,
+            0,
+            0,
+            deadline,
+            domain
+          )
+
+          await otherZora.permit(otherWallet.address, 0, eipSig)
+          const approved = await otherZora.fetchApproved(0)
+          expect(approved.toLowerCase()).toBe(otherWallet.address.toLowerCase())
+        })
       })
 
       describe('#revokeApproval', () => {
@@ -453,6 +702,19 @@ describe('Zora', () => {
           await expect(zora.revokeApproval(0)).rejects.toBe(
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
+        })
+
+        it("revokes an addresses approval of another address's media", async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+          await mainZora.approve(otherWallet.address, 0)
+          const approved = await mainZora.fetchApproved(0)
+          expect(approved.toLowerCase()).toBe(otherWallet.address.toLowerCase())
+
+          const otherZora = new Zora(otherWallet, 50, zoraConfig.media, zoraConfig.market)
+          await otherZora.revokeApproval(0)
+          const nullApproved = await mainZora.fetchApproved(0)
+          expect(nullApproved).toBe(AddressZero)
         })
       })
 
@@ -467,6 +729,22 @@ describe('Zora', () => {
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
         })
+
+        it('burns a piece of media', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+
+          const owner = await mainZora.fetchOwnerOf(0)
+          expect(owner.toLowerCase()).toEqual(mainWallet.address.toLowerCase())
+
+          const totalSupply = await mainZora.fetchTotalMedia()
+          expect(totalSupply.toNumber()).toEqual(1)
+
+          await mainZora.burn(0)
+
+          const zeroSupply = await mainZora.fetchTotalMedia()
+          expect(zeroSupply.toNumber()).toEqual(0)
+        })
       })
 
       describe('#approve', () => {
@@ -479,6 +757,16 @@ describe('Zora', () => {
           await expect(zora.approve(otherWallet.address, 0)).rejects.toBe(
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
+        })
+
+        it('grants approval for another address for a piece of media', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+          const nullApproved = await mainZora.fetchApproved(0)
+          expect(nullApproved).toBe(AddressZero)
+          await mainZora.approve(otherWallet.address, 0)
+          const approved = await mainZora.fetchApproved(0)
+          expect(approved.toLowerCase()).toBe(otherWallet.address.toLowerCase())
         })
       })
 
@@ -493,6 +781,29 @@ describe('Zora', () => {
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
         })
+
+        it('sets approval for another address for all media owned by owner', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+          const notApproved = await mainZora.fetchIsApprovedForAll(
+            mainWallet.address,
+            otherWallet.address
+          )
+          expect(notApproved).toBe(false)
+          await mainZora.setApprovalForAll(otherWallet.address, true)
+          const approved = await mainZora.fetchIsApprovedForAll(
+            mainWallet.address,
+            otherWallet.address
+          )
+          expect(approved).toBe(true)
+
+          await mainZora.setApprovalForAll(otherWallet.address, false)
+          const revoked = await mainZora.fetchIsApprovedForAll(
+            mainWallet.address,
+            otherWallet.address
+          )
+          expect(revoked).toBe(false)
+        })
       })
 
       describe('#transferFrom', () => {
@@ -503,23 +814,33 @@ describe('Zora', () => {
           expect(zora.readOnly).toBe(true)
 
           await expect(
-            zora.transferFrom(masterWallet.address, otherWallet.address, 0)
+            zora.transferFrom(mainWallet.address, otherWallet.address, 0)
           ).rejects.toBe(
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
+        })
+
+        it('transfers media to another address', async () => {
+          const mainZora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await mainZora.mint(defaultMediaData, defaultBidShares)
+          const owner = await mainZora.fetchOwnerOf(0)
+          expect(owner.toLowerCase()).toEqual(mainWallet.address.toLowerCase())
+
+          await mainZora.transferFrom(mainWallet.address, otherWallet.address, 0)
+          const newOwner = await mainZora.fetchOwnerOf(0)
+          expect(newOwner.toLowerCase()).toEqual(otherWallet.address.toLowerCase())
         })
       })
 
       describe('#safeTransferFrom', () => {
         it('throws an error if called on a readOnly Zora instance', async () => {
-          //expect.assertions(2)
           const provider = new JsonRpcProvider()
 
           const zora = new Zora(provider, 50, zoraConfig.media, zoraConfig.market)
           expect(zora.readOnly).toBe(true)
 
           await expect(
-            zora.safeTransferFrom(masterWallet.address, otherWallet.address, 0)
+            zora.safeTransferFrom(mainWallet.address, otherWallet.address, 0)
           ).rejects.toBe(
             'ensureNotReadOnly: readOnly Zora instance cannot call contract methods that require a signer.'
           )
