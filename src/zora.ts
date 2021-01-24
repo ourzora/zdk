@@ -169,6 +169,7 @@ export class Zora {
   ): Promise<ContractTransaction> {
     try {
       this.ensureNotReadOnly()
+      validateURI(tokenURI)
     } catch (err) {
       return Promise.reject(err.message)
     }
@@ -187,6 +188,7 @@ export class Zora {
   ): Promise<ContractTransaction> {
     try {
       this.ensureNotReadOnly()
+      validateURI(metadataURI)
     } catch (err) {
       return Promise.reject(err.message)
     }
