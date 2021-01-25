@@ -30,7 +30,9 @@
     "sjcl": "^1.0.8",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "typedoc": "^0.20.19",
+    "typedocs": "^0.6.7"
   },
   "peerDependencies": {
     "@ethersproject/abstract-signer": "^5.0.7",
