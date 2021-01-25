@@ -2,7 +2,7 @@
 
 | Statements                                                                    | Branches                                                                    | Functions                                                               | Lines                                                                    |
 | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| ![Statements](https://img.shields.io/badge/Coverage-94.41%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-93.75%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-88.24%25-yellow.svg) | ![Lines](https://img.shields.io/badge/Coverage-95.35%25-brightgreen.svg) |
+| ![Statements](https://img.shields.io/badge/Coverage-94.48%25-brightgreen.svg) | ![Branches](https://img.shields.io/badge/Coverage-93.75%25-brightgreen.svg) | ![Functions](https://img.shields.io/badge/Coverage-88.41%25-yellow.svg) | ![Lines](https://img.shields.io/badge/Coverage-95.41%25-brightgreen.svg) |
 
 ### Overview
 

@@ -12,10 +12,11 @@ import {
   EIP712Signature,
   MediaData,
 } from './types'
-import { BigNumber, BigNumberish, BytesLike, Wallet } from 'ethers'
+import { BigNumber, BigNumberish, BytesLike, ContractTransaction, Wallet } from 'ethers'
 import { arrayify, hexDataLength, hexlify, isHexString } from '@ethersproject/bytes'
 import { recoverTypedSignature, signTypedData_v4 } from 'eth-sig-util'
 import { fromRpcSig, toRpcSig } from 'ethereumjs-util'
+import { BaseErc20Factory } from '@zoralabs/core/dist/typechain'
 
 /********************
  * Type Constructors
@@ -553,4 +554,22 @@ export async function signMintWithSigMessage(
       reject(e)
     }
   })
+}
+
+/**
+ * Approve a spender address to spend a specified amount of a specified ERC20 from wallet
+ *
+ * @param wallet
+ * @param erc20Address
+ * @param spender
+ * @param amount
+ */
+export async function approveERC20(
+  wallet: Wallet,
+  erc20Address: string,
+  spender: string,
+  amount: BigNumberish
+): Promise<ContractTransaction> {
+  const erc20 = BaseErc20Factory.connect(erc20Address, wallet)
+  return erc20.approve(spender, amount)
 }

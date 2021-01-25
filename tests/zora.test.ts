@@ -13,7 +13,7 @@ import {
   sha256FromBuffer,
   signMintWithSigMessage,
   signPermitMessage,
-  Zora
+  Zora,
 } from '../src'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
@@ -32,7 +32,7 @@ describe('Zora', () => {
   describe('#constructor', () => {
     it('throws an error if a mediaAddress is specified but not a marketAddress', () => {
       const wallet = Wallet.createRandom()
-      expect(function() {
+      expect(function () {
         new Zora(wallet, 4, '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401')
       }).toThrow(
         'Zora Constructor: mediaAddress and marketAddress must both be non-null or both be null'
@@ -41,7 +41,7 @@ describe('Zora', () => {
 
     it('throws an error if the marketAddress is specified but not a mediaAddress', () => {
       const wallet = Wallet.createRandom()
-      expect(function() {
+      expect(function () {
         new Zora(wallet, 4, '', '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401')
       }).toThrow(
         'Zora Constructor: mediaAddress and marketAddress must both be non-null or both be null'
@@ -50,7 +50,7 @@ describe('Zora', () => {
 
     it('throws an error if one of the market or media addresses in not a valid ethereum address', () => {
       const wallet = Wallet.createRandom()
-      expect(function() {
+      expect(function () {
         new Zora(
           wallet,
           4,
@@ -59,7 +59,7 @@ describe('Zora', () => {
         )
       }).toThrow('Invariant failed: not a valid ethereum address is not a valid address')
 
-      expect(function() {
+      expect(function () {
         new Zora(
           wallet,
           4,
@@ -72,7 +72,7 @@ describe('Zora', () => {
     it('throws an error if the chainId does not map to a network with deployed instance of the Zora Protocol', () => {
       const wallet = Wallet.createRandom()
 
-      expect(function() {
+      expect(function () {
         new Zora(wallet, 50)
       }).toThrow(
         'Invariant failed: chainId 50 not officially supported by the Zora Protocol'
@@ -82,7 +82,7 @@ describe('Zora', () => {
     it('throws an error if the chainId does not map to a network with deployed instance of the Zora Protocol', () => {
       const wallet = Wallet.createRandom()
 
-      expect(function() {
+      expect(function () {
         new Zora(
           wallet,
           50,
@@ -180,16 +180,16 @@ describe('Zora', () => {
       let defaultBid: Bid
       let eipSig: EIP712Signature
 
-      beforeEach(async () => {
+      beforeEach(() => {
         metadata = {
           version: 'zora-20210101',
           name: 'blah blah',
           description: 'blah blah blah',
-          mimeType: 'text/plain'
+          mimeType: 'text/plain',
         }
         minifiedMetadata = generateMetadata(metadata.version, metadata)
-        metadataHash = await sha256FromBuffer(Buffer.from(minifiedMetadata))
-        contentHash = await sha256FromBuffer(Buffer.from('invert'))
+        metadataHash = sha256FromBuffer(Buffer.from(minifiedMetadata))
+        contentHash = sha256FromBuffer(Buffer.from('invert'))
 
         defaultMediaData = constructMediaData(
           'https://example.com',
@@ -211,7 +211,7 @@ describe('Zora', () => {
           deadline: 1000,
           v: 0,
           r: '0x00',
-          s: '0x00'
+          s: '0x00',
         }
       })
 
@@ -300,7 +300,7 @@ describe('Zora', () => {
           const invalidBidShares = {
             prevOwner: Decimal.new(10),
             owner: Decimal.new(70),
-            creator: Decimal.new(10)
+            creator: Decimal.new(10),
           }
           expect(zora.readOnly).toBe(false)
 
@@ -315,7 +315,7 @@ describe('Zora', () => {
             tokenURI: 'http://example.com',
             metadataURI: 'https://metadata.com',
             contentHash: contentHashBytes,
-            metadataHash: metadataHashBytes
+            metadataHash: metadataHashBytes,
           }
           expect(zora.readOnly).toBe(false)
 
@@ -330,7 +330,7 @@ describe('Zora', () => {
             tokenURI: 'https://example.com',
             metadataURI: 'http://metadata.com',
             contentHash: contentHashBytes,
-            metadataHash: metadataHashBytes
+            metadataHash: metadataHashBytes,
           }
           expect(zora.readOnly).toBe(false)
 
@@ -393,7 +393,7 @@ describe('Zora', () => {
           const invalidBidShares = {
             prevOwner: Decimal.new(10),
             owner: Decimal.new(70),
-            creator: Decimal.new(10)
+            creator: Decimal.new(10),
           }
           expect(zora.readOnly).toBe(false)
 
@@ -415,7 +415,7 @@ describe('Zora', () => {
             tokenURI: 'http://example.com',
             metadataURI: 'https://metadata.com',
             contentHash: contentHashBytes,
-            metadataHash: metadataHashBytes
+            metadataHash: metadataHashBytes,
           }
           expect(zora.readOnly).toBe(false)
 
@@ -437,7 +437,7 @@ describe('Zora', () => {
             tokenURI: 'https://example.com',
             metadataURI: 'http://metadata.com',
             contentHash: contentHashBytes,
-            metadataHash: metadataHashBytes
+            metadataHash: metadataHashBytes,
           }
           expect(zora.readOnly).toBe(false)
 

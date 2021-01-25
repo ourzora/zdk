@@ -22,10 +22,8 @@ The type constructors accept input, perform basic validation on the input, and r
 - Validates that the hashes are exactly 32 bytes in length.
 
 ```typescript
-const metadataHex = ethers.utils.formatBytes32String('some metadata')
-const contentHex = ethers.utils.formatBytes32String('some content')
-const contentHash = sha256FromHexString(contentHex)
-const metadataHash = sha256FromHexString(metadataHex)
+const contentHash = await sha256FromBuffer(Buffer.from('some content'))
+const metadataHash = await sha256FromBuffer(Buffer.from('some metadata'))
 
 const mediaData = constructMediaData(
   'https://token.com',
@@ -153,10 +151,8 @@ const provider = new JsonRpcProvider()
 const [mainWallet, otherWallet] = generatedWallets(provider)
 const rinkebyZora = new Zora(otherWallet, 4)
 
-const metadataHex = ethers.utils.formatBytes32String('some metadata')
-const contentHex = ethers.utils.formatBytes32String('some content')
-const contentHash = sha256FromHexString(contentHex)
-const metadataHash = sha256FromHexString(metadataHex)
+const contentHash = await sha256FromBuffer(Buffer.from('some content'))
+const metadataHash = await sha256FromBuffer(Buffer.from('some metadata'))
 const contentURI = 'https://token.com'
 const metadataURI = 'https://metadata.com'
 
@@ -222,10 +218,8 @@ const rinkebyZora = new Zora(provider, 4)
 const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 // 24 hours
 const domain = rinkebyZora.eip712Domain()
 
-const metadataHex = ethers.utils.formatBytes32String('some metadata')
-const contentHex = ethers.utils.formatBytes32String('some content')
-const contentHash = sha256FromHexString(contentHex)
-const metadataHash = sha256FromHexString(metadataHex)
+const contentHash = await sha256FromBuffer(Buffer.from('some content'))
+const metadataHash = await sha256FromBuffer(Buffer.from('some metadata'))
 
 const eipSig = await signMintWithSigMessage(
   mainWallet,

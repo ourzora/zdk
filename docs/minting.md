@@ -61,8 +61,7 @@ To generate this hash use any of the sha256 utils defined in [utils](../referenc
 #### Example
 
 ```typescript
-import { constructMediaData, sha256FromHexString } from '@zoralabs/zdk/utils'
-import { generateMetadata } from '@zoralabs/zdk/metadata'
+import { constructMediaData, sha256FromBuffer, generateMetadata } from '@zoralabs/zdk'
 import ethers from 'ethers'
 
 const metadataJSON = generateMetadata('zora-20210101', {
@@ -72,10 +71,8 @@ const metadataJSON = generateMetadata('zora-20210101', {
   version: 'zora-20210101',
 })
 
-const contentHex = ethers.utils.formatBytes32String('Ours Truly')
-const metadataHex = ethers.utils.formatBytes32String(metadataJSON)
-const contentHash = sha256FromHexString(contentHex)
-const metadataHash = sha256FromHexString(metadataHex)
+const contentHash = sha256FromBuffer(Buffer.from('Ours Truly,'))
+const metadataHash = sha256FromBuffer(Buffer.from(metadataJSON))
 const mediaData = constructMediaData(
   'https://ipfs.io/ipfs/bafybeifyqibqlheu7ij7fwdex4y2pw2wo7eaw2z6lec5zhbxu3cvxul6h4',
   'https://ipfs.io/ipfs/bafybeifpxcq2hhbzuy2ich3duh7cjk4zk4czjl6ufbpmxep247ugwzsny4',
@@ -117,7 +114,7 @@ The equity (%) the previous owner gets from the next accepted bid of the piece o
 The Zora Media Contract allows for 18 decimals of precision. To simplify precision, we created the `constructBidShares` method with accepts JS `numbers` and converts them to `ethers` `BigDecimal` types rounded to the **fourth** decimal.
 
 ```typescript
-import { constructBidShares } from '@zoralabs/zdk/utils'
+import { constructBidShares } from '@zoralabs/zdk'
 
 const bidShares = constructBidShares(
   10, // creator share
@@ -134,10 +131,9 @@ import { Wallet } from 'ethers'
 import {
   constructBidShares,
   constructMediaData,
-  sha256FromHexString,
   sha256FromBuffer,
-} from '@zoralabs/zdk/utils'
-import { generateMetadata } from '@zoralabs/zdk/metadata'
+  generateMetadata,
+} from '@zoralabs/zdk'
 import ethers from 'ethers'
 
 const wallet = Wallet.createRandom()
@@ -151,8 +147,7 @@ const metadataJSON = generateMetadata('zora-20210101', {
 })
 
 // for files that are > 32 Bytes: consider using a buffer or another utility to generate the hex string
-const contentHex = ethers.utils.formatBytes32String('Ours Truly')
-const contentHash = sha256FromHexString(contentHex)
+const contentHash = sha256FromBuffer(Buffer.from('Ours Truly,'))
 const metadataHash = sha256FromBuffer(Buffer.from(metadataJSON))
 const mediaData = constructMediaData(
   'https://ipfs.io/ipfs/bafybeifyqibqlheu7ij7fwdex4y2pw2wo7eaw2z6lec5zhbxu3cvxul6h4',

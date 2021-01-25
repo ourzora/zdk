@@ -1,4 +1,5 @@
 import {
+  approveERC20,
   constructAsk,
   constructBid,
   constructBidShares,
@@ -19,7 +20,10 @@ import { promises as fs } from 'fs'
 import { Decimal, Zora } from '../src'
 import { Blockchain, generatedWallets } from '@zoralabs/core/dist/utils'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { setupZora, ZoraConfiguredAddresses } from './helpers'
+import { mintCurrency, setupZora, ZoraConfiguredAddresses } from './helpers'
+import { BaseErc20Factory } from '@zoralabs/core/dist/typechain'
+import { BigNumber } from '@ethersproject/bignumber'
+import { MaxUint256 } from '@ethersproject/constants'
 
 jest.setTimeout(1000000)
 
@@ -83,7 +87,7 @@ describe('Utils', () => {
     let contentHash: string
     let metadataHash: string
 
-    beforeAll(async () => {
+    beforeAll(() => {
       contentHash = sha256FromBuffer(Buffer.from('some content'))
       metadataHash = sha256FromBuffer(Buffer.from('some metadata'))
     })
@@ -685,6 +689,38 @@ describe('Utils', () => {
         )
 
         expect(recovered.toLowerCase()).not.toBe(mainWallet.address.toLowerCase())
+      })
+    })
+  })
+
+  describe('Miscellaneous', () => {
+    describe('approveERC20', () => {
+      it('approves an erc20', async () => {
+        const [wallet, otherWallet, approvedWallet] = generatedWallets(provider)
+        const currency = await (
+          await new BaseErc20Factory(wallet).deploy('TEST', 'TEST', BigNumber.from(18))
+        ).deployed()
+        const currencyAddress = currency.address
+
+        await mintCurrency(
+          wallet,
+          currencyAddress,
+          otherWallet.address,
+          BigNumber.from('10000000000000000000000')
+        )
+
+        await approveERC20(
+          otherWallet,
+          currencyAddress,
+          approvedWallet.address,
+          MaxUint256
+        )
+
+        const allowance = await BaseErc20Factory.connect(
+          currencyAddress,
+          wallet
+        ).allowance(otherWallet.address, approvedWallet.address)
+        expect(allowance).toEqual(MaxUint256)
       })
     })
   })
