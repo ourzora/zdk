@@ -14,7 +14,7 @@ import {
   stripHexPrefix,
   validateBidShares,
   validateBytes32,
-  validateURI,
+  validateURI
 } from '../src/utils'
 import { promises as fs } from 'fs'
 import { Decimal, Zora } from '../src'
@@ -24,6 +24,10 @@ import { mintCurrency, setupZora, ZoraConfiguredAddresses } from './helpers'
 import { BaseErc20Factory } from '@zoralabs/core/dist/typechain'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
+
+import sha256 from 'crypto-js/sha256'
+import WordArray from 'crypto-js/lib-typedarrays'
+import CryptoJS from 'crypto-js/core'
 
 jest.setTimeout(1000000)
 
@@ -35,6 +39,11 @@ describe('Utils', () => {
 
   let provider = new JsonRpcProvider()
   let blockchain = new Blockchain(provider)
+
+  async function tysonsHash(buf: Buffer) {
+    const contentHash = WordArray.create(Uint8Array.from(buf))
+    return `0x${sha256(contentHash).toString(CryptoJS.enc.Hex)}`
+  }
 
   beforeAll(() => {
     hash = '0x7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069'
@@ -64,6 +73,27 @@ describe('Utils', () => {
       it('it properly hashes from buffer', async () => {
         const kanyeBuf = await fs.readFile('./fixtures/kanye.jpg')
         expect(sha256FromBuffer(kanyeBuf)).toBe(kanyeHash)
+
+        // const sixtyNineBuf = await fs.readFile('./fixtures/69.txt')
+        // expect(sha256FromBuffer(sixtyNineBuf)).toBe(
+        //   '0xb35e87b5838011a3637be660e4238af9a55e4edc74404c990f7a558e7f416658'
+        // )
+
+        const sixtyNineBuf = await fs.readFile('./fixtures/69.txt')
+
+        const tHash = await tysonsHash(sixtyNineBuf)
+        console.log(tHash)
+        // const buf = Buffer.from('69', 'utf-8')
+        // expect(sha256FromBuffer(buf)).toBe(
+        //   '0xb35e87b5838011a3637be660e4238af9a55e4edc74404c990f7a558e7f416658'
+        // )
+        //
+        // console.log(
+        //   sha256FromHexString(
+        //     '0xb35e87b5838011a3637be660e4238af9a55e4edc74404c990f7a558e7f416658'
+        //   )
+
+        //console.log(sha256FromHexString('0x'.concat(Buffer.from('69').toString('hex'))))
       })
     })
 
@@ -378,7 +408,7 @@ describe('Utils', () => {
       const invalidBidShares = {
         prevOwner: Decimal.new(10),
         owner: Decimal.new(70),
-        creator: Decimal.new(10),
+        creator: Decimal.new(10)
       }
       expect(() => {
         validateBidShares(
@@ -395,7 +425,7 @@ describe('Utils', () => {
       const invalidBidShares = {
         prevOwner: Decimal.new(10),
         owner: Decimal.new(80),
-        creator: Decimal.new(10),
+        creator: Decimal.new(10)
       }
       expect(() => {
         validateBidShares(
@@ -433,7 +463,7 @@ describe('Utils', () => {
         zoraConfig = {
           market: '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401',
           media: '0x1dC4c1cEFEF38a777b15aA20260a54E584b16C48',
-          currency: '',
+          currency: ''
         }
       })
 
@@ -516,7 +546,7 @@ describe('Utils', () => {
         zoraConfig = {
           market: '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401',
           media: '0x1dC4c1cEFEF38a777b15aA20260a54E584b16C48',
-          currency: '',
+          currency: ''
         }
       })
 
@@ -555,7 +585,7 @@ describe('Utils', () => {
         zoraConfig = {
           market: '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401',
           media: '0x1dC4c1cEFEF38a777b15aA20260a54E584b16C48',
-          currency: '',
+          currency: ''
         }
       })
 
@@ -654,7 +684,7 @@ describe('Utils', () => {
         zoraConfig = {
           market: '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401',
           media: '0x1dC4c1cEFEF38a777b15aA20260a54E584b16C48',
-          currency: '',
+          currency: ''
         }
       })
 

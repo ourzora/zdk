@@ -10,7 +10,7 @@ import {
   DecimalValue,
   EIP712Domain,
   EIP712Signature,
-  MediaData,
+  MediaData
 } from './types'
 import { BigNumber, BigNumberish, BytesLike, ContractTransaction, Wallet } from 'ethers'
 import { arrayify, hexDataLength, hexlify, isHexString } from '@ethersproject/bytes'
@@ -47,7 +47,7 @@ export function constructMediaData(
     tokenURI: tokenURI,
     metadataURI: metadataURI,
     contentHash: contentHash,
-    metadataHash: metadataHash,
+    metadataHash: metadataHash
   }
 }
 
@@ -73,7 +73,7 @@ export function constructBidShares(
   return {
     creator: decimalCreator,
     owner: decimalOwner,
-    prevOwner: decimalPrevOwner,
+    prevOwner: decimalPrevOwner
   }
 }
 
@@ -111,7 +111,7 @@ export function constructAsk(currency: string, amount: BigNumberish): Ask {
   const parsedCurrency = validateAndParseAddress(currency)
   return {
     currency: parsedCurrency,
-    amount: amount,
+    amount: amount
   }
 }
 
@@ -160,7 +160,7 @@ export function constructBid(
     amount: amount,
     bidder: parsedBidder,
     recipient: parsedRecipient,
-    sellOnShare: decimalSellOnShare,
+    sellOnShare: decimalSellOnShare
   }
 }
 
@@ -241,7 +241,9 @@ export function chainIdToNetworkName(chainId: number): string {
  * @param buffer
  */
 export function sha256FromBuffer(buffer: Buffer): string {
-  const bitArray = sjcl.codec.hex.toBits(buffer.toString('hex'))
+  const hex = buffer.toString('hex')
+  console.log(hex)
+  const bitArray = sjcl.codec.hex.toBits(hex)
   const hashArray = sjcl.hash.sha256.hash(bitArray)
   return '0x'.concat(sjcl.codec.hex.fromBits(hashArray))
 }
@@ -339,14 +341,14 @@ export async function signPermitMessage(
               { name: 'name', type: 'string' },
               { name: 'version', type: 'string' },
               { name: 'chainId', type: 'uint256' },
-              { name: 'verifyingContract', type: 'address' },
+              { name: 'verifyingContract', type: 'address' }
             ],
             Permit: [
               { name: 'spender', type: 'address' },
               { name: 'tokenId', type: 'uint256' },
               { name: 'nonce', type: 'uint256' },
-              { name: 'deadline', type: 'uint256' },
-            ],
+              { name: 'deadline', type: 'uint256' }
+            ]
           },
           primaryType: 'Permit',
           domain: domain,
@@ -354,9 +356,9 @@ export async function signPermitMessage(
             spender: toAddress,
             tokenId,
             nonce,
-            deadline,
-          },
-        },
+            deadline
+          }
+        }
       })
 
       const response = fromRpcSig(sig)
@@ -365,7 +367,7 @@ export async function signPermitMessage(
         r: response.r,
         s: response.s,
         v: response.v,
-        deadline: deadline.toString(),
+        deadline: deadline.toString()
       })
     } catch (e) {
       console.error(e)
@@ -404,14 +406,14 @@ export async function recoverSignatureFromPermit(
           { name: 'name', type: 'string' },
           { name: 'version', type: 'string' },
           { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
+          { name: 'verifyingContract', type: 'address' }
         ],
         Permit: [
           { name: 'spender', type: 'address' },
           { name: 'tokenId', type: 'uint256' },
           { name: 'nonce', type: 'uint256' },
-          { name: 'deadline', type: 'uint256' },
-        ],
+          { name: 'deadline', type: 'uint256' }
+        ]
       },
       primaryType: 'Permit',
       domain: domain,
@@ -419,10 +421,10 @@ export async function recoverSignatureFromPermit(
         spender: toAddress,
         tokenId,
         nonce,
-        deadline,
-      },
+        deadline
+      }
     },
-    sig: toRpcSig(eipSig.v, Buffer.from(r), Buffer.from(s)),
+    sig: toRpcSig(eipSig.v, Buffer.from(r), Buffer.from(s))
   })
   return recovered
 }
@@ -458,15 +460,15 @@ export async function recoverSignatureFromMintWithSig(
           { name: 'name', type: 'string' },
           { name: 'version', type: 'string' },
           { name: 'chainId', type: 'uint256' },
-          { name: 'verifyingContract', type: 'address' },
+          { name: 'verifyingContract', type: 'address' }
         ],
         MintWithSig: [
           { name: 'contentHash', type: 'bytes32' },
           { name: 'metadataHash', type: 'bytes32' },
           { name: 'creatorShare', type: 'uint256' },
           { name: 'nonce', type: 'uint256' },
-          { name: 'deadline', type: 'uint256' },
-        ],
+          { name: 'deadline', type: 'uint256' }
+        ]
       },
       primaryType: 'MintWithSig',
       domain: domain,
@@ -475,10 +477,10 @@ export async function recoverSignatureFromMintWithSig(
         metadataHash,
         creatorShare,
         nonce,
-        deadline,
-      },
+        deadline
+      }
     },
-    sig: toRpcSig(eipSig.v, Buffer.from(r), Buffer.from(s)),
+    sig: toRpcSig(eipSig.v, Buffer.from(r), Buffer.from(s))
   })
   return recovered
 }
@@ -521,15 +523,15 @@ export async function signMintWithSigMessage(
               { name: 'name', type: 'string' },
               { name: 'version', type: 'string' },
               { name: 'chainId', type: 'uint256' },
-              { name: 'verifyingContract', type: 'address' },
+              { name: 'verifyingContract', type: 'address' }
             ],
             MintWithSig: [
               { name: 'contentHash', type: 'bytes32' },
               { name: 'metadataHash', type: 'bytes32' },
               { name: 'creatorShare', type: 'uint256' },
               { name: 'nonce', type: 'uint256' },
-              { name: 'deadline', type: 'uint256' },
-            ],
+              { name: 'deadline', type: 'uint256' }
+            ]
           },
           primaryType: 'MintWithSig',
           domain: domain,
@@ -538,16 +540,16 @@ export async function signMintWithSigMessage(
             metadataHash,
             creatorShare,
             nonce,
-            deadline,
-          },
-        },
+            deadline
+          }
+        }
       })
       const response = fromRpcSig(sig)
       res({
         r: response.r,
         s: response.s,
         v: response.v,
-        deadline: deadline.toString(),
+        deadline: deadline.toString()
       })
     } catch (e) {
       console.error(e)
