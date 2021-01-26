@@ -1,7 +1,7 @@
 {
   "name": "@zoralabs/zdk",
   "description": "An SDK for using the Zora Media Protocol",
-  "version": "0.2.2",
+  "version": "1.0.0-rc0",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "files": [
@@ -27,11 +27,11 @@
     "@zoralabs/media-metadata-schemas": "^0.1.0",
     "eth-sig-util": "^3.0.0",
     "ethereumjs-util": "^7.0.7",
+    "ethers": "^5.0.19",
     "sjcl": "^1.0.8",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
-    "ts-node": "^9.1.1",
-    "ethers": "^5.0.19"
+    "ts-node": "^9.1.1"
   },
   "peerDependencies": {
     "@ethersproject/abstract-signer": "^5.0.7",
