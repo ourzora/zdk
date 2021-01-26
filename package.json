@@ -23,14 +23,15 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@zoralabs/core": "^1.0.2",
-    "@zoralabs/media-metadata-schemas": "^0.0.6",
+    "@zoralabs/core": "^1.0.3",
+    "@zoralabs/media-metadata-schemas": "^0.1.0",
     "eth-sig-util": "^3.0.0",
     "ethereumjs-util": "^7.0.7",
     "sjcl": "^1.0.8",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "ethers": "^5.0.19"
   },
   "peerDependencies": {
     "@ethersproject/abstract-signer": "^5.0.7",
@@ -55,7 +56,6 @@
     "@ethersproject/transactions": "^5.0.5",
     "@types/jest": "^26.0.20",
     "@types/sjcl": "^1.0.29",
-    "ethers": "^5.0.24",
     "ganache-cli": "^6.12.0",
     "husky": "^4.3.6",
     "istanbul-badges-readme": "^1.2.0",
