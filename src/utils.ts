@@ -316,9 +316,10 @@ export function stripHexPrefix(hex: string) {
  *
  * @param owner
  * @param toAddress
- * @param tokenAddress
- * @param tokenId
- * @param chainId
+ * @param mediaId
+ * @param nonce
+ * @param deadline
+ * @param domain
  */
 export async function signPermitMessage(
   owner: Wallet,
@@ -487,12 +488,12 @@ export async function recoverSignatureFromMintWithSig(
  * Signs a Zora MintWithSig Message as specified by EIP-712
  *
  * @param owner
- * @param mediaAddress
- * @param creator
  * @param contentHash
  * @param metadataHash
- * @param creatorShare
- * @param chainId
+ * @param creatorShareBN
+ * @param nonce
+ * @param deadline
+ * @param domain
  */
 export async function signMintWithSigMessage(
   owner: Wallet,

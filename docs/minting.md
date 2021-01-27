@@ -1,13 +1,10 @@
-# Minting Cryptomedia on the Zora Protocol
+# Minting Cryptomedia
 
 Cryptomedia is the foundational primitive of the Zora Protocol.
 
 Cryptomedia is a medium for anyone on the internet to create universally accessible and individually ownable hypermedia.
 
-A single instance of cryptomedia is a token that has two inseparable components:
-
-1. Media
-2. Market
+To create new cryptomedia using the ZDK, you must call the `mint` function.
 
 The `mint` function on a `Zora` instance expects two parameters: `MediaData` and `BidShares`
 
@@ -26,12 +23,12 @@ type MediaData = {
 
 #### tokenURI
 
-The uri where the cryptomedia's content is hosted. This could link to any storag provider on the internet. Some examples of _decentralized_ storage providers are:
+The uri where the cryptomedia's content is hosted. This could link to any storage provider on the internet. Some examples of _decentralized_ storage providers are:
 
-- ipfs
-- areweave
-- storj
-- sia
+- [ipfs](https://ipfs.io/)
+- [arweave](https://www.arweave.org/)
+- [storj](https://storj.io/)
+- [sia](https://sia.tech/)
 
 The token uri must be prefixed with `https://` or at mint time the sdk will reject it.
 
@@ -39,10 +36,10 @@ The token uri must be prefixed with `https://` or at mint time the sdk will reje
 
 The uri where the cryptomedia's metadata is hosted. This could link to any storage provider on the internet. Some examples of _decentralized_ storage providers are:
 
-- ipfs
-- areweave
-- storj
-- sia
+- [ipfs](https://ipfs.io/)
+- [arweave](https://www.arweave.org/)
+- [storj](https://storj.io/)
+- [sia](https://sia.tech/)
 
 The metadata uri must be prefixed with `https://` or at mint time the sdk will reject it.
 
@@ -62,7 +59,6 @@ To generate this hash use any of the sha256 utils defined in [utils](../referenc
 
 ```typescript
 import { constructMediaData, sha256FromBuffer, generateMetadata } from '@zoralabs/zdk'
-import ethers from 'ethers'
 
 const metadataJSON = generateMetadata('zora-20210101', {
   description: '',
@@ -134,7 +130,6 @@ import {
   sha256FromBuffer,
   generateMetadata,
 } from '@zoralabs/zdk'
-import ethers from 'ethers'
 
 const wallet = Wallet.createRandom()
 const zora = new Zora(wallet, 4)
@@ -146,7 +141,6 @@ const metadataJSON = generateMetadata('zora-20210101', {
   version: 'zora-20210101',
 })
 
-// for files that are > 32 Bytes: consider using a buffer or another utility to generate the hex string
 const contentHash = sha256FromBuffer(Buffer.from('Ours Truly,'))
 const metadataHash = sha256FromBuffer(Buffer.from(metadataJSON))
 const mediaData = constructMediaData(
@@ -155,6 +149,13 @@ const mediaData = constructMediaData(
   contentHash,
   metadataHash
 )
+
+/**
+ * Note: Before minting, verify that the content stored at the uris
+ * can be hashed and matches the hashes in the `MediaData`.
+ *
+ * Soon, we will ship utility functions to handle this for you.
+ */
 
 const bidShares = constructBidShares(
   10, // creator share
