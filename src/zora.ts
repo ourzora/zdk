@@ -1,4 +1,12 @@
-import { Ask, Bid, BidShares, EIP712Domain, EIP712Signature, MediaData } from './types'
+import {
+  Ask,
+  Bid,
+  BidShares,
+  Decimal,
+  EIP712Domain,
+  EIP712Signature,
+  MediaData
+} from './types'
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { Provider } from '@ethersproject/providers'
@@ -9,7 +17,7 @@ import {
   chainIdToNetworkName,
   validateAndParseAddress,
   validateBidShares,
-  validateURI,
+  validateURI
 } from './utils'
 import invariant from 'tiny-invariant'
 
@@ -525,8 +533,35 @@ export class Zora {
       name: 'Zora',
       version: '1',
       chainId: chainId,
-      verifyingContract: this.mediaAddress,
+      verifyingContract: this.mediaAddress
     }
+  }
+
+  /**
+   * Checks to see if a Bid's amount is evenly splittable given the media's current bidShares
+   *
+   * @param mediaId
+   * @param bid
+   */
+  public async isValidBid(mediaId: BigNumberish, bid: Bid): Promise<boolean> {
+    const isAmountValid = await this.market.isValidBid(mediaId, bid.amount)
+    const decimal100 = Decimal.new(100)
+    const currentBidShares = await this.fetchCurrentBidShares(mediaId)
+    const isSellOnShareValid = bid.sellOnShare.value.lte(
+      decimal100.value.sub(currentBidShares.creator.value)
+    )
+
+    return isAmountValid && isSellOnShareValid
+  }
+
+  /**
+   * Checks to see if an Ask's amount is evenly splittable given the media's current bidShares
+   *
+   * @param mediaId
+   * @param ask
+   */
+  public isValidAsk(mediaId: BigNumberish, ask: Ask): Promise<boolean> {
+    return this.market.isValidBid(mediaId, ask.amount)
   }
 
   /******************

@@ -64,3 +64,15 @@ export async function approveCurrency(
 ): Promise<ContractTransaction> {
   return BaseErc20Factory.connect(tokenAddress, wallet).approve(to, MaxUint256)
 }
+
+export async function deployCurrency(
+  wallet: Wallet,
+  name: string,
+  symbol: string,
+  decimals: number
+): Promise<string> {
+  const currency = await (
+    await new BaseErc20Factory(wallet).deploy(name, symbol, BigNumber.from(decimals))
+  ).deployed()
+  return currency.address
+}
