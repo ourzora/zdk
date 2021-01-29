@@ -43,7 +43,7 @@ The uri where the cryptomedia's metadata is hosted. This could link to any stora
 
 The metadata uri must be prefixed with `https://` or at mint time the sdk will reject it.
 
-To construct the metadata of a piece of cryptomedia, use the `generateMetadata` function defined in `metadata.ts`. For more info visit [Metadata](../reference/metadata)
+To construct the metadata of a piece of cryptomedia, use the `generateMetadata` function defined in `metadata.ts`. For more info visit [Metadata](https://github.com/ourzora/zdk/blob/master/docs/metadata.md)
 
 #### contentHash
 
