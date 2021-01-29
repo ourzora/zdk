@@ -214,7 +214,9 @@ export class Zora {
       return Promise.reject(err.message)
     }
 
-    return this.media.mint(mediaData, bidShares)
+    const gasEstimate = await this.media.estimateGas.mint(mediaData, bidShares)
+    const paddedEstimate = gasEstimate.mul(110).div(100)
+    return this.media.mint(mediaData, bidShares, { gasLimit: paddedEstimate })
   }
 
   /**
