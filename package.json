@@ -1,7 +1,7 @@
 {
   "name": "@zoralabs/zdk",
   "description": "An SDK for using the Zora Media Protocol",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "files": [
@@ -46,7 +46,6 @@
     "@ethersproject/transactions": "^5.0.5"
   },
   "devDependencies": {
-    "axios-mock-adapter": "^1.19.0",
     "@ethersproject/abstract-signer": "^5.0.7",
     "@ethersproject/address": "^5.0.5",
     "@ethersproject/bignumber": "^5.0.5",
@@ -58,6 +57,7 @@
     "@ethersproject/transactions": "^5.0.5",
     "@types/jest": "^26.0.20",
     "@types/sjcl": "^1.0.29",
+    "axios-mock-adapter": "^1.19.0",
     "ganache-cli": "^6.12.0",
     "husky": "^4.3.6",
     "istanbul-badges-readme": "^1.2.0",
