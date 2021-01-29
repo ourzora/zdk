@@ -4,6 +4,8 @@ import {
   constructBid,
   constructBidShares,
   constructMediaData,
+  isMediaDataVerified,
+  isURIHashVerified,
   recoverSignatureFromMintWithSig,
   recoverSignatureFromPermit,
   sha256FromBuffer,
@@ -24,6 +26,8 @@ import { mintCurrency, setupZora, ZoraConfiguredAddresses } from './helpers'
 import { BaseErc20Factory } from '@zoralabs/core/dist/typechain'
 import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
+import axios from 'axios'
+import MockAdapter from 'axios-mock-adapter'
 
 jest.setTimeout(1000000)
 
@@ -721,6 +725,90 @@ describe('Utils', () => {
           wallet
         ).allowance(otherWallet.address, approvedWallet.address)
         expect(allowance).toEqual(MaxUint256)
+      })
+    })
+
+    describe('#isURIHashVerified', () => {
+      it('returns true if the uriHash does match the expectedHash string', async () => {
+        const mock = new MockAdapter(axios)
+        const kanyeBuf = await fs.readFile('./fixtures/kanye.jpg')
+        const kanyeURI =
+          'https://ipfs.io/ipfs/QmRhK7o7gpjkkpubu9EvqDGJEgY1nQxSkP7XsMcaX7pZwV'
+
+        mock.onGet(kanyeURI).reply(200, kanyeBuf)
+        const verified = await isURIHashVerified(kanyeURI, kanyeHash)
+        expect(verified).toEqual(true)
+      })
+
+      it('returns true if the uriHash does match the expectedHash byte array', async () => {
+        const mock = new MockAdapter(axios)
+        const kanyeBuf = await fs.readFile('./fixtures/kanye.jpg')
+        const kanyeURI =
+          'https://ipfs.io/ipfs/QmRhK7o7gpjkkpubu9EvqDGJEgY1nQxSkP7XsMcaX7pZwV'
+
+        mock.onGet(kanyeURI).reply(200, kanyeBuf)
+        const verified = await isURIHashVerified(
+          kanyeURI,
+          Buffer.from(stripHexPrefix(kanyeHash), 'hex')
+        )
+        expect(verified).toEqual(true)
+      })
+
+      it('returns false if the uriHash does not match the expectedHash string', async () => {
+        const mock = new MockAdapter(axios)
+        const notKanyeBuf = await fs.readFile('./fixtures/HelloWorld.txt')
+        const kanyeURI =
+          'https://ipfs.io/ipfs/QmRhK7o7gpjkkpubu9EvqDGJEgY1nQxSkP7XsMcaX7pZwV'
+
+        mock.onGet(kanyeURI).reply(200, notKanyeBuf)
+        const verified = await isURIHashVerified(kanyeURI, kanyeHash)
+        expect(verified).toEqual(false)
+      })
+
+      it('returns false if the uriHash does not match the expectedHash byte array', async () => {
+        const mock = new MockAdapter(axios)
+        const notKanyeBuf = await fs.readFile('./fixtures/HelloWorld.txt')
+        const kanyeURI =
+          'https://ipfs.io/ipfs/QmRhK7o7gpjkkpubu9EvqDGJEgY1nQxSkP7XsMcaX7pZwV'
+
+        mock.onGet(kanyeURI).reply(200, notKanyeBuf)
+        const verified = await isURIHashVerified(
+          kanyeURI,
+          Buffer.from(stripHexPrefix(kanyeHash), 'hex')
+        )
+        expect(verified).toEqual(false)
+      })
+
+      it('rejects the promise if the http request times out', async () => {
+        const mock = new MockAdapter(axios)
+        const kanyeURI =
+          'https://ipfs.io/ipfs/QmRhK7o7gpjkkpubu9EvqDGJEgY1nQxSkP7XsMcaX7pZwV'
+
+        mock.onGet(kanyeURI).timeout()
+        await expect(isURIHashVerified(kanyeURI, kanyeHash)).rejects.toBe(
+          'timeout of 10ms exceeded'
+        )
+      })
+    })
+
+    describe('isMediaDataVerified', () => {
+      it('returns true if the mediaDatas uri match their hashes', async () => {
+        const mock = new MockAdapter(axios)
+
+        const helloWorldBuf = await fs.readFile('./fixtures/HelloWorld.txt')
+        const helloWorldURI =
+          'https://ipfs/io/ipfs/Qmf1rtki74jvYmGeqaaV51hzeiaa6DyWc98fzDiuPatzyy'
+
+        const kanyeBuf = await fs.readFile('./fixtures/kanye.jpg')
+        const kanyeURI =
+          'https://ipfs.io/ipfs/QmRhK7o7gpjkkpubu9EvqDGJEgY1nQxSkP7XsMcaX7pZwV'
+
+        mock.onGet(kanyeURI).reply(200, kanyeBuf)
+        mock.onGet(helloWorldURI).reply(200, helloWorldBuf)
+
+        const mediaData = constructMediaData(kanyeURI, helloWorldURI, kanyeHash, hash)
+        const verified = await isMediaDataVerified(mediaData)
+        expect(verified).toEqual(true)
       })
     })
   })

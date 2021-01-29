@@ -17,6 +17,7 @@ import { arrayify, hexDataLength, hexlify, isHexString } from '@ethersproject/by
 import { recoverTypedSignature, signTypedData_v4 } from 'eth-sig-util'
 import { fromRpcSig, toRpcSig } from 'ethereumjs-util'
 import { BaseErc20Factory } from '@zoralabs/core/dist/typechain'
+import axios from 'axios'
 
 /********************
  * Type Constructors
@@ -573,4 +574,59 @@ export async function approveERC20(
 ): Promise<ContractTransaction> {
   const erc20 = BaseErc20Factory.connect(erc20Address, wallet)
   return erc20.approve(spender, amount)
+}
+
+/**
+ * Returns the `verified` status of a uri.
+ * A uri is only considered `verified` if its content hashes to its expected hash
+ *
+ * @param uri
+ * @param expectedHash
+ * @param timeout
+ */
+export async function isURIHashVerified(
+  uri: string,
+  expectedHash: BytesLike,
+  timeout: number = 10
+): Promise<boolean> {
+  try {
+    validateURI(uri)
+
+    const resp = await axios.get(uri, {
+      timeout: timeout,
+      responseType: 'arraybuffer',
+    })
+    const uriHash = sha256FromBuffer(resp.data)
+    const normalizedExpectedHash = hexlify(expectedHash)
+
+    return uriHash == normalizedExpectedHash
+  } catch (err) {
+    return Promise.reject(err.message)
+  }
+}
+
+/**
+ * Returns the `verified` status of some MediaData.
+ * MediaData is only considered `verified` if the content of its URIs hash to their respective hash
+ *
+ * @param mediaData
+ * @param timeout
+ */
+export async function isMediaDataVerified(
+  mediaData: MediaData,
+  timeout: number = 10
+): Promise<boolean> {
+  const isTokenURIVerified = await isURIHashVerified(
+    mediaData.tokenURI,
+    mediaData.contentHash,
+    timeout
+  )
+
+  const isMetadataURIVerified = await isURIHashVerified(
+    mediaData.metadataURI,
+    mediaData.metadataHash,
+    timeout
+  )
+
+  return isTokenURIVerified && isMetadataURIVerified
 }

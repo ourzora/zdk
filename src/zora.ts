@@ -5,7 +5,7 @@ import {
   Decimal,
   EIP712Domain,
   EIP712Signature,
-  MediaData
+  MediaData,
 } from './types'
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
@@ -15,9 +15,11 @@ import { Market, MarketFactory, Media, MediaFactory } from '@zoralabs/core/dist/
 import { addresses } from './addresses'
 import {
   chainIdToNetworkName,
+  constructMediaData,
+  isMediaDataVerified,
   validateAndParseAddress,
   validateBidShares,
-  validateURI
+  validateURI,
 } from './utils'
 import invariant from 'tiny-invariant'
 
@@ -533,7 +535,7 @@ export class Zora {
       name: 'Zora',
       version: '1',
       chainId: chainId,
-      verifyingContract: this.mediaAddress
+      verifyingContract: this.mediaAddress,
     }
   }
 
@@ -562,6 +564,36 @@ export class Zora {
    */
   public isValidAsk(mediaId: BigNumberish, ask: Ask): Promise<boolean> {
     return this.market.isValidBid(mediaId, ask.amount)
+  }
+
+  /**
+   * Checks to see if a piece of media has verified uris that hash to their immutable hashes
+   *
+   * @param mediaId
+   * @param timeout
+   */
+  public async isVerifiedMedia(
+    mediaId: BigNumberish,
+    timeout: number = 10
+  ): Promise<boolean> {
+    try {
+      const [tokenURI, metadataURI, contentHash, metadataHash] = await Promise.all([
+        this.fetchContentURI(mediaId),
+        this.fetchMetadataURI(mediaId),
+        this.fetchContentHash(mediaId),
+        this.fetchMetadataHash(mediaId),
+      ])
+
+      const mediaData = constructMediaData(
+        tokenURI,
+        metadataURI,
+        contentHash,
+        metadataHash
+      )
+      return isMediaDataVerified(mediaData, timeout)
+    } catch (err) {
+      return Promise.reject(err.message)
+    }
   }
 
   /******************
