@@ -13,7 +13,7 @@ import {
   sha256FromBuffer,
   signMintWithSigMessage,
   signPermitMessage,
-  Zora,
+  Zora
 } from '../src'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
@@ -23,6 +23,7 @@ import { Blockchain, generatedWallets } from '@zoralabs/core/dist/utils'
 import { Bytes } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { AddressZero } from '@ethersproject/constants'
+import { MediaFactory } from '@zoralabs/core/dist/typechain'
 
 let provider = new JsonRpcProvider()
 let blockchain = new Blockchain(provider)
@@ -32,7 +33,7 @@ describe('Zora', () => {
   describe('#constructor', () => {
     it('throws an error if a mediaAddress is specified but not a marketAddress', () => {
       const wallet = Wallet.createRandom()
-      expect(function () {
+      expect(function() {
         new Zora(wallet, 4, '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401')
       }).toThrow(
         'Zora Constructor: mediaAddress and marketAddress must both be non-null or both be null'
@@ -41,7 +42,7 @@ describe('Zora', () => {
 
     it('throws an error if the marketAddress is specified but not a mediaAddress', () => {
       const wallet = Wallet.createRandom()
-      expect(function () {
+      expect(function() {
         new Zora(wallet, 4, '', '0x1D7022f5B17d2F8B695918FB48fa1089C9f85401')
       }).toThrow(
         'Zora Constructor: mediaAddress and marketAddress must both be non-null or both be null'
@@ -50,7 +51,7 @@ describe('Zora', () => {
 
     it('throws an error if one of the market or media addresses in not a valid ethereum address', () => {
       const wallet = Wallet.createRandom()
-      expect(function () {
+      expect(function() {
         new Zora(
           wallet,
           4,
@@ -59,7 +60,7 @@ describe('Zora', () => {
         )
       }).toThrow('Invariant failed: not a valid ethereum address is not a valid address')
 
-      expect(function () {
+      expect(function() {
         new Zora(
           wallet,
           4,
@@ -72,7 +73,7 @@ describe('Zora', () => {
     it('throws an error if the chainId does not map to a network with deployed instance of the Zora Protocol', () => {
       const wallet = Wallet.createRandom()
 
-      expect(function () {
+      expect(function() {
         new Zora(wallet, 50)
       }).toThrow(
         'Invariant failed: chainId 50 not officially supported by the Zora Protocol'
@@ -82,7 +83,7 @@ describe('Zora', () => {
     it('throws an error if the chainId does not map to a network with deployed instance of the Zora Protocol', () => {
       const wallet = Wallet.createRandom()
 
-      expect(function () {
+      expect(function() {
         new Zora(
           wallet,
           50,
@@ -185,7 +186,7 @@ describe('Zora', () => {
           version: 'zora-20210101',
           name: 'blah blah',
           description: 'blah blah blah',
-          mimeType: 'text/plain',
+          mimeType: 'text/plain'
         }
         minifiedMetadata = generateMetadata(metadata.version, metadata)
         metadataHash = sha256FromBuffer(Buffer.from(minifiedMetadata))
@@ -211,7 +212,7 @@ describe('Zora', () => {
           deadline: 1000,
           v: 0,
           r: '0x00',
-          s: '0x00',
+          s: '0x00'
         }
       })
 
@@ -300,7 +301,7 @@ describe('Zora', () => {
           const invalidBidShares = {
             prevOwner: Decimal.new(10),
             owner: Decimal.new(70),
-            creator: Decimal.new(10),
+            creator: Decimal.new(10)
           }
           expect(zora.readOnly).toBe(false)
 
@@ -315,7 +316,7 @@ describe('Zora', () => {
             tokenURI: 'http://example.com',
             metadataURI: 'https://metadata.com',
             contentHash: contentHashBytes,
-            metadataHash: metadataHashBytes,
+            metadataHash: metadataHashBytes
           }
           expect(zora.readOnly).toBe(false)
 
@@ -330,13 +331,28 @@ describe('Zora', () => {
             tokenURI: 'https://example.com',
             metadataURI: 'http://metadata.com',
             contentHash: contentHashBytes,
-            metadataHash: metadataHashBytes,
+            metadataHash: metadataHashBytes
           }
           expect(zora.readOnly).toBe(false)
 
           await expect(zora.mint(invalidMediaData, defaultBidShares)).rejects.toBe(
             'Invariant failed: http://metadata.com must begin with `https://`'
           )
+        })
+
+        it('pads the gas limit by 10%', async () => {
+          const otherZoraConfig = await setupZora(otherWallet, [mainWallet])
+          const zoraMedia = MediaFactory.connect(zoraConfig.media, mainWallet)
+          const tx = await zoraMedia.mint(defaultMediaData, defaultBidShares)
+          const otherZora = new Zora(
+            otherWallet,
+            50,
+            otherZoraConfig.media,
+            otherZoraConfig.market
+          )
+          const paddedTx = await otherZora.mint(defaultMediaData, defaultBidShares)
+
+          expect(paddedTx.gasLimit).toEqual(tx.gasLimit.mul(110).div(100))
         })
 
         it('creates a new piece of media', async () => {
@@ -393,7 +409,7 @@ describe('Zora', () => {
           const invalidBidShares = {
             prevOwner: Decimal.new(10),
             owner: Decimal.new(70),
-            creator: Decimal.new(10),
+            creator: Decimal.new(10)
           }
           expect(zora.readOnly).toBe(false)
 
@@ -415,7 +431,7 @@ describe('Zora', () => {
             tokenURI: 'http://example.com',
             metadataURI: 'https://metadata.com',
             contentHash: contentHashBytes,
-            metadataHash: metadataHashBytes,
+            metadataHash: metadataHashBytes
           }
           expect(zora.readOnly).toBe(false)
 
@@ -437,7 +453,7 @@ describe('Zora', () => {
             tokenURI: 'https://example.com',
             metadataURI: 'http://metadata.com',
             contentHash: contentHashBytes,
-            metadataHash: metadataHashBytes,
+            metadataHash: metadataHashBytes
           }
           expect(zora.readOnly).toBe(false)
 
