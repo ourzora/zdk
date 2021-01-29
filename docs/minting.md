@@ -48,12 +48,12 @@ To construct the metadata of a piece of cryptomedia, use the `generateMetadata` 
 #### contentHash
 
 The sha256 hash of the content the cryptomedia represents. It is imperative that this hash is correct, because once it is written to the blockchain it **cannot** be changed.
-To generate this hash use any of the sha256 utils defined in [utils](../reference/utils).
+To generate this hash use any of the sha256 utils defined in [utils](https://github.com/ourzora/zdk/blob/master/docs/utils.md).
 
 #### metadataHash
 
 The sha256 hash of the metadata of the cryptomedia. It is imperative that this hash is correct, because once it is written to the blockchain it **cannot** be changed.
-To generate this hash use any of the sha256 utils defined in [utils](../reference/utils).
+To generate this hash use any of the sha256 utils defined in [utils](https://github.com/ourzora/zdk/blob/master/docs/utils.md).
 
 #### Example
 
