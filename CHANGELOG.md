@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2021-01-28
+
+### Added
+
+- Hotfix for `Out of Gas` error fixed for Wallet Connect users. Added 10% gas limit padding for mint transactions.
+
+## [1.0.0] - 2021-01-27
+
+### Added
+
+- no additions were made between 1.0.0-rc0 and 1.0.0
+
 ## [1.0.0-rc0] - 2021-01-25
 
 ### Added
