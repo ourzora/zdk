@@ -24,6 +24,9 @@ import { BigNumber, Bytes } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { AddressZero } from '@ethersproject/constants'
 import { MediaFactory } from '@zoralabs/core/dist/typechain'
+import MockAdapter from 'axios-mock-adapter'
+import axios from 'axios'
+import { promises as fs } from 'fs'
 
 let provider = new JsonRpcProvider()
 let blockchain = new Blockchain(provider)
@@ -961,6 +964,65 @@ describe('Zora', () => {
           await zora.mint(defaultMediaData, preciseBidShares)
           const isValid = await zora.isValidAsk(0, ask)
           expect(isValid).toEqual(false)
+        })
+      })
+
+      describe('#isVerifiedMedia', () => {
+        it('returns true if the media is verified', async () => {
+          const zora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          const mock = new MockAdapter(axios)
+          const helloWorldBuf = await fs.readFile('./fixtures/HelloWorld.txt')
+          const helloWorldURI =
+            'https://ipfs/io/ipfs/Qmf1rtki74jvYmGeqaaV51hzeiaa6DyWc98fzDiuPatzyy'
+          const kanyeBuf = await fs.readFile('./fixtures/kanye.jpg')
+          const kanyeURI =
+            'https://ipfs.io/ipfs/QmRhK7o7gpjkkpubu9EvqDGJEgY1nQxSkP7XsMcaX7pZwV'
+
+          mock.onGet(kanyeURI).reply(200, kanyeBuf)
+          mock.onGet(helloWorldURI).reply(200, helloWorldBuf)
+
+          const mediaData = constructMediaData(
+            kanyeURI,
+            helloWorldURI,
+            sha256FromBuffer(kanyeBuf),
+            sha256FromBuffer(helloWorldBuf)
+          )
+          await zora.mint(mediaData, defaultBidShares)
+
+          const verified = await zora.isVerifiedMedia(0)
+          expect(verified).toEqual(true)
+        })
+
+        it('returns false if the media is not verified', async () => {
+          const zora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          const mock = new MockAdapter(axios)
+          const helloWorldBuf = await fs.readFile('./fixtures/HelloWorld.txt')
+          const helloWorldURI =
+            'https://ipfs/io/ipfs/Qmf1rtki74jvYmGeqaaV51hzeiaa6DyWc98fzDiuPatzyy'
+          const kanyeBuf = await fs.readFile('./fixtures/kanye.jpg')
+          const kanyeURI =
+            'https://ipfs.io/ipfs/QmRhK7o7gpjkkpubu9EvqDGJEgY1nQxSkP7XsMcaX7pZwV'
+
+          mock.onGet(kanyeURI).reply(200, kanyeBuf)
+          mock.onGet(helloWorldURI).reply(200, kanyeBuf) // this will cause verification to fail!
+
+          const mediaData = constructMediaData(
+            kanyeURI,
+            helloWorldURI,
+            sha256FromBuffer(kanyeBuf),
+            sha256FromBuffer(helloWorldBuf)
+          )
+          await zora.mint(mediaData, defaultBidShares)
+
+          const verified = await zora.isVerifiedMedia(0)
+          expect(verified).toEqual(false)
+        })
+
+        it('rejects the promise if the media does not exist', async () => {
+          const zora = new Zora(mainWallet, 50, zoraConfig.media, zoraConfig.market)
+          await expect(zora.isVerifiedMedia(0)).rejects.toContain(
+            'token with that id does not exist'
+          )
         })
       })
     })
