@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2021-01-28
+
+### Added
+
+- Added `isValidBid` and `isValidAsk` to help clients validate Bids and Asks input data before submitting a transaction to the blockchain
+
 ## [1.0.1] - 2021-01-28
 
 ### Added
