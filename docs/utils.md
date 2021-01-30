@@ -10,7 +10,7 @@ The utility functions can roughly be split into 3 categories:
 
 ### Type Constructors
 
-There are a number of [Types](src/types.ts) that are necessary to interact with a Zora instance.
+There are a number of [Types](../src/types.ts) that are necessary to interact with a Zora instance.
 The type constructors accept input, perform basic validation on the input, and return the properly formatted Zora Type.
 
 #### constructMediaData
