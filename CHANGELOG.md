@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2021-01-29
+
+### Added
+
+- `isVerifiedMedia` on the Zora class to be able to verify if a piece of media's uris hash to their hash in immutable storage.
+- `isMediaDataverified` utility function to verify that some `MediaData` is verified before mint.
+- `isURIHashVerified` utility to verify a give uri and hash combination are verified. Verified meaning that the content at a uri hashes to the specified hash.
+
 ## [1.0.2] - 2021-01-28
 
 ### Added
