@@ -17,6 +17,8 @@ import {
   validateBidShares,
   validateBytes32,
   validateURI,
+  wrapETH,
+  unwrapWETH,
 } from '../src/utils'
 import { promises as fs } from 'fs'
 import { Decimal, Zora } from '../src'
@@ -28,6 +30,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
+import wethContractDetails from './artifacts/weth/abi.json'
+import { ethers } from 'ethers'
 
 jest.setTimeout(1000000)
 
@@ -809,6 +813,106 @@ describe('Utils', () => {
         const mediaData = constructMediaData(kanyeURI, helloWorldURI, kanyeHash, hash)
         const verified = await isMediaDataVerified(mediaData)
         expect(verified).toEqual(true)
+      })
+    })
+
+    describe('wrapETH', () => {
+      it('wraps the specified eth to weth', async () => {
+        const [mainWallet] = generatedWallets(provider)
+        const wethFactory = new ethers.ContractFactory(
+          wethContractDetails.abi,
+          wethContractDetails.bytecode,
+          mainWallet
+        )
+
+        const weth = await wethFactory.deploy()
+        await weth.deployed()
+        const connectedWeth = weth.connect(mainWallet)
+        await wrapETH(mainWallet, weth.address, BigNumber.from('1000000000000000000'))
+        const balanceOf = await connectedWeth.balanceOf(mainWallet.address)
+        expect(balanceOf.toString()).toEqual('1000000000000000000')
+      })
+
+      it('rejects if the address does not have enough eth to wrap', async () => {
+        const [mainWallet] = generatedWallets(provider)
+        const wethFactory = new ethers.ContractFactory(
+          wethContractDetails.abi,
+          wethContractDetails.bytecode,
+          mainWallet
+        )
+
+        const weth = await wethFactory.deploy()
+        await weth.deployed()
+        await wrapETH(
+          mainWallet,
+          weth.address,
+          BigNumber.from('100000000000000000000')
+        ).catch((e) => {
+          expect(e.message).toContain(
+            "Error: sender doesn't have enough funds to send tx"
+          )
+        })
+      })
+    })
+
+    describe('unwrapWETH', () => {
+      it('unwraps the specified weth to eth', async () => {
+        const [mainWallet] = generatedWallets(provider)
+        const wethFactory = new ethers.ContractFactory(
+          wethContractDetails.abi,
+          wethContractDetails.bytecode,
+          mainWallet
+        )
+
+        const weth = await wethFactory.deploy()
+        await weth.deployed()
+        const connectedWeth = weth.connect(mainWallet)
+        const ethBalance = await mainWallet.getBalance()
+
+        const wrapTx = await wrapETH(
+          mainWallet,
+          weth.address,
+          BigNumber.from('1000000000000000000')
+        )
+        const wrapReceipt = await provider.getTransactionReceipt(wrapTx.hash)
+        const wrapGas = wrapReceipt.gasUsed.mul(wrapTx.gasPrice)
+        const balanceOf = await connectedWeth.balanceOf(mainWallet.address)
+        expect(balanceOf.toString()).toEqual('1000000000000000000')
+
+        const unwrapTx = await unwrapWETH(
+          mainWallet,
+          weth.address,
+          BigNumber.from('1000000000000000000')
+        )
+        const unwrapReceipt = await provider.getTransactionReceipt(unwrapTx.hash)
+        const unwrapGas = unwrapReceipt.gasUsed.mul(unwrapTx.gasPrice)
+        const newBalance = await connectedWeth.balanceOf(mainWallet.address)
+        expect(newBalance.toString()).toEqual('0')
+
+        const newEthBalance = await mainWallet.getBalance()
+        expect(
+          BigNumber.from(ethBalance.toString()).sub(wrapGas).sub(unwrapGas).toString()
+        ).toEqual(BigNumber.from(newEthBalance.toString()).toString())
+      })
+
+      it('rejects if the address does not have enough weth to unwrap', async () => {
+        const [mainWallet] = generatedWallets(provider)
+        const wethFactory = new ethers.ContractFactory(
+          wethContractDetails.abi,
+          wethContractDetails.bytecode,
+          mainWallet
+        )
+
+        const weth = await wethFactory.deploy()
+        await weth.deployed()
+        await wrapETH(mainWallet, weth.address, BigNumber.from('1000000000000000000'))
+        await unwrapWETH(
+          mainWallet,
+          weth.address,
+          BigNumber.from('100000000000000000000')
+        ).catch((e) => {
+          expect(e.message).toContain('revert')
+        })
       })
     })
   })
