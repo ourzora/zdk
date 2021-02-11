@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2021-02-11
+
+### Added
+
+- `wrapETH` utility function to make it easy for an account to wrap ETH to WETH.
+- `unwrapWETH` utility function to make it easy for an account to unwrap WETH to ETH.
+
 ## [1.0.3] - 2021-01-29
 
 ### Added
