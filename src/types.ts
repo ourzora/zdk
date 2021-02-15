@@ -1,8 +1,5 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { BytesLike } from '@ethersproject/bytes'
-import Decimal from '@zoralabs/core/dist/utils/Decimal'
-
-export { Decimal }
 
 /**
  * Internal type to represent a Decimal Value
