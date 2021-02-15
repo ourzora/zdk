@@ -6,12 +6,12 @@ import {
   Ask,
   Bid,
   BidShares,
-  Decimal,
   DecimalValue,
   EIP712Domain,
   EIP712Signature,
   MediaData,
 } from './types'
+import { Decimal } from './Decimal'
 import {
   BigNumber,
   BigNumberish,

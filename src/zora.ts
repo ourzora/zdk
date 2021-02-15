@@ -1,12 +1,5 @@
-import {
-  Ask,
-  Bid,
-  BidShares,
-  Decimal,
-  EIP712Domain,
-  EIP712Signature,
-  MediaData,
-} from './types'
+import { Ask, Bid, BidShares, EIP712Domain, EIP712Signature, MediaData } from './types'
+import { Decimal } from './Decimal'
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { Provider } from '@ethersproject/providers'
