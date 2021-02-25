@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@zoralabs/core": "^1.0.3",
-    "@zoralabs/media-metadata-schemas": "^0.1.1",
+    "@zoralabs/media-metadata-schemas": "^0.1.2",
     "axios": "^0.21.1",
     "eth-sig-util": "^3.0.0",
     "ethereumjs-util": "^7.0.7",
