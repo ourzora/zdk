@@ -46,6 +46,16 @@ describe('Users', () => {
         mock = new MockAdapter(axios)
       })
 
+      it('throws with error message from response', async () => {
+        mock.onPost(zoraProfilesApiUri).reply(400)
+        try {
+          await getZoraProfiles(['asdf', '1234'])
+          throw new Error('should throw')
+        } catch (err) {
+          expect(err).toEqual(Error('Request failed with status code 400'))
+        }
+      })
+
       it('raises if axios request fails', async () => {
         mock.onPost(zoraProfilesApiUri).networkError()
         try {

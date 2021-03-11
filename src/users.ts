@@ -21,7 +21,14 @@ export async function getZoraProfiles(addresses: string[]) {
     }
     return res.data
   } catch (err) {
-    const msg = err.message ? err.message : 'Error retrieving users'
+    let msg: string
+    if (err.response && err.response.data && typeof err.response.data === 'string') {
+      msg = err.response.data
+    } else if (err.message) {
+      msg = err.message
+    } else {
+      msg = 'Error retrieving users'
+    }
     throw new Error(msg)
   }
 }
