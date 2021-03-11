@@ -47,12 +47,12 @@ describe('Users', () => {
       })
 
       it('throws with error message from response', async () => {
-        mock.onPost(zoraProfilesApiUri).reply(400)
+        mock.onPost(zoraProfilesApiUri).reply(400, 'Custom error message from zora api')
         try {
           await getZoraProfiles(['asdf', '1234'])
           throw new Error('should throw')
         } catch (err) {
-          expect(err).toEqual(Error('Request failed with status code 400'))
+          expect(err).toEqual(Error('Custom error message from zora api'))
         }
       })
 
