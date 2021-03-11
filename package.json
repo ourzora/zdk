@@ -29,6 +29,7 @@
     "eth-sig-util": "^3.0.0",
     "ethereumjs-util": "^7.0.7",
     "ethers": "^5.0.19",
+    "prettier": "^2.2.1",
     "sjcl": "^1.0.8",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
