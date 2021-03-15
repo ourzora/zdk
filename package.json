@@ -8,7 +8,7 @@
     "dist"
   ],
   "author": "Zora",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": false,
   "scripts": {
     "make-badges": "istanbul-badges-readme --coverageDir=./coverage",
