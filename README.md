@@ -27,6 +27,8 @@ yarn add @zoralabs/zdk
 - [minting](docs/minting.md)
 - [bidding](docs/bidding.md)
 
+Additional information about the Zora ecosystem can be found at [https://zora.engineering/](https://zora.engineering/)
+
 ## Development
 
 `git clone ...`
