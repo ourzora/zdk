@@ -219,7 +219,7 @@ export class Zora {
 
     const gasEstimate = await this.media.estimateGas.mint(mediaData, bidShares)
     const paddedEstimate = gasEstimate.mul(110).div(100)
-    return this.media.mint(mediaData, bidShares, { gasLimit: paddedEstimate })
+    return this.media.mint(mediaData, bidShares, { gasLimit: paddedEstimate.toString() })
   }
 
   /**

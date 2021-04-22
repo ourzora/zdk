@@ -875,7 +875,7 @@ describe('Utils', () => {
           BigNumber.from('1000000000000000000')
         )
         const wrapReceipt = await provider.getTransactionReceipt(wrapTx.hash)
-        const wrapGas = wrapReceipt.gasUsed.mul(wrapTx.gasPrice)
+        const wrapGas = wrapReceipt.gasUsed.mul(wrapTx.gasPrice.toString())
         const balanceOf = await connectedWeth.balanceOf(mainWallet.address)
         expect(balanceOf.toString()).toEqual('1000000000000000000')
 
@@ -885,7 +885,7 @@ describe('Utils', () => {
           BigNumber.from('1000000000000000000')
         )
         const unwrapReceipt = await provider.getTransactionReceipt(unwrapTx.hash)
-        const unwrapGas = unwrapReceipt.gasUsed.mul(unwrapTx.gasPrice)
+        const unwrapGas = unwrapReceipt.gasUsed.mul(unwrapTx.gasPrice.toString())
         const newBalance = await connectedWeth.balanceOf(mainWallet.address)
         expect(newBalance.toString()).toEqual('0')
 
