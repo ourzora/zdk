@@ -85,6 +85,13 @@ export class AuctionHouse {
     return this.auctionHouse.setAuctionApproval(auctionId, approved)
   }
 
+  public async setAuctionReservePrice(
+    auctionId: BigNumberish,
+    reservePrice: BigNumberish
+  ) {
+    return this.auctionHouse.setAuctionReservePrice(auctionId, reservePrice)
+  }
+
   public async createBid(auctionId: BigNumberish, amount: BigNumberish) {
     const { auctionCurrency } = await this.auctionHouse.auctions(auctionId)
     // If ETH auction, include the ETH in this transaction
