@@ -5,9 +5,8 @@ import { ContractTransaction } from '@ethersproject/contracts'
 import { Provider } from '@ethersproject/providers'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Market, MarketFactory, Media, MediaFactory } from '@zoralabs/core/dist/typechain'
-import { addresses } from './addresses'
+import { addressesByChainId } from './addresses'
 import {
-  chainIdToNetworkName,
   constructMediaData,
   isMediaDataVerified,
   validateAndParseAddress,
@@ -53,9 +52,8 @@ export class Zora {
       this.mediaAddress = parsedMediaAddress
       this.marketAddress = parsedMarketAddress
     } else {
-      const network = chainIdToNetworkName(chainId)
-      this.mediaAddress = addresses[network].media
-      this.marketAddress = addresses[network].market
+      this.mediaAddress = addressesByChainId[chainId].media
+      this.marketAddress = addressesByChainId[chainId].market
     }
 
     this.media = MediaFactory.connect(this.mediaAddress, signerOrProvider)

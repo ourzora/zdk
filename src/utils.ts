@@ -26,10 +26,16 @@ import { fromRpcSig, toRpcSig } from 'ethereumjs-util'
 import { BaseErc20Factory } from '@zoralabs/core/dist/typechain'
 import axios from 'axios'
 
-// // https://etherscan.io/address/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
+/**
+ * WETH address exports.
+ * @deprecated used wethByChainId instead
+ */
+// https://etherscan.io/address/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
 export const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-// // https://rinkeby.etherscan.io/address/0xc778417e063141139fce010982780140aa0cd5ab
+// https://rinkeby.etherscan.io/address/0xc778417e063141139fce010982780140aa0cd5ab
 export const WETH_RINKEBY = '0xc778417E063141139Fce010982780140Aa0cD5Ab'
+//
+export const WETH_POLYGON = '???'
 
 /********************
  * Type Constructors

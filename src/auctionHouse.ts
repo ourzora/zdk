@@ -4,10 +4,7 @@ import {
   AuctionHouse as AuctionHouseContract,
   AuctionHouse__factory,
 } from '@zoralabs/auction-house/dist/typechain'
-import rinkebyAddresses from '@zoralabs/auction-house/dist/addresses/4.json'
-import mainnetAddresses from '@zoralabs/auction-house/dist/addresses/1.json'
-import { addresses } from './addresses'
-import { chainIdToNetworkName } from './utils'
+import { addressesByChainId } from './addresses'
 
 export interface Auction {
   approved: boolean
@@ -33,14 +30,9 @@ export class AuctionHouse {
     this.chainId = chainId
     this.readOnly = !Signer.isSigner(signerOrProvider)
     this.signerOrProvider = signerOrProvider
-    const address =
-      chainId === 1
-        ? // @ts-ignore
-          mainnetAddresses.auctionHouse
-        : rinkebyAddresses.auctionHouse
+    const address = addressesByChainId[chainId].auctionHouse
     this.auctionHouse = AuctionHouse__factory.connect(address, signerOrProvider)
-    const network = chainIdToNetworkName(chainId)
-    this.zoraAddress = addresses[network].media
+    this.zoraAddress = addressesByChainId[chainId].media
   }
 
   public async fetchAuction(auctionId: BigNumberish): Promise<Auction> {
