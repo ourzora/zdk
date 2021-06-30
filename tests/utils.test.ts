@@ -9,7 +9,6 @@ import {
   recoverSignatureFromMintWithSig,
   recoverSignatureFromPermit,
   sha256FromBuffer,
-  sha256FromFile,
   sha256FromHexString,
   signMintWithSigMessage,
   signPermitMessage,
@@ -56,18 +55,6 @@ describe('Utils', () => {
   })
 
   describe('Hashing Utilities', () => {
-    describe('#sha256FromFile', () => {
-      it('it properly hashes a file smaller than the chunk size', async () => {
-        const resultHash = await sha256FromFile('./fixtures/HelloWorld.txt', 16 * 1024)
-        expect(resultHash).toBe(hash)
-      })
-
-      it('it properly hashes a file larger than the chunk size', async () => {
-        const resultHash = await sha256FromFile('./fixtures/kanye.jpg', 16 * 1024)
-        expect(resultHash).toBe(kanyeHash)
-      })
-    })
-
     describe('#sha256FromBuffer', () => {
       it('it properly hashes from buffer', async () => {
         const kanyeBuf = await fs.readFile('./fixtures/kanye.jpg')

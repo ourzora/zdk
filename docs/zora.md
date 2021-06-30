@@ -38,7 +38,7 @@ import { Wallet } from 'ethers'
 
 const wallet = Wallet.createRandom()
 const zora = new Zora(wallet, 1)
-await zora.totalSupply()
+const totalSupply = await zora.fetchTotalMedia()
 ```
 
 #### Rinkeby
@@ -49,7 +49,7 @@ import { Wallet } from 'ethers'
 
 const wallet = Wallet.createRandom()
 const zora = new Zora(wallet, 4)
-await zora.totalSupply()
+const totalSupply = await zora.fetchTotalMedia()
 ```
 
 #### Local Blockchain
@@ -62,7 +62,7 @@ import { Wallet } from 'ethers'
 
 const wallet = Wallet.createRandom()
 const zora = new Zora(wallet, 50, mediaAddress, marketAddress)
-await zora.totalSupply()
+const totalSupply = await zora.fetchTotalMedia()
 ```
 
 ## Read Functions

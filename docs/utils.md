@@ -124,20 +124,6 @@ const hexString = '0x'.concat(buf.toString('hex'))
 const hash = sha256FromHexString(hexString)
 ```
 
-#### sha256FromFile
-
-Create a sha256 hash from a local file
-This is most useful for the hashing of large files. It uses a readStream to load bits into memory via a buffer and construct a hash as it consumes the contents of the file.
-
-| **Name**   | **Type** | **Description**                                                 |
-| ---------- | -------- | --------------------------------------------------------------- |
-| pathToFile | string   | The path to the file to be hashed                               |
-| chunkSize  | number   | The chunk size in bytes for the read stream to read into memory |
-
-```typescript
-const hash = await sha256FromFile('path/to/file', 16 * 1024)
-```
-
 ### EIP-712 Utilities
 
 #### signPermitMessage
