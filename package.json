@@ -23,8 +23,8 @@
     "node": ">=10"
   },
   "dependencies": {
-    "@zoralabs/auction-house": "^1.1.1",
-    "@zoralabs/core": "^1.0.3",
+    "@zoralabs/auction-house": "^1.1.3",
+    "@zoralabs/core": "^1.0.5",
     "@zoralabs/media-metadata-schemas": "^0.1.2",
     "axios": "^0.21.1",
     "eth-sig-util": "^3.0.0",

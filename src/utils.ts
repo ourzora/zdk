@@ -13,18 +13,19 @@ import {
 } from './types'
 import { Decimal } from './Decimal'
 import {
-  BigNumber,
-  BigNumberish,
+  arrayify,
   BytesLike,
-  ContractTransaction,
-  ethers,
-  Wallet,
-} from 'ethers'
-import { arrayify, hexDataLength, hexlify, isHexString } from '@ethersproject/bytes'
+  hexDataLength,
+  hexlify,
+  isHexString,
+} from '@ethersproject/bytes'
 import { recoverTypedSignature, signTypedData_v4 } from 'eth-sig-util'
 import { fromRpcSig, toRpcSig } from 'ethereumjs-util'
 import { BaseErc20Factory } from '@zoralabs/core/dist/typechain'
 import axios from 'axios'
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
+import { ethers, Wallet } from 'ethers'
+import { ContractTransaction } from '@ethersproject/contracts'
 
 // // https://etherscan.io/address/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
 export const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
@@ -232,6 +233,12 @@ export function validateAndParseAddress(address: string): string {
  */
 export function chainIdToNetworkName(chainId: number): string {
   switch (chainId) {
+    case 80001: {
+      return 'polygonMumbai'
+    }
+    case 137: {
+      return 'polygon'
+    }
     case 4: {
       return 'rinkeby'
     }

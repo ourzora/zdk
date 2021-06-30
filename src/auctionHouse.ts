@@ -6,8 +6,17 @@ import {
 } from '@zoralabs/auction-house/dist/typechain'
 import rinkebyAddresses from '@zoralabs/auction-house/dist/addresses/4.json'
 import mainnetAddresses from '@zoralabs/auction-house/dist/addresses/1.json'
+import polygonAddresses from '@zoralabs/auction-house/dist/addresses/137.json'
+import polygonMumbaiAddresses from '@zoralabs/auction-house/dist/addresses/80001.json'
 import { addresses } from './addresses'
 import { chainIdToNetworkName } from './utils'
+
+const auctionHouseAddresses: { [key: string]: string } = {
+  rinkeby: rinkebyAddresses.auctionHouse,
+  mainnet: mainnetAddresses.auctionHouse,
+  polygon: polygonAddresses.auctionHouse,
+  polygonMumbai: polygonMumbaiAddresses.auctionHouse,
+}
 
 export interface Auction {
   approved: boolean
@@ -33,13 +42,9 @@ export class AuctionHouse {
     this.chainId = chainId
     this.readOnly = !Signer.isSigner(signerOrProvider)
     this.signerOrProvider = signerOrProvider
-    const address =
-      chainId === 1
-        ? // @ts-ignore
-          mainnetAddresses.auctionHouse
-        : rinkebyAddresses.auctionHouse
-    this.auctionHouse = AuctionHouse__factory.connect(address, signerOrProvider)
     const network = chainIdToNetworkName(chainId)
+    const address = auctionHouseAddresses[network]
+    this.auctionHouse = AuctionHouse__factory.connect(address, signerOrProvider)
     this.zoraAddress = addresses[network].media
   }
 
