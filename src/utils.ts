@@ -283,41 +283,6 @@ export function sha256FromHexString(data: string): string {
 }
 
 /**
- * Generates a sha256 hash from a file and returns the hash hex-encoded
- *
- * This method is preferred for generating the hash for large files
- * because it leverages a read stream and only stores the specified chunk
- * size in memory.
- *
- * @param pathToFile
- * @param chunkSize (Bytes)
- */
-export function sha256FromFile(pathToFile: string, chunkSize: number): Promise<string> {
-  if (typeof window !== 'undefined') {
-    throw new Error('This method is not available in a browser context')
-  }
-
-  const fs = require('fs')
-
-  const hash = new sjcl.hash.sha256()
-  const readStream = fs.createReadStream(pathToFile, { highWaterMark: chunkSize })
-
-  return new Promise<string>((resolve, reject) => {
-    readStream.on('data', (chunk: Buffer | string) => {
-      hash.update(sjcl.codec.hex.toBits(chunk.toString('hex')))
-    })
-
-    readStream.on('end', () => {
-      resolve('0x'.concat(sjcl.codec.hex.fromBits(hash.finalize())))
-    })
-
-    readStream.on('error', (err: Error) => {
-      reject(err)
-    })
-  })
-}
-
-/**
  * Removes the hex prefix of the passed string if it exists
  *
  * @param hex

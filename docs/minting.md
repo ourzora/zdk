@@ -43,17 +43,17 @@ The uri where the cryptomedia's metadata is hosted. This could link to any stora
 
 The metadata uri must be prefixed with `https://` or at mint time the sdk will reject it.
 
-To construct the metadata of a piece of cryptomedia, use the `generateMetadata` function defined in `metadata.ts`. For more info visit [Metadata](../reference/metadata)
+To construct the metadata of a piece of cryptomedia, use the `generateMetadata` function defined in `metadata.ts`. For more info visit [Metadata](../docs/metadata.md)
 
 #### contentHash
 
 The sha256 hash of the content the cryptomedia represents. It is imperative that this hash is correct, because once it is written to the blockchain it **cannot** be changed.
-To generate this hash use any of the sha256 utils defined in [utils](../reference/utils).
+To generate this hash use any of the sha256 utils defined in [utils](../docs/utils.md).
 
 #### metadataHash
 
 The sha256 hash of the metadata of the cryptomedia. It is imperative that this hash is correct, because once it is written to the blockchain it **cannot** be changed.
-To generate this hash use any of the sha256 utils defined in [utils](../reference/utils).
+To generate this hash use any of the sha256 utils defined in [utils](../docs/utils.md).
 
 #### Example
 
