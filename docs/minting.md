@@ -28,7 +28,7 @@ The uri where the cryptomedia's content is hosted. This could link to any storag
 - [ipfs](https://ipfs.io/)
 - [arweave](https://www.arweave.org/)
 - [storj](https://storj.io/)
-- [sia](https://sia.tech/)
+- [skynet](https://siasky.net/)
 
 The token uri must be prefixed with `https://` or at mint time the sdk will reject it.
 
@@ -39,7 +39,7 @@ The uri where the cryptomedia's metadata is hosted. This could link to any stora
 - [ipfs](https://ipfs.io/)
 - [arweave](https://www.arweave.org/)
 - [storj](https://storj.io/)
-- [sia](https://sia.tech/)
+- [skynet](https://siasky.net/)
 
 The metadata uri must be prefixed with `https://` or at mint time the sdk will reject it.
 
