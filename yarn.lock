@@ -1554,10 +1554,10 @@
   dependencies:
     ethers "^5.0.19"
 
-"@zoralabs/media-metadata-schemas@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@zoralabs/media-metadata-schemas/-/media-metadata-schemas-0.1.2.tgz#b6f3532e7bca95197fa8a7ca136ad70dbdce1d2d"
-  integrity sha512-QcvPNb4RkdU9xKfOxnmKRKKVI4Z5oammiz2wYHmqzOvkIgHvm7tjV/MQcTelaRJfjksYx8k6bqsmbSbKIMUJTQ==
+"@zoralabs/media-metadata-schemas@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@zoralabs/media-metadata-schemas/-/media-metadata-schemas-0.1.4.tgz#22cce7fc83456abcf0b9ce98841dbdb44f8e14c6"
+  integrity sha512-F9Tjdgy2wocbKhia1zrPjMjn+Zlrd9WOu3GpWeqfcGa4tcM3ygjuMmG+IqG1SN5lMyoizFFR35MAlGHHVoKFFA==
   dependencies:
     "@types/jsonschema" "^1.1.1"
     jsonschema "^1.4.0"
