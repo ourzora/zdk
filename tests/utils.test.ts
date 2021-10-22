@@ -361,9 +361,16 @@ describe('Utils', () => {
     })
 
     it('does not raise if a uri is passed with an `https://` prefix', () => {
-      const invalidURI = 'https://example.com'
+      const validUri = 'https://example.com'
       expect(() => {
-        validateURI(invalidURI)
+        validateURI(validUri)
+      }).not.toThrow()
+    })
+
+    it('does not raise if a uri is passed with an `ipfs://` prefix', () => {
+      const validUri = 'ipfs://example.com'
+      expect(() => {
+        validateURI(validUri)
       }).not.toThrow()
     })
   })
