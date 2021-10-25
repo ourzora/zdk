@@ -206,8 +206,8 @@ export function validateBytes32(value: BytesLike) {
  * @param uri
  */
 export function validateURI(uri: string) {
-  if (!uri.match(/^https:\/\/(.*)/)) {
-    invariant(false, `${uri} must begin with \`https://\``)
+  if (!uri.match(/^(https)|(ipfs):\/\/(.*)/)) {
+    invariant(false, `${uri} must begin with \`https://\` or \`ipfs://\``)
   }
 }
 
