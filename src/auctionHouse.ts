@@ -56,10 +56,16 @@ export class AuctionHouse {
     receipt: TransactionReceipt
   ): Promise<Auction | null> {
     for (const log of receipt.logs) {
-      const description = this.auctionHouse.interface.parseLog(log)
+      try {
+        const description = this.auctionHouse.interface.parseLog(log)
 
-      if (description.args.auctionId && log.address === this.auctionHouse.address) {
-        return this.fetchAuction(description.args.auctionId)
+        if (description.args.auctionId && log.address === this.auctionHouse.address) {
+          return this.fetchAuction(description.args.auctionId)
+        }
+      } catch (err) {
+        if (err.message.includes('no matching event')) {
+          continue
+        }
       }
     }
 
