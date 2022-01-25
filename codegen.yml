@@ -1,6 +1,6 @@
-schema: https://localhost:3000/graphql
+schema: http://localhost:8000/graphql
 generates:
-  ./src/types.ts:
+  ./src/queries/indexer-types.ts:
     plugins:
       - typescript
       - typescript-operations
