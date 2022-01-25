@@ -1,6 +1,6 @@
 module.exports = {
   testEnvironment: 'jsdom',
-  testRegex: "/tests/.*\\.(test|spec)?\\.(ts|tsx)$",
+  testRegex: "/test/.*\\.(test|spec)?\\.(ts|tsx)$",
   moduleFileExtensions: ['js', 'ts', 'tsx', 'json', 'gql', 'graphql'],
   maxWorkers: 2,
   modulePaths: ["<rootDir>/src"],
