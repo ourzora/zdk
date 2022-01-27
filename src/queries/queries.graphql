@@ -1,0 +1,21 @@
+
+query getTokenContract($addresses: [String!]) {
+  tokenContracts(addresses: $addresses) {
+    name
+    description
+  }
+}
+
+query getCollections($addresses: [String!]) {
+  collections(addresses: $addresses) {
+    name
+    description
+  }
+}
+
+query getToken($addresses: [String!]) {
+  tokens(addresses: $addresses) {
+    name
+    metadata
+  }
+}

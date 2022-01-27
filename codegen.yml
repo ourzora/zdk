@@ -1,6 +1,9 @@
 schema: http://localhost:8000/graphql
 generates:
-  ./src/queries/indexer-types.ts:
+  ./src/queries/queries-sdk.ts:
+    documents: 
+      - ./src/queries/queries.graphql
     plugins:
       - typescript
+      - typescript-graphql-request
       - typescript-operations
