@@ -1,7 +1,7 @@
 {
   "name": "@zoralabs/zdk-alpha",
   "version": "0.0.1",
-  "description": "ZDK for fetching data from graphql api",
+  "description": "ZDK alpha for fetching data from graphql api",
   "repository": "https://github.com/ourzora/zdk-alpha",
   "author": "Zora",
   "license": "GPL-3.0",
@@ -45,7 +45,7 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{ts,md}": "prettier src --write"
+    "*.{ts,md,graphql}": "prettier src --write"
   },
   "husky": {
     "hooks": {
