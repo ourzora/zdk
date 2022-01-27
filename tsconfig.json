@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "outDir": "./dist",
+    "target": "es2018",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "preserveConstEnums": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src", "graph-schemas"]
+}
