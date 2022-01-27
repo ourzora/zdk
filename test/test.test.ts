@@ -1,10 +1,10 @@
-import { ZDK } from "../src/zdk";
+import { ZDK } from '../src/zdk';
 
 describe('zdk', () => {
   let zdk: ZDK;
   beforeEach(() => {
-    zdk = new ZDK('http://localhost:8000/graphql'   );
-  })
+    zdk = new ZDK('http://localhost:8000/graphql');
+  });
   it('should fetch localhost collections empty object', async () => {
     expect(await zdk.getCollection([])).toEqual([]);
   });
@@ -14,5 +14,4 @@ describe('zdk', () => {
   it('should fetch localhost token contract empty object', async () => {
     expect(await zdk.getTokenContract([])).toEqual([]);
   });
-})
-
+});

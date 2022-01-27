@@ -1,4 +1,3 @@
-
 query getTokenContract($addresses: [String!]) {
   tokenContracts(addresses: $addresses) {
     name
