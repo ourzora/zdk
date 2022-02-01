@@ -1,4 +1,4 @@
-query getTokenContract($addresses: [String!]) {
+query getTokenContracts($addresses: [String!]) {
   tokenContracts(addresses: $addresses) {
     name
     description
@@ -12,7 +12,7 @@ query getCollections($addresses: [String!]) {
   }
 }
 
-query getToken($addresses: [String!]) {
+query getTokens($addresses: [String!]) {
   tokens(addresses: $addresses) {
     name
     metadata

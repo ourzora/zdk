@@ -11,10 +11,10 @@ export class ZDK {
     this.sdk = getSdk(new GraphQLClient(this.endpoint, { fetch: axios }));
   }
 
-  getTokens = async (addresses: string[]) => this.sdk.getToken({ addresses });
+  getTokens = async (addresses: string[]) => this.sdk.getTokens({ addresses });
 
-  getCollection = async (addresses: string[]) => this.sdk.getCollections({ addresses });
+  getCollections = async (addresses: string[]) => this.sdk.getCollections({ addresses });
 
-  getTokenContract = async (addresses: string[]) =>
-    this.sdk.getTokenContract({ addresses });
+  getTokenContracts = async (addresses: string[]) =>
+    this.sdk.getTokenContracts({ addresses });
 }
