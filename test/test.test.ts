@@ -1,9 +1,10 @@
+import { Chain, Network } from '../src/queries/queries-sdk';
 import { ZDK } from '../src/zdk';
 
 describe('zdk', () => {
   let zdk: ZDK;
   beforeEach(() => {
-    zdk = new ZDK('http://localhost:8000/graphql');
+    zdk = new ZDK(process.env.ZDK_ENDPOINT, Network.Ethereum, Chain.Mainnet);
   });
   it('should fetch localhost collections empty object', async () => {
     expect(await zdk.getCollection([])).toEqual([]);
