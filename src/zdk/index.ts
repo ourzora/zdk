@@ -2,6 +2,9 @@ import axios from 'axios';
 import { GraphQLClient } from 'graphql-request';
 import { Chain, getSdk, Network, SortDirection } from '../queries/queries-sdk';
 
+// Export chain and network for API users
+export {Chain as ZDKChain, Network as ZDKNetwork};
+
 type OverrideNetworkOptions = {
   network?: Network;
   chain?: Chain;
@@ -57,16 +60,6 @@ export class ZDK {
     networkOptions?: OverrideNetworkOptions
   ) =>
     this.sdk.token({
-      token: { tokenId, address: contract },
-      ...this.getNetworkOptions(networkOptions),
-    });
-
-  tokenSummary = async (
-    contract: string,
-    tokenId: string,
-    networkOptions?: OverrideNetworkOptions
-  ) =>
-    this.sdk.tokenSummary({
       token: { tokenId, address: contract },
       ...this.getNetworkOptions(networkOptions),
     });

@@ -397,13 +397,6 @@ export const TokenDocument = gql`
   }
 }
     ${TokenFullFragmentFragmentDoc}`;
-export const TokenSummaryDocument = gql`
-    query tokenSummary($network: NetworkInput!, $token: TokenInput!) {
-  token(tokenInput: $token, networkInput: $network) {
-    ...TokenSummaryFragment
-  }
-}
-    ${TokenSummaryFragmentFragmentDoc}`;
 export const TokensSummaryDocument = gql`
     query tokensSummary($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!) {
   tokens(
@@ -438,9 +431,6 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     token(variables: TokenQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TokenQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TokenQuery>(TokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'token');
-    },
-    tokenSummary(variables: TokenSummaryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TokenSummaryQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<TokenSummaryQuery>(TokenSummaryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'tokenSummary');
     },
     tokensSummary(variables: TokensSummaryQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TokensSummaryQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TokensSummaryQuery>(TokensSummaryDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'tokensSummary');
@@ -511,20 +501,6 @@ export type TokenQuery = (
   & { token?: Maybe<(
     { __typename?: 'Token' }
     & TokenFullFragmentFragment
-  )> }
-);
-
-export type TokenSummaryQueryVariables = Exact<{
-  network: NetworkInput;
-  token: TokenInput;
-}>;
-
-
-export type TokenSummaryQuery = (
-  { __typename?: 'RootQuery' }
-  & { token?: Maybe<(
-    { __typename?: 'Token' }
-    & TokenSummaryFragmentFragment
   )> }
 );
 

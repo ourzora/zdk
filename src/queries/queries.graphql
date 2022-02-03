@@ -16,8 +16,6 @@ fragment TokenFullFragment on Token {
   ...TokenSummaryFragment
 
   description
-
-
 }
 
 query collections($network: NetworkInput!, $addresses: [String!]!) {
@@ -26,9 +24,13 @@ query collections($network: NetworkInput!, $addresses: [String!]!) {
   }
 }
 
-query tokens($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!) {
+query tokens(
+  $network: NetworkInput!
+  $addresses: [String!]!
+  $pagination: PaginationInput!
+) {
   tokens(addresses: $addresses, networkInput: $network, paginationInput: $pagination) {
-   totalCount
+    totalCount
     pageInfo {
       limit
       offset
@@ -45,13 +47,11 @@ query token($network: NetworkInput!, $token: TokenInput!) {
   }
 }
 
-query tokenSummary($network: NetworkInput!, $token: TokenInput!) {
-  token(tokenInput: $token, networkInput: $network) {
-    ...TokenSummaryFragment
-  }
-}
-
-query tokensSummary($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!) {
+query tokensSummary(
+  $network: NetworkInput!
+  $addresses: [String!]!
+  $pagination: PaginationInput!
+) {
   tokens(addresses: $addresses, networkInput: $network, paginationInput: $pagination) {
     totalCount
     pageInfo {
@@ -63,4 +63,3 @@ query tokensSummary($network: NetworkInput!, $addresses: [String!]!, $pagination
     }
   }
 }
-
