@@ -1,0 +1,295 @@
+schema {
+  query: RootQuery
+}
+
+"""Exposes a URL that specifies the behaviour of this scalar."""
+directive @specifiedBy(
+  """The URL that specifies the behaviour of this scalar."""
+  url: String!
+) on SCALAR
+
+enum Chain {
+  MAINNET
+  POLYGON
+  RINKEBY
+  ROPSTEN
+}
+
+type Collection {
+  name: String!
+  address: String!
+  description: String!
+  totalSupply: Int
+}
+
+union Event = Transfer | V2AuctionEvent | V3AskEvent
+
+type EventConnection {
+  nodes: [Event!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+The GenericScalar scalar type represents a generic GraphQL scalar value that could be: List or Object.
+"""
+scalar JSONScalar
+
+type MediaAsset {
+  url: String!
+  mediaType: MediaType!
+  mimeType: String!
+  width: Int!
+  height: Int!
+  duration: Int
+}
+
+type MediaEncoding {
+  original: MediaAsset!
+  large: MediaAsset!
+  poster: MediaAsset!
+  preview: MediaAsset!
+  thumbnail: MediaAsset!
+}
+
+enum MediaType {
+  IMAGE
+  ANIMATION
+  TEXT
+  HTML
+  VIDEO
+  AUDIO
+  UNKNOWN
+}
+
+enum Network {
+  ETHEREUM
+  FLOW
+  SOLANA
+}
+
+input NetworkInput {
+  network: Network!
+  chain: Chain!
+}
+
+type PageInfo {
+  limit: Int!
+  offset: Int!
+}
+
+input PaginationInput {
+  sortKey: String!
+  sortDirection: SortDirection!
+  limit: Int! = 10
+  offset: Int! = 0
+}
+
+type RootQuery {
+  """Get collections by addresses"""
+  collections(networkInput: NetworkInput!, addresses: [String!] = null): [Collection!]!
+
+  """Get events by address and token id"""
+  events(tokenInput: TokenInput!, networkInput: NetworkInput!, paginationInput: PaginationInput!): EventConnection!
+
+  """Get tokens by addresses"""
+  tokens(addresses: [String!]!, networkInput: NetworkInput!, paginationInput: PaginationInput!): TokenConnection!
+
+  """Get a single token by address and id"""
+  token(tokenInput: TokenInput!, networkInput: NetworkInput!): Token
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+type Token {
+  tokenAddress: String!
+  tokenId: String!
+  network: Network!
+  tokenUrl: String!
+  tokenUrlMimeType: String
+  content: TokenContent
+  owner: String!
+  tokenContract: TokenContract!
+  mintBlockNumber: Int!
+  name: String
+  description: String
+  externalURL: String
+  metadata: JSONScalar
+  attributes: [TokenAttribute!]
+  minter: String
+  lastRefreshTime: Int
+}
+
+type TokenAttribute {
+  traitType: String!
+  name: String
+  value: String
+  role: String
+  displayType: String
+  maxValue: String
+  traitCount: Int
+  shares: Int
+}
+
+type TokenConnection {
+  nodes: [Token!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type TokenContent {
+  url: String!
+  mimeType: String!
+  tokenContentMedia: [TokenContentMedia!]
+}
+
+type TokenContentMedia {
+  mediaType: MediaType
+  url: String
+  mimeType: String
+  size: String
+  tokenContentMediaEncoding: MediaEncoding
+}
+
+type TokenContract {
+  tokenAddress: String!
+  chain: Int!
+  name: String!
+  symbol: String!
+  totalSupply: Int
+  schema: String!
+  description: String!
+  creator: String!
+  externalUrl: String!
+  iconUrl: String!
+  network: String!
+}
+
+input TokenInput {
+  address: String!
+  tokenId: String!
+}
+
+type Transfer {
+  fromAddress: String!
+  toAddress: String!
+  address: String!
+  tokenId: String!
+}
+
+type V2AuctionApprovalUpdatedEventProperties {
+  approved: Boolean!
+}
+
+type V2AuctionBidEventProperties {
+  sender: String!
+  firstBid: Boolean!
+  extended: Boolean!
+  value: Int!
+}
+
+type V2AuctionCanceledEventProperties {
+  tokenOwner: String!
+}
+
+type V2AuctionCreatedEventProperties {
+  auctionCurrency: String!
+  tokenOwner: String!
+  curator: String!
+  curatorFeePercentage: Int!
+  duration: Int!
+  reservePrice: Int!
+}
+
+type V2AuctionDurationExtendedEventProperties {
+  duration: Int!
+}
+
+type V2AuctionEndedEventProperties {
+  tokenOwner: String!
+  curator: String!
+  winner: String!
+  auctionCurrency: String!
+  amount: Int!
+  curatorFee: Int!
+}
+
+type V2AuctionEvent {
+  eventType: V2AuctionEventType!
+  address: String!
+  auctionId: Int!
+  collectionAddress: String!
+  tokenId: Int!
+  properties: V2AuctionEventProperties!
+}
+
+union V2AuctionEventProperties = V2AuctionBidEventProperties | V2AuctionCreatedEventProperties | V2AuctionCanceledEventProperties | V2AuctionDurationExtendedEventProperties | V2AuctionEndedEventProperties | V2AuctionReservePriceUpdatedEventProperties | V2AuctionApprovalUpdatedEventProperties
+
+enum V2AuctionEventType {
+  V2_AUCTION_CREATED
+  V2_AUCTION_CANCELED
+  V2_AUCTION_RESERVE_PRICE_UPDATED
+  V2_AUCTION_BID
+  V2_AUCION_DURATION_EXTENDED
+  V2_AUCTION_APPROVAL_UPDATED
+  V2_AUCTION_ENDED
+}
+
+type V2AuctionReservePriceUpdatedEventProperties {
+  reservePrice: Int!
+}
+
+type V3AskCanceledEventProperties {
+  seller: String!
+  sellerFundsRecipient: String!
+  askCurrency: String!
+  askPrice: Int!
+  findersFeeBps: Int!
+}
+
+type V3AskCreatedEventProperties {
+  seller: String!
+  sellerFundsRecipient: String!
+  askCurrency: String!
+  askPrice: Int!
+  findersFeeBps: Int!
+}
+
+type V3AskEvent {
+  eventType: V3AskEventType!
+  address: String!
+  collectionAddress: String!
+  tokenId: Int!
+  properties: V3AskEventProperties!
+}
+
+union V3AskEventProperties = V3AskCreatedEventProperties | V3AskCanceledEventProperties | V3AskPriceUpdatedEventProperties | V3AskFilledEventProperties
+
+enum V3AskEventType {
+  V3_ASK_CREATED
+  V3_ASK_CANCELED
+  V3_ASK_PRICE_UPDATED
+  V3_ASK_FILLED
+}
+
+type V3AskFilledEventProperties {
+  seller: String!
+  sellerFundsRecipient: String!
+  askCurrency: String!
+  askPrice: Int!
+  findersFeeBps: Int!
+  buyer: String!
+  finder: String!
+}
+
+type V3AskPriceUpdatedEventProperties {
+  seller: String!
+  sellerFundsRecipient: String!
+  askCurrency: String!
+  askPrice: Int!
+  findersFeeBps: Int!
+}
+

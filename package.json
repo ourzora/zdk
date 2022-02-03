@@ -39,6 +39,7 @@
     "publish-prerelease": "npm publish --access public --tag=pre-release",
     "gen-graphql-types": "graphql-code-generator",
     "test": "jest",
+    "download-schemas": "npx get-graphql-schema $ZDK_ENDPOINT > graph-schemas/indexer-graph.graphql",
     "clean": "rm -rf ./dist",
     "prepack": "yarn clean && tsc",
     "build": "yarn run prepack",

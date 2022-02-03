@@ -1,4 +1,4 @@
-schema: http://34.120.198.204/graphql
+schema: ./graph-schemas/indexer-graph.graphql
 generates:
   ./src/queries/queries-sdk.ts:
     documents: 
