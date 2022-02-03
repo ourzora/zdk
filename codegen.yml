@@ -1,4 +1,4 @@
-schema: http://localhost:8000/graphql
+schema: http://34.120.198.204/graphql
 generates:
   ./src/queries/queries-sdk.ts:
     documents: 

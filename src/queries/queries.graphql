@@ -1,20 +1,66 @@
-query getTokenContract($addresses: [String!]) {
-  tokenContracts(addresses: $addresses) {
-    name
-    description
+fragment CollectionFragment on Collection {
+  name
+  # symbol
+}
+
+fragment TokenSummaryFragment on Token {
+  tokenId
+  tokenAddress
+
+  name
+
+  network
+}
+
+fragment TokenFullFragment on Token {
+  ...TokenSummaryFragment
+
+  description
+
+
+}
+
+query collections($network: NetworkInput!, $addresses: [String!]!) {
+  collections(addresses: $addresses, networkInput: $network) {
+    ...CollectionFragment
   }
 }
 
-query getCollections($addresses: [String!]) {
-  collections(addresses: $addresses) {
-    name
-    description
+query tokens($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!) {
+  tokens(addresses: $addresses, networkInput: $network, paginationInput: $pagination) {
+   totalCount
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      ...TokenFullFragment
+    }
   }
 }
 
-query getToken($addresses: [String!]) {
-  tokens(addresses: $addresses) {
-    name
-    metadata
+query token($network: NetworkInput!, $token: TokenInput!) {
+  token(tokenInput: $token, networkInput: $network) {
+    ...TokenFullFragment
   }
 }
+
+query tokenSummary($network: NetworkInput!, $token: TokenInput!) {
+  token(tokenInput: $token, networkInput: $network) {
+    ...TokenSummaryFragment
+  }
+}
+
+query tokensSummary($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!) {
+  tokens(addresses: $addresses, networkInput: $network, paginationInput: $pagination) {
+    totalCount
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      ...TokenSummaryFragment
+    }
+  }
+}
+
