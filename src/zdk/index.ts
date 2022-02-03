@@ -3,7 +3,7 @@ import { GraphQLClient } from 'graphql-request';
 import { Chain, getSdk, Network, SortDirection } from '../queries/queries-sdk';
 
 // Export chain and network for API users
-export {Chain as ZDKChain, Network as ZDKNetwork};
+export { Chain as ZDKChain, Network as ZDKNetwork };
 
 type OverrideNetworkOptions = {
   network?: Network;
@@ -42,7 +42,13 @@ export class ZDK {
   };
 
   getPaginationOptions = (
-    { limit, offset, sortKey, sortDirection }: OverridePaginationOptions = {limit: this.defaultMaxPageSize, offset: 0, sortKey: '', sortDirection: SortDirection.Desc}, defaultSortKey: string
+    { limit, offset, sortKey, sortDirection }: OverridePaginationOptions = {
+      limit: this.defaultMaxPageSize,
+      offset: 0,
+      sortKey: '',
+      sortDirection: SortDirection.Desc,
+    },
+    defaultSortKey: string
   ) => {
     return {
       pagination: {
@@ -50,7 +56,7 @@ export class ZDK {
         offset,
         sortKey: sortKey || defaultSortKey,
         sortDirection: sortDirection || SortDirection.Desc,
-      }
+      },
     };
   };
 
