@@ -20,7 +20,27 @@ type Collection {
   address: String!
   description: String!
   totalSupply: Int
+  symbol: String!
 }
+
+type CollectionConnection {
+  nodes: [Collection!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+enum CollectionSortKey {
+  NAME
+  CREATED
+}
+
+input CollectionSortKeySortInput {
+  sortKey: CollectionSortKey!
+  sortDirection: SortDirection!
+}
+
+"""Date (isoformat)"""
+scalar Date
 
 union Event = Transfer | V2AuctionEvent | V3AskEvent
 
@@ -30,26 +50,26 @@ type EventConnection {
   totalCount: Int!
 }
 
+enum EventSortKey {
+  CREATED
+}
+
+input EventSortKeySortInput {
+  sortKey: EventSortKey!
+  sortDirection: SortDirection!
+}
+
 """
 The GenericScalar scalar type represents a generic GraphQL scalar value that could be: List or Object.
 """
 scalar JSONScalar
 
-type MediaAsset {
-  url: String!
-  mediaType: MediaType!
-  mimeType: String!
-  width: Int!
-  height: Int!
-  duration: Int
-}
-
 type MediaEncoding {
-  original: MediaAsset!
-  large: MediaAsset!
-  poster: MediaAsset!
-  preview: MediaAsset!
-  thumbnail: MediaAsset!
+  original: String!
+  large: String!
+  poster: String!
+  preview: String!
+  thumbnail: String!
 }
 
 enum MediaType {
@@ -62,10 +82,21 @@ enum MediaType {
   UNKNOWN
 }
 
+type MintContext {
+  blockNumber: Int!
+  blockTimestamp: Date!
+  transactionHash: String!
+}
+
 enum Network {
   ETHEREUM
   FLOW
   SOLANA
+}
+
+type NetworkInfo {
+  network: Network!
+  chain: Chain!
 }
 
 input NetworkInput {
@@ -79,24 +110,22 @@ type PageInfo {
 }
 
 input PaginationInput {
-  sortKey: String!
-  sortDirection: SortDirection!
-  limit: Int! = 10
-  offset: Int! = 0
+  limit: Int!
+  offset: Int!
 }
 
 type RootQuery {
   """Get collections by addresses"""
-  collections(networkInput: NetworkInput!, addresses: [String!] = null): [Collection!]!
+  collections(pagination: PaginationInput!, sort: CollectionSortKeySortInput!, network: NetworkInput!, addresses: [String!] = null): CollectionConnection!
 
   """Get events by address and token id"""
-  events(tokenInput: TokenInput!, networkInput: NetworkInput!, paginationInput: PaginationInput!): EventConnection!
+  events(token: TokenInput!, network: NetworkInput!, pagination: PaginationInput!, sort: EventSortKeySortInput!): EventConnection!
 
   """Get tokens by addresses"""
-  tokens(addresses: [String!]!, networkInput: NetworkInput!, paginationInput: PaginationInput!): TokenConnection!
+  tokens(network: NetworkInput!, pagination: PaginationInput!, sort: TokenSortKeySortInput!, addresses: [String!] = null): TokenConnection!
 
   """Get a single token by address and id"""
-  token(tokenInput: TokenInput!, networkInput: NetworkInput!): Token
+  token(token: TokenInput!, network: NetworkInput!): Token
 }
 
 enum SortDirection {
@@ -107,16 +136,16 @@ enum SortDirection {
 type Token {
   tokenAddress: String!
   tokenId: String!
-  network: Network!
+  mintInfo: MintContext!
+  networkInfo: NetworkInfo!
   tokenUrl: String!
   tokenUrlMimeType: String
-  content: TokenContent
+  content: TokenContentMedia
+  image: TokenContentMedia
   owner: String!
   tokenContract: TokenContract!
-  mintBlockNumber: Int!
   name: String
   description: String
-  externalURL: String
   metadata: JSONScalar
   attributes: [TokenAttribute!]
   minter: String
@@ -140,18 +169,12 @@ type TokenConnection {
   totalCount: Int!
 }
 
-type TokenContent {
-  url: String!
-  mimeType: String!
-  tokenContentMedia: [TokenContentMedia!]
-}
-
 type TokenContentMedia {
   mediaType: MediaType
   url: String
   mimeType: String
   size: String
-  tokenContentMediaEncoding: MediaEncoding
+  mediaEncoding: MediaEncoding
 }
 
 type TokenContract {
@@ -171,6 +194,15 @@ type TokenContract {
 input TokenInput {
   address: String!
   tokenId: String!
+}
+
+enum TokenSortKey {
+  TOKEN_ID
+}
+
+input TokenSortKeySortInput {
+  sortKey: TokenSortKey!
+  sortDirection: SortDirection!
 }
 
 type Transfer {
