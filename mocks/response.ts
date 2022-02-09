@@ -22,7 +22,21 @@ export function makeServer(
 
   const schemaExec = makeExecutableSchema({
     typeDefs: schema,
-    resolvers: resolverOverrides,
+    resolvers: {...resolverOverrides, 
+      TokenContentMedia: {
+        mediaType: () => 'IMAGE',
+        url: () => 'https://example.com/image.jpg',
+        mimeType: () => 'image/png',
+        size: () => '2003',
+        // mediaEncoding: MediaEncoding
+      },
+      Token: {
+        tokenAddress: () => '0xCa21d4228cDCc68D4e23807E5e370C07577Dd152',
+        tokenId: () => '23',
+        name: () => "Token name",
+        description: () => "Token description",
+      },
+    },
   });
   return mockServer(schemaExec, mocks, true);
 }
