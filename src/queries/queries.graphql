@@ -5,6 +5,18 @@ fragment CollectionFragment on Collection {
   totalSupply
 }
 
+fragment FullMedia on TokenContentMedia {
+size
+    url
+    size
+    mimeType
+    mediaType
+    mediaEncoding {
+      preview
+      original
+    }
+}
+
 fragment TokenSummaryFragment on Token {
   minter
   tokenId
@@ -20,22 +32,10 @@ fragment TokenSummaryFragment on Token {
   name
   description
   image {
-    size
-    mimeType
-    mediaType
-    mediaEncoding {
-      preview
-      original
-    }
+    ...FullMedia
   }
   content {
-    size
-    mimeType
-    mediaType
-    mediaEncoding {
-      preview
-      original
-    }
+    ...FullMedia
   }
 }
 

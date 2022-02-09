@@ -10,7 +10,8 @@
   "source": "src/index.ts",
   "main": "dist/src/index.js",
   "files": [
-    "dist"
+    "dist/src",
+    "dist/mocks"
   ],
   "devDependencies": {
     "@graphql-codegen/cli": "2.5.0",

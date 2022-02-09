@@ -390,6 +390,19 @@ export const CollectionFragmentFragmentDoc = gql`
   totalSupply
 }
     `;
+export const FullMediaFragmentDoc = gql`
+    fragment FullMedia on TokenContentMedia {
+  size
+  url
+  size
+  mimeType
+  mediaType
+  mediaEncoding {
+    preview
+    original
+  }
+}
+    `;
 export const TokenSummaryFragmentFragmentDoc = gql`
     fragment TokenSummaryFragment on Token {
   minter
@@ -406,25 +419,13 @@ export const TokenSummaryFragmentFragmentDoc = gql`
   name
   description
   image {
-    size
-    mimeType
-    mediaType
-    mediaEncoding {
-      preview
-      original
-    }
+    ...FullMedia
   }
   content {
-    size
-    mimeType
-    mediaType
-    mediaEncoding {
-      preview
-      original
-    }
+    ...FullMedia
   }
 }
-    `;
+    ${FullMediaFragmentDoc}`;
 export const TokenFullFragmentFragmentDoc = gql`
     fragment TokenFullFragment on Token {
   ...TokenSummaryFragment
@@ -520,9 +521,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
 export type Sdk = ReturnType<typeof getSdk>;
 export type CollectionFragmentFragment = { __typename?: 'Collection', name: string, symbol: string, address: string, totalSupply?: number | null };
 
-export type TokenSummaryFragmentFragment = { __typename?: 'Token', minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null };
+export type FullMediaFragment = { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null };
 
-export type TokenFullFragmentFragment = { __typename?: 'Token', metadata?: any | null, minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null };
+export type TokenSummaryFragmentFragment = { __typename?: 'Token', minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null };
+
+export type TokenFullFragmentFragment = { __typename?: 'Token', metadata?: any | null, minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null };
 
 export type CollectionsQueryVariables = Exact<{
   network: NetworkInput;
@@ -542,7 +545,7 @@ export type TokensQueryVariables = Exact<{
 }>;
 
 
-export type TokensQuery = { __typename?: 'RootQuery', tokens: { __typename?: 'TokenConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Token', metadata?: any | null, minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null }> } };
+export type TokensQuery = { __typename?: 'RootQuery', tokens: { __typename?: 'TokenConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Token', metadata?: any | null, minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null }> } };
 
 export type TokenQueryVariables = Exact<{
   network: NetworkInput;
@@ -550,7 +553,7 @@ export type TokenQueryVariables = Exact<{
 }>;
 
 
-export type TokenQuery = { __typename?: 'RootQuery', token?: { __typename?: 'Token', metadata?: any | null, minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null } | null };
+export type TokenQuery = { __typename?: 'RootQuery', token?: { __typename?: 'Token', metadata?: any | null, minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null } | null };
 
 export type TokensSummaryQueryVariables = Exact<{
   network: NetworkInput;
@@ -560,4 +563,4 @@ export type TokensSummaryQueryVariables = Exact<{
 }>;
 
 
-export type TokensSummaryQuery = { __typename?: 'RootQuery', tokens: { __typename?: 'TokenConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Token', minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null }> } };
+export type TokensSummaryQuery = { __typename?: 'RootQuery', tokens: { __typename?: 'TokenConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Token', minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null }> } };
