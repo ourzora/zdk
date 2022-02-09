@@ -16,6 +16,7 @@ fragment TokenSummaryFragment on Token {
   tokenUrl
   tokenAddress
   lastRefreshTime
+  owner
   name
   description
   image {

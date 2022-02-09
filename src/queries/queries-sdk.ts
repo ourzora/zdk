@@ -2,6 +2,7 @@ import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
@@ -27,11 +28,11 @@ export enum Chain {
 
 export type Collection = {
   __typename?: 'Collection';
-  name: Scalars['String'];
   address: Scalars['String'];
   description: Scalars['String'];
-  totalSupply?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
   symbol: Scalars['String'];
+  totalSupply?: Maybe<Scalars['Int']>;
 };
 
 export type CollectionConnection = {
@@ -42,15 +43,14 @@ export type CollectionConnection = {
 };
 
 export enum CollectionSortKey {
-  Name = 'NAME',
-  Created = 'CREATED'
+  Created = 'CREATED',
+  Name = 'NAME'
 }
 
 export type CollectionSortKeySortInput = {
-  sortKey: CollectionSortKey;
   sortDirection: SortDirection;
+  sortKey: CollectionSortKey;
 };
-
 
 export type Event = Transfer | V2AuctionEvent | V3AskEvent;
 
@@ -66,28 +66,27 @@ export enum EventSortKey {
 }
 
 export type EventSortKeySortInput = {
-  sortKey: EventSortKey;
   sortDirection: SortDirection;
+  sortKey: EventSortKey;
 };
-
 
 export type MediaEncoding = {
   __typename?: 'MediaEncoding';
-  original: Scalars['String'];
   large: Scalars['String'];
+  original: Scalars['String'];
   poster: Scalars['String'];
   preview: Scalars['String'];
   thumbnail: Scalars['String'];
 };
 
 export enum MediaType {
-  Image = 'IMAGE',
   Animation = 'ANIMATION',
-  Text = 'TEXT',
-  Html = 'HTML',
-  Video = 'VIDEO',
   Audio = 'AUDIO',
-  Unknown = 'UNKNOWN'
+  Html = 'HTML',
+  Image = 'IMAGE',
+  Text = 'TEXT',
+  Unknown = 'UNKNOWN',
+  Video = 'VIDEO'
 }
 
 export type MintContext = {
@@ -105,13 +104,13 @@ export enum Network {
 
 export type NetworkInfo = {
   __typename?: 'NetworkInfo';
-  network: Network;
   chain: Chain;
+  network: Network;
 };
 
 export type NetworkInput = {
-  network: Network;
   chain: Chain;
+  network: Network;
 };
 
 export type PageInfo = {
@@ -131,40 +130,40 @@ export type RootQuery = {
   collections: CollectionConnection;
   /** Get events by address and token id */
   events: EventConnection;
-  /** Get tokens by addresses */
-  tokens: TokenConnection;
   /** Get a single token by address and id */
   token?: Maybe<Token>;
+  /** Get tokens by addresses */
+  tokens: TokenConnection;
 };
 
 
 export type RootQueryCollectionsArgs = {
+  addresses?: InputMaybe<Array<Scalars['String']>>;
+  network: NetworkInput;
   pagination: PaginationInput;
   sort: CollectionSortKeySortInput;
-  network: NetworkInput;
-  addresses?: Maybe<Array<Scalars['String']>>;
 };
 
 
 export type RootQueryEventsArgs = {
-  token: TokenInput;
   network: NetworkInput;
   pagination: PaginationInput;
   sort: EventSortKeySortInput;
-};
-
-
-export type RootQueryTokensArgs = {
-  network: NetworkInput;
-  pagination: PaginationInput;
-  sort: TokenSortKeySortInput;
-  addresses?: Maybe<Array<Scalars['String']>>;
+  token: TokenInput;
 };
 
 
 export type RootQueryTokenArgs = {
-  token: TokenInput;
   network: NetworkInput;
+  token: TokenInput;
+};
+
+
+export type RootQueryTokensArgs = {
+  addresses?: InputMaybe<Array<Scalars['String']>>;
+  network: NetworkInput;
+  pagination: PaginationInput;
+  sort: TokenSortKeySortInput;
 };
 
 export enum SortDirection {
@@ -174,34 +173,34 @@ export enum SortDirection {
 
 export type Token = {
   __typename?: 'Token';
-  tokenAddress: Scalars['String'];
-  tokenId: Scalars['String'];
+  attributes?: Maybe<Array<TokenAttribute>>;
+  content?: Maybe<TokenContentMedia>;
+  description?: Maybe<Scalars['String']>;
+  image?: Maybe<TokenContentMedia>;
+  lastRefreshTime?: Maybe<Scalars['Int']>;
+  metadata?: Maybe<Scalars['JSONScalar']>;
   mintInfo: MintContext;
+  minter?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
   networkInfo: NetworkInfo;
+  owner: Scalars['String'];
+  tokenAddress: Scalars['String'];
+  tokenContract: TokenContract;
+  tokenId: Scalars['String'];
   tokenUrl: Scalars['String'];
   tokenUrlMimeType?: Maybe<Scalars['String']>;
-  content?: Maybe<TokenContentMedia>;
-  image?: Maybe<TokenContentMedia>;
-  owner: Scalars['String'];
-  tokenContract: TokenContract;
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  metadata?: Maybe<Scalars['JSONScalar']>;
-  attributes?: Maybe<Array<TokenAttribute>>;
-  minter?: Maybe<Scalars['String']>;
-  lastRefreshTime?: Maybe<Scalars['Int']>;
 };
 
 export type TokenAttribute = {
   __typename?: 'TokenAttribute';
-  traitType: Scalars['String'];
-  name?: Maybe<Scalars['String']>;
-  value?: Maybe<Scalars['String']>;
-  role?: Maybe<Scalars['String']>;
   displayType?: Maybe<Scalars['String']>;
   maxValue?: Maybe<Scalars['String']>;
-  traitCount?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  role?: Maybe<Scalars['String']>;
   shares?: Maybe<Scalars['Int']>;
+  traitCount?: Maybe<Scalars['Int']>;
+  traitType: Scalars['String'];
+  value?: Maybe<Scalars['String']>;
 };
 
 export type TokenConnection = {
@@ -213,26 +212,26 @@ export type TokenConnection = {
 
 export type TokenContentMedia = {
   __typename?: 'TokenContentMedia';
+  mediaEncoding?: Maybe<MediaEncoding>;
   mediaType?: Maybe<MediaType>;
-  url?: Maybe<Scalars['String']>;
   mimeType?: Maybe<Scalars['String']>;
   size?: Maybe<Scalars['String']>;
-  mediaEncoding?: Maybe<MediaEncoding>;
+  url?: Maybe<Scalars['String']>;
 };
 
 export type TokenContract = {
   __typename?: 'TokenContract';
-  tokenAddress: Scalars['String'];
   chain: Scalars['Int'];
-  name: Scalars['String'];
-  symbol: Scalars['String'];
-  totalSupply?: Maybe<Scalars['Int']>;
-  schema: Scalars['String'];
-  description: Scalars['String'];
   creator: Scalars['String'];
+  description: Scalars['String'];
   externalUrl: Scalars['String'];
   iconUrl: Scalars['String'];
+  name: Scalars['String'];
   network: Scalars['String'];
+  schema: Scalars['String'];
+  symbol: Scalars['String'];
+  tokenAddress: Scalars['String'];
+  totalSupply?: Maybe<Scalars['Int']>;
 };
 
 export type TokenInput = {
@@ -245,15 +244,15 @@ export enum TokenSortKey {
 }
 
 export type TokenSortKeySortInput = {
-  sortKey: TokenSortKey;
   sortDirection: SortDirection;
+  sortKey: TokenSortKey;
 };
 
 export type Transfer = {
   __typename?: 'Transfer';
+  address: Scalars['String'];
   fromAddress: Scalars['String'];
   toAddress: Scalars['String'];
-  address: Scalars['String'];
   tokenId: Scalars['String'];
 };
 
@@ -264,9 +263,9 @@ export type V2AuctionApprovalUpdatedEventProperties = {
 
 export type V2AuctionBidEventProperties = {
   __typename?: 'V2AuctionBidEventProperties';
-  sender: Scalars['String'];
-  firstBid: Scalars['Boolean'];
   extended: Scalars['Boolean'];
+  firstBid: Scalars['Boolean'];
+  sender: Scalars['String'];
   value: Scalars['Int'];
 };
 
@@ -278,11 +277,11 @@ export type V2AuctionCanceledEventProperties = {
 export type V2AuctionCreatedEventProperties = {
   __typename?: 'V2AuctionCreatedEventProperties';
   auctionCurrency: Scalars['String'];
-  tokenOwner: Scalars['String'];
   curator: Scalars['String'];
   curatorFeePercentage: Scalars['Int'];
   duration: Scalars['Int'];
   reservePrice: Scalars['Int'];
+  tokenOwner: Scalars['String'];
 };
 
 export type V2AuctionDurationExtendedEventProperties = {
@@ -292,34 +291,34 @@ export type V2AuctionDurationExtendedEventProperties = {
 
 export type V2AuctionEndedEventProperties = {
   __typename?: 'V2AuctionEndedEventProperties';
-  tokenOwner: Scalars['String'];
-  curator: Scalars['String'];
-  winner: Scalars['String'];
-  auctionCurrency: Scalars['String'];
   amount: Scalars['Int'];
+  auctionCurrency: Scalars['String'];
+  curator: Scalars['String'];
   curatorFee: Scalars['Int'];
+  tokenOwner: Scalars['String'];
+  winner: Scalars['String'];
 };
 
 export type V2AuctionEvent = {
   __typename?: 'V2AuctionEvent';
-  eventType: V2AuctionEventType;
   address: Scalars['String'];
   auctionId: Scalars['Int'];
   collectionAddress: Scalars['String'];
-  tokenId: Scalars['Int'];
+  eventType: V2AuctionEventType;
   properties: V2AuctionEventProperties;
+  tokenId: Scalars['Int'];
 };
 
-export type V2AuctionEventProperties = V2AuctionBidEventProperties | V2AuctionCreatedEventProperties | V2AuctionCanceledEventProperties | V2AuctionDurationExtendedEventProperties | V2AuctionEndedEventProperties | V2AuctionReservePriceUpdatedEventProperties | V2AuctionApprovalUpdatedEventProperties;
+export type V2AuctionEventProperties = V2AuctionApprovalUpdatedEventProperties | V2AuctionBidEventProperties | V2AuctionCanceledEventProperties | V2AuctionCreatedEventProperties | V2AuctionDurationExtendedEventProperties | V2AuctionEndedEventProperties | V2AuctionReservePriceUpdatedEventProperties;
 
 export enum V2AuctionEventType {
-  V2AuctionCreated = 'V2_AUCTION_CREATED',
-  V2AuctionCanceled = 'V2_AUCTION_CANCELED',
-  V2AuctionReservePriceUpdated = 'V2_AUCTION_RESERVE_PRICE_UPDATED',
-  V2AuctionBid = 'V2_AUCTION_BID',
   V2AucionDurationExtended = 'V2_AUCION_DURATION_EXTENDED',
   V2AuctionApprovalUpdated = 'V2_AUCTION_APPROVAL_UPDATED',
-  V2AuctionEnded = 'V2_AUCTION_ENDED'
+  V2AuctionBid = 'V2_AUCTION_BID',
+  V2AuctionCanceled = 'V2_AUCTION_CANCELED',
+  V2AuctionCreated = 'V2_AUCTION_CREATED',
+  V2AuctionEnded = 'V2_AUCTION_ENDED',
+  V2AuctionReservePriceUpdated = 'V2_AUCTION_RESERVE_PRICE_UPDATED'
 }
 
 export type V2AuctionReservePriceUpdatedEventProperties = {
@@ -329,58 +328,58 @@ export type V2AuctionReservePriceUpdatedEventProperties = {
 
 export type V3AskCanceledEventProperties = {
   __typename?: 'V3AskCanceledEventProperties';
-  seller: Scalars['String'];
-  sellerFundsRecipient: Scalars['String'];
   askCurrency: Scalars['String'];
   askPrice: Scalars['Int'];
   findersFeeBps: Scalars['Int'];
+  seller: Scalars['String'];
+  sellerFundsRecipient: Scalars['String'];
 };
 
 export type V3AskCreatedEventProperties = {
   __typename?: 'V3AskCreatedEventProperties';
-  seller: Scalars['String'];
-  sellerFundsRecipient: Scalars['String'];
   askCurrency: Scalars['String'];
   askPrice: Scalars['Int'];
   findersFeeBps: Scalars['Int'];
+  seller: Scalars['String'];
+  sellerFundsRecipient: Scalars['String'];
 };
 
 export type V3AskEvent = {
   __typename?: 'V3AskEvent';
-  eventType: V3AskEventType;
   address: Scalars['String'];
   collectionAddress: Scalars['String'];
-  tokenId: Scalars['Int'];
+  eventType: V3AskEventType;
   properties: V3AskEventProperties;
+  tokenId: Scalars['Int'];
 };
 
-export type V3AskEventProperties = V3AskCreatedEventProperties | V3AskCanceledEventProperties | V3AskPriceUpdatedEventProperties | V3AskFilledEventProperties;
+export type V3AskEventProperties = V3AskCanceledEventProperties | V3AskCreatedEventProperties | V3AskFilledEventProperties | V3AskPriceUpdatedEventProperties;
 
 export enum V3AskEventType {
-  V3AskCreated = 'V3_ASK_CREATED',
   V3AskCanceled = 'V3_ASK_CANCELED',
-  V3AskPriceUpdated = 'V3_ASK_PRICE_UPDATED',
-  V3AskFilled = 'V3_ASK_FILLED'
+  V3AskCreated = 'V3_ASK_CREATED',
+  V3AskFilled = 'V3_ASK_FILLED',
+  V3AskPriceUpdated = 'V3_ASK_PRICE_UPDATED'
 }
 
 export type V3AskFilledEventProperties = {
   __typename?: 'V3AskFilledEventProperties';
-  seller: Scalars['String'];
-  sellerFundsRecipient: Scalars['String'];
   askCurrency: Scalars['String'];
   askPrice: Scalars['Int'];
-  findersFeeBps: Scalars['Int'];
   buyer: Scalars['String'];
   finder: Scalars['String'];
+  findersFeeBps: Scalars['Int'];
+  seller: Scalars['String'];
+  sellerFundsRecipient: Scalars['String'];
 };
 
 export type V3AskPriceUpdatedEventProperties = {
   __typename?: 'V3AskPriceUpdatedEventProperties';
-  seller: Scalars['String'];
-  sellerFundsRecipient: Scalars['String'];
   askCurrency: Scalars['String'];
   askPrice: Scalars['Int'];
   findersFeeBps: Scalars['Int'];
+  seller: Scalars['String'];
+  sellerFundsRecipient: Scalars['String'];
 };
 
 export const CollectionFragmentFragmentDoc = gql`
@@ -403,6 +402,7 @@ export const TokenSummaryFragmentFragmentDoc = gql`
   tokenUrl
   tokenAddress
   lastRefreshTime
+  owner
   name
   description
   image {
@@ -518,39 +518,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;
-export type CollectionFragmentFragment = (
-  { __typename?: 'Collection' }
-  & Pick<Collection, 'name' | 'symbol' | 'address' | 'totalSupply'>
-);
+export type CollectionFragmentFragment = { __typename?: 'Collection', name: string, symbol: string, address: string, totalSupply?: number | null };
 
-export type TokenSummaryFragmentFragment = (
-  { __typename?: 'Token' }
-  & Pick<Token, 'minter' | 'tokenId' | 'tokenUrl' | 'tokenAddress' | 'lastRefreshTime' | 'name' | 'description'>
-  & { mintInfo: (
-    { __typename?: 'MintContext' }
-    & Pick<MintContext, 'blockTimestamp' | 'blockNumber' | 'transactionHash'>
-  ), image?: Maybe<(
-    { __typename?: 'TokenContentMedia' }
-    & Pick<TokenContentMedia, 'size' | 'mimeType' | 'mediaType'>
-    & { mediaEncoding?: Maybe<(
-      { __typename?: 'MediaEncoding' }
-      & Pick<MediaEncoding, 'preview' | 'original'>
-    )> }
-  )>, content?: Maybe<(
-    { __typename?: 'TokenContentMedia' }
-    & Pick<TokenContentMedia, 'size' | 'mimeType' | 'mediaType'>
-    & { mediaEncoding?: Maybe<(
-      { __typename?: 'MediaEncoding' }
-      & Pick<MediaEncoding, 'preview' | 'original'>
-    )> }
-  )> }
-);
+export type TokenSummaryFragmentFragment = { __typename?: 'Token', minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null };
 
-export type TokenFullFragmentFragment = (
-  { __typename?: 'Token' }
-  & Pick<Token, 'metadata'>
-  & TokenSummaryFragmentFragment
-);
+export type TokenFullFragmentFragment = { __typename?: 'Token', metadata?: any | null, minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null };
 
 export type CollectionsQueryVariables = Exact<{
   network: NetworkInput;
@@ -560,20 +532,7 @@ export type CollectionsQueryVariables = Exact<{
 }>;
 
 
-export type CollectionsQuery = (
-  { __typename?: 'RootQuery' }
-  & { collections: (
-    { __typename?: 'CollectionConnection' }
-    & Pick<CollectionConnection, 'totalCount'>
-    & { pageInfo: (
-      { __typename?: 'PageInfo' }
-      & Pick<PageInfo, 'limit' | 'offset'>
-    ), nodes: Array<(
-      { __typename?: 'Collection' }
-      & CollectionFragmentFragment
-    )> }
-  ) }
-);
+export type CollectionsQuery = { __typename?: 'RootQuery', collections: { __typename?: 'CollectionConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Collection', name: string, symbol: string, address: string, totalSupply?: number | null }> } };
 
 export type TokensQueryVariables = Exact<{
   network: NetworkInput;
@@ -583,20 +542,7 @@ export type TokensQueryVariables = Exact<{
 }>;
 
 
-export type TokensQuery = (
-  { __typename?: 'RootQuery' }
-  & { tokens: (
-    { __typename?: 'TokenConnection' }
-    & Pick<TokenConnection, 'totalCount'>
-    & { pageInfo: (
-      { __typename?: 'PageInfo' }
-      & Pick<PageInfo, 'limit' | 'offset'>
-    ), nodes: Array<(
-      { __typename?: 'Token' }
-      & TokenFullFragmentFragment
-    )> }
-  ) }
-);
+export type TokensQuery = { __typename?: 'RootQuery', tokens: { __typename?: 'TokenConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Token', metadata?: any | null, minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null }> } };
 
 export type TokenQueryVariables = Exact<{
   network: NetworkInput;
@@ -604,13 +550,7 @@ export type TokenQueryVariables = Exact<{
 }>;
 
 
-export type TokenQuery = (
-  { __typename?: 'RootQuery' }
-  & { token?: Maybe<(
-    { __typename?: 'Token' }
-    & TokenFullFragmentFragment
-  )> }
-);
+export type TokenQuery = { __typename?: 'RootQuery', token?: { __typename?: 'Token', metadata?: any | null, minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null } | null };
 
 export type TokensSummaryQueryVariables = Exact<{
   network: NetworkInput;
@@ -620,17 +560,4 @@ export type TokensSummaryQueryVariables = Exact<{
 }>;
 
 
-export type TokensSummaryQuery = (
-  { __typename?: 'RootQuery' }
-  & { tokens: (
-    { __typename?: 'TokenConnection' }
-    & Pick<TokenConnection, 'totalCount'>
-    & { pageInfo: (
-      { __typename?: 'PageInfo' }
-      & Pick<PageInfo, 'limit' | 'offset'>
-    ), nodes: Array<(
-      { __typename?: 'Token' }
-      & TokenSummaryFragmentFragment
-    )> }
-  ) }
-);
+export type TokensSummaryQuery = { __typename?: 'RootQuery', tokens: { __typename?: 'TokenConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Token', minter?: string | null, tokenId: string, tokenUrl: string, tokenAddress: string, lastRefreshTime?: number | null, owner: string, name?: string | null, description?: string | null, mintInfo: { __typename?: 'MintContext', blockTimestamp: any, blockNumber: number, transactionHash: string }, image?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, mimeType?: string | null, mediaType?: MediaType | null, mediaEncoding?: { __typename?: 'MediaEncoding', preview: string, original: string } | null } | null }> } };

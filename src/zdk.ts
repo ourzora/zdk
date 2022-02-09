@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import { GraphQLClient } from 'graphql-request';
 import {
   Chain,
@@ -12,17 +11,17 @@ import {
 // Export chain and network for API users
 export { Chain as ZDKChain, Network as ZDKNetwork };
 
-type OverrideNetworkOptions = {
+export type OverrideNetworkOptions = {
   network?: Network;
   chain?: Chain;
 };
 
-type OverridePaginationOptions = {
+export type OverridePaginationOptions = {
   limit?: number;
   offset?: number;
 };
 
-interface ListOptions<SortInput> {
+export interface ListOptions<SortInput> {
   network?: OverrideNetworkOptions;
   pagination?: OverridePaginationOptions;
   sort?: SortInput;
@@ -44,7 +43,7 @@ export class ZDK {
   }
 
   // private fetch(url: string, options: any) {
-    // return axios({url, ...options});
+  // return axios({url, ...options});
   // }
 
   getNetworkOptions = ({ network, chain }: OverrideNetworkOptions = {}) => {
