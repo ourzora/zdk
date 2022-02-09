@@ -1,45 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`unit zdk should fetch mock 1`] = `
+exports[`unit zdk should fetch mock token 1`] = `
 Object {
-  "data": Object {
-    "token": Object {
-      "content": Object {
-        "mediaEncoding": Object {
-          "original": "Hello World",
-          "preview": "Hello World",
-        },
-        "mediaType": "IMAGE",
-        "mimeType": "image/png",
-        "size": "2003",
+  "token": Object {
+    "content": Object {
+      "mediaEncoding": Object {
+        "original": "Hello World",
+        "preview": "Hello World",
       },
-      "description": "Token description",
-      "image": Object {
-        "mediaEncoding": Object {
-          "original": "Hello World",
-          "preview": "Hello World",
-        },
-        "mediaType": "IMAGE",
-        "mimeType": "image/png",
-        "size": "2003",
-      },
-      "lastRefreshTime": 1,
-      "metadata": Object {
-        "description": "test",
-        "image": "https://example.com/image.jpg",
-        "name": "test",
-      },
-      "mintInfo": Object {
-        "blockNumber": 0,
-        "blockTimestamp": 1644379949,
-        "transactionHash": "Hello World",
-      },
-      "minter": "Hello World",
-      "name": "Token name",
-      "tokenAddress": "0xCa21d4228cDCc68D4e23807E5e370C07577Dd152",
-      "tokenId": "23",
-      "tokenUrl": "Hello World",
+      "mediaType": "IMAGE",
+      "mimeType": "image/png",
+      "size": "2003",
     },
+    "description": "Token description",
+    "image": Object {
+      "mediaEncoding": Object {
+        "original": "Hello World",
+        "preview": "Hello World",
+      },
+      "mediaType": "IMAGE",
+      "mimeType": "image/png",
+      "size": "2003",
+    },
+    "lastRefreshTime": 1,
+    "metadata": Object {
+      "description": "test",
+      "image": "https://example.com/image.jpg",
+      "name": "test",
+    },
+    "mintInfo": Object {
+      "blockNumber": 0,
+      "blockTimestamp": 1644379949,
+      "transactionHash": "Hello World",
+    },
+    "minter": "Hello World",
+    "name": "Token name",
+    "tokenAddress": "0xCa21d4228cDCc68D4e23807E5e370C07577Dd152",
+    "tokenId": "23",
+    "tokenUrl": "Hello World",
   },
 }
 `;
