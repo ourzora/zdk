@@ -43,6 +43,10 @@ export class ZDK {
     this.sdk = getSdk(new GraphQLClient(this.endpoint));
   }
 
+  // private fetch(url: string, options: any) {
+    // return axios({url, ...options});
+  // }
+
   getNetworkOptions = ({ network, chain }: OverrideNetworkOptions = {}) => {
     return {
       network: {
