@@ -12,6 +12,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** Date (isoformat) */
+  Date: any;
   /** The GenericScalar scalar type represents a generic GraphQL scalar value that could be: List or Object. */
   JSONScalar: any;
 };
@@ -29,7 +31,26 @@ export type Collection = {
   address: Scalars['String'];
   description: Scalars['String'];
   totalSupply?: Maybe<Scalars['Int']>;
+  symbol: Scalars['String'];
 };
+
+export type CollectionConnection = {
+  __typename?: 'CollectionConnection';
+  nodes: Array<Collection>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export enum CollectionSortKey {
+  Name = 'NAME',
+  Created = 'CREATED'
+}
+
+export type CollectionSortKeySortInput = {
+  sortKey: CollectionSortKey;
+  sortDirection: SortDirection;
+};
+
 
 export type Event = Transfer | V2AuctionEvent | V3AskEvent;
 
@@ -40,24 +61,23 @@ export type EventConnection = {
   totalCount: Scalars['Int'];
 };
 
+export enum EventSortKey {
+  Created = 'CREATED'
+}
 
-export type MediaAsset = {
-  __typename?: 'MediaAsset';
-  url: Scalars['String'];
-  mediaType: MediaType;
-  mimeType: Scalars['String'];
-  width: Scalars['Int'];
-  height: Scalars['Int'];
-  duration?: Maybe<Scalars['Int']>;
+export type EventSortKeySortInput = {
+  sortKey: EventSortKey;
+  sortDirection: SortDirection;
 };
+
 
 export type MediaEncoding = {
   __typename?: 'MediaEncoding';
-  original: MediaAsset;
-  large: MediaAsset;
-  poster: MediaAsset;
-  preview: MediaAsset;
-  thumbnail: MediaAsset;
+  original: Scalars['String'];
+  large: Scalars['String'];
+  poster: Scalars['String'];
+  preview: Scalars['String'];
+  thumbnail: Scalars['String'];
 };
 
 export enum MediaType {
@@ -70,11 +90,24 @@ export enum MediaType {
   Unknown = 'UNKNOWN'
 }
 
+export type MintContext = {
+  __typename?: 'MintContext';
+  blockNumber: Scalars['Int'];
+  blockTimestamp: Scalars['Date'];
+  transactionHash: Scalars['String'];
+};
+
 export enum Network {
   Ethereum = 'ETHEREUM',
   Flow = 'FLOW',
   Solana = 'SOLANA'
 }
+
+export type NetworkInfo = {
+  __typename?: 'NetworkInfo';
+  network: Network;
+  chain: Chain;
+};
 
 export type NetworkInput = {
   network: Network;
@@ -88,16 +121,14 @@ export type PageInfo = {
 };
 
 export type PaginationInput = {
-  sortKey: Scalars['String'];
-  sortDirection: SortDirection;
-  limit?: Scalars['Int'];
-  offset?: Scalars['Int'];
+  limit: Scalars['Int'];
+  offset: Scalars['Int'];
 };
 
 export type RootQuery = {
   __typename?: 'RootQuery';
   /** Get collections by addresses */
-  collections: Array<Collection>;
+  collections: CollectionConnection;
   /** Get events by address and token id */
   events: EventConnection;
   /** Get tokens by addresses */
@@ -108,28 +139,32 @@ export type RootQuery = {
 
 
 export type RootQueryCollectionsArgs = {
-  networkInput: NetworkInput;
+  pagination: PaginationInput;
+  sort: CollectionSortKeySortInput;
+  network: NetworkInput;
   addresses?: Maybe<Array<Scalars['String']>>;
 };
 
 
 export type RootQueryEventsArgs = {
-  tokenInput: TokenInput;
-  networkInput: NetworkInput;
-  paginationInput: PaginationInput;
+  token: TokenInput;
+  network: NetworkInput;
+  pagination: PaginationInput;
+  sort: EventSortKeySortInput;
 };
 
 
 export type RootQueryTokensArgs = {
-  addresses: Array<Scalars['String']>;
-  networkInput: NetworkInput;
-  paginationInput: PaginationInput;
+  network: NetworkInput;
+  pagination: PaginationInput;
+  sort: TokenSortKeySortInput;
+  addresses?: Maybe<Array<Scalars['String']>>;
 };
 
 
 export type RootQueryTokenArgs = {
-  tokenInput: TokenInput;
-  networkInput: NetworkInput;
+  token: TokenInput;
+  network: NetworkInput;
 };
 
 export enum SortDirection {
@@ -141,16 +176,16 @@ export type Token = {
   __typename?: 'Token';
   tokenAddress: Scalars['String'];
   tokenId: Scalars['String'];
-  network: Network;
+  mintInfo: MintContext;
+  networkInfo: NetworkInfo;
   tokenUrl: Scalars['String'];
   tokenUrlMimeType?: Maybe<Scalars['String']>;
-  content?: Maybe<TokenContent>;
+  content?: Maybe<TokenContentMedia>;
+  image?: Maybe<TokenContentMedia>;
   owner: Scalars['String'];
   tokenContract: TokenContract;
-  mintBlockNumber: Scalars['Int'];
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  externalURL?: Maybe<Scalars['String']>;
   metadata?: Maybe<Scalars['JSONScalar']>;
   attributes?: Maybe<Array<TokenAttribute>>;
   minter?: Maybe<Scalars['String']>;
@@ -176,20 +211,13 @@ export type TokenConnection = {
   totalCount: Scalars['Int'];
 };
 
-export type TokenContent = {
-  __typename?: 'TokenContent';
-  url: Scalars['String'];
-  mimeType: Scalars['String'];
-  tokenContentMedia?: Maybe<Array<TokenContentMedia>>;
-};
-
 export type TokenContentMedia = {
   __typename?: 'TokenContentMedia';
   mediaType?: Maybe<MediaType>;
   url?: Maybe<Scalars['String']>;
   mimeType?: Maybe<Scalars['String']>;
   size?: Maybe<Scalars['String']>;
-  tokenContentMediaEncoding?: Maybe<MediaEncoding>;
+  mediaEncoding?: Maybe<MediaEncoding>;
 };
 
 export type TokenContract = {
@@ -210,6 +238,15 @@ export type TokenContract = {
 export type TokenInput = {
   address: Scalars['String'];
   tokenId: Scalars['String'];
+};
+
+export enum TokenSortKey {
+  TokenId = 'TOKEN_ID'
+}
+
+export type TokenSortKeySortInput = {
+  sortKey: TokenSortKey;
+  sortDirection: SortDirection;
 };
 
 export type Transfer = {
@@ -349,35 +386,77 @@ export type V3AskPriceUpdatedEventProperties = {
 export const CollectionFragmentFragmentDoc = gql`
     fragment CollectionFragment on Collection {
   name
+  symbol
+  address
+  totalSupply
 }
     `;
 export const TokenSummaryFragmentFragmentDoc = gql`
     fragment TokenSummaryFragment on Token {
+  minter
   tokenId
+  mintInfo {
+    blockTimestamp
+    blockNumber
+    transactionHash
+  }
+  tokenUrl
   tokenAddress
+  lastRefreshTime
   name
-  network
+  description
+  image {
+    size
+    mimeType
+    mediaType
+    mediaEncoding {
+      preview
+      original
+    }
+  }
+  content {
+    size
+    mimeType
+    mediaType
+    mediaEncoding {
+      preview
+      original
+    }
+  }
 }
     `;
 export const TokenFullFragmentFragmentDoc = gql`
     fragment TokenFullFragment on Token {
   ...TokenSummaryFragment
-  description
+  metadata
 }
     ${TokenSummaryFragmentFragmentDoc}`;
 export const CollectionsDocument = gql`
-    query collections($network: NetworkInput!, $addresses: [String!]!) {
-  collections(addresses: $addresses, networkInput: $network) {
-    ...CollectionFragment
+    query collections($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!, $sort: CollectionSortKeySortInput!) {
+  collections(
+    addresses: $addresses
+    network: $network
+    pagination: $pagination
+    sort: $sort
+  ) {
+    totalCount
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      ...CollectionFragment
+    }
   }
 }
     ${CollectionFragmentFragmentDoc}`;
 export const TokensDocument = gql`
-    query tokens($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!) {
+    query tokens($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!, $sort: TokenSortKeySortInput!) {
   tokens(
     addresses: $addresses
-    networkInput: $network
-    paginationInput: $pagination
+    network: $network
+    pagination: $pagination
+    sort: $sort
   ) {
     totalCount
     pageInfo {
@@ -392,17 +471,18 @@ export const TokensDocument = gql`
     ${TokenFullFragmentFragmentDoc}`;
 export const TokenDocument = gql`
     query token($network: NetworkInput!, $token: TokenInput!) {
-  token(tokenInput: $token, networkInput: $network) {
+  token(token: $token, network: $network) {
     ...TokenFullFragment
   }
 }
     ${TokenFullFragmentFragmentDoc}`;
 export const TokensSummaryDocument = gql`
-    query tokensSummary($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!) {
+    query tokensSummary($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!, $sort: TokenSortKeySortInput!) {
   tokens(
     addresses: $addresses
-    networkInput: $network
-    paginationInput: $pagination
+    network: $network
+    pagination: $pagination
+    sort: $sort
   ) {
     totalCount
     pageInfo {
@@ -440,38 +520,66 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
 export type Sdk = ReturnType<typeof getSdk>;
 export type CollectionFragmentFragment = (
   { __typename?: 'Collection' }
-  & Pick<Collection, 'name'>
+  & Pick<Collection, 'name' | 'symbol' | 'address' | 'totalSupply'>
 );
 
 export type TokenSummaryFragmentFragment = (
   { __typename?: 'Token' }
-  & Pick<Token, 'tokenId' | 'tokenAddress' | 'name' | 'network'>
+  & Pick<Token, 'minter' | 'tokenId' | 'tokenUrl' | 'tokenAddress' | 'lastRefreshTime' | 'name' | 'description'>
+  & { mintInfo: (
+    { __typename?: 'MintContext' }
+    & Pick<MintContext, 'blockTimestamp' | 'blockNumber' | 'transactionHash'>
+  ), image?: Maybe<(
+    { __typename?: 'TokenContentMedia' }
+    & Pick<TokenContentMedia, 'size' | 'mimeType' | 'mediaType'>
+    & { mediaEncoding?: Maybe<(
+      { __typename?: 'MediaEncoding' }
+      & Pick<MediaEncoding, 'preview' | 'original'>
+    )> }
+  )>, content?: Maybe<(
+    { __typename?: 'TokenContentMedia' }
+    & Pick<TokenContentMedia, 'size' | 'mimeType' | 'mediaType'>
+    & { mediaEncoding?: Maybe<(
+      { __typename?: 'MediaEncoding' }
+      & Pick<MediaEncoding, 'preview' | 'original'>
+    )> }
+  )> }
 );
 
 export type TokenFullFragmentFragment = (
   { __typename?: 'Token' }
-  & Pick<Token, 'description'>
+  & Pick<Token, 'metadata'>
   & TokenSummaryFragmentFragment
 );
 
 export type CollectionsQueryVariables = Exact<{
   network: NetworkInput;
   addresses: Array<Scalars['String']> | Scalars['String'];
+  pagination: PaginationInput;
+  sort: CollectionSortKeySortInput;
 }>;
 
 
 export type CollectionsQuery = (
   { __typename?: 'RootQuery' }
-  & { collections: Array<(
-    { __typename?: 'Collection' }
-    & CollectionFragmentFragment
-  )> }
+  & { collections: (
+    { __typename?: 'CollectionConnection' }
+    & Pick<CollectionConnection, 'totalCount'>
+    & { pageInfo: (
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'limit' | 'offset'>
+    ), nodes: Array<(
+      { __typename?: 'Collection' }
+      & CollectionFragmentFragment
+    )> }
+  ) }
 );
 
 export type TokensQueryVariables = Exact<{
   network: NetworkInput;
   addresses: Array<Scalars['String']> | Scalars['String'];
   pagination: PaginationInput;
+  sort: TokenSortKeySortInput;
 }>;
 
 
@@ -508,6 +616,7 @@ export type TokensSummaryQueryVariables = Exact<{
   network: NetworkInput;
   addresses: Array<Scalars['String']> | Scalars['String'];
   pagination: PaginationInput;
+  sort: TokenSortKeySortInput;
 }>;
 
 

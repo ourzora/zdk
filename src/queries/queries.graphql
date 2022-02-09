@@ -1,26 +1,61 @@
 fragment CollectionFragment on Collection {
   name
-  # symbol
+  symbol
+  address
+  totalSupply
 }
 
 fragment TokenSummaryFragment on Token {
+  minter
   tokenId
+  mintInfo {
+    blockTimestamp
+    blockNumber
+    transactionHash
+  }
+  tokenUrl
   tokenAddress
-
+  lastRefreshTime
   name
-
-  network
+  description
+  image {
+    size
+    mimeType
+    mediaType
+    mediaEncoding {
+      preview
+      original
+    }
+  }
+  content {
+    size
+    mimeType
+    mediaType
+    mediaEncoding {
+      preview
+      original
+    }
+  }
 }
 
 fragment TokenFullFragment on Token {
   ...TokenSummaryFragment
 
-  description
+  metadata
+
+  # todo(iain): include transfer / market information?
 }
 
-query collections($network: NetworkInput!, $addresses: [String!]!) {
-  collections(addresses: $addresses, networkInput: $network) {
-    ...CollectionFragment
+query collections($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!, $sort: CollectionSortKeySortInput!) {
+  collections(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
+    totalCount
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      ...CollectionFragment
+    }
   }
 }
 
@@ -28,8 +63,9 @@ query tokens(
   $network: NetworkInput!
   $addresses: [String!]!
   $pagination: PaginationInput!
+  $sort: TokenSortKeySortInput!
 ) {
-  tokens(addresses: $addresses, networkInput: $network, paginationInput: $pagination) {
+  tokens(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
     totalCount
     pageInfo {
       limit
@@ -42,7 +78,7 @@ query tokens(
 }
 
 query token($network: NetworkInput!, $token: TokenInput!) {
-  token(tokenInput: $token, networkInput: $network) {
+  token(token: $token, network: $network) {
     ...TokenFullFragment
   }
 }
@@ -51,8 +87,9 @@ query tokensSummary(
   $network: NetworkInput!
   $addresses: [String!]!
   $pagination: PaginationInput!
+  $sort: TokenSortKeySortInput!
 ) {
-  tokens(addresses: $addresses, networkInput: $network, paginationInput: $pagination) {
+  tokens(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
     totalCount
     pageInfo {
       limit

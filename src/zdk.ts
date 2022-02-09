@@ -1,6 +1,13 @@
-import axios from 'axios';
+// import axios from 'axios';
 import { GraphQLClient } from 'graphql-request';
-import { Chain, getSdk, Network, SortDirection } from '../queries/queries-sdk';
+import {
+  Chain,
+  getSdk,
+  Network,
+  SortDirection,
+  TokenSortKey,
+  TokenSortKeySortInput,
+} from './queries/queries-sdk';
 
 // Export chain and network for API users
 export { Chain as ZDKChain, Network as ZDKNetwork };
@@ -11,11 +18,15 @@ type OverrideNetworkOptions = {
 };
 
 type OverridePaginationOptions = {
-  limit: number;
-  offset: number;
-  sortKey: string;
-  sortDirection: SortDirection;
+  limit?: number;
+  offset?: number;
 };
+
+interface ListOptions<SortInput> {
+  network?: OverrideNetworkOptions;
+  pagination?: OverridePaginationOptions;
+  sort?: SortInput;
+}
 
 export class ZDK {
   endpoint: string;
@@ -29,7 +40,7 @@ export class ZDK {
     this.endpoint = endpoint;
     this.defaultNetwork = network;
     this.defaultChain = chain;
-    this.sdk = getSdk(new GraphQLClient(this.endpoint, { fetch: axios }));
+    this.sdk = getSdk(new GraphQLClient(this.endpoint));
   }
 
   getNetworkOptions = ({ network, chain }: OverrideNetworkOptions = {}) => {
@@ -41,21 +52,11 @@ export class ZDK {
     };
   };
 
-  getPaginationOptions = (
-    { limit, offset, sortKey, sortDirection }: OverridePaginationOptions = {
-      limit: this.defaultMaxPageSize,
-      offset: 0,
-      sortKey: '',
-      sortDirection: SortDirection.Desc,
-    },
-    defaultSortKey: string
-  ) => {
+  getPaginationOptions = ({ limit, offset }: OverridePaginationOptions = {}) => {
     return {
       pagination: {
-        limit,
-        offset,
-        sortKey: sortKey || defaultSortKey,
-        sortDirection: sortDirection || SortDirection.Desc,
+        limit: limit || this.defaultMaxPageSize,
+        offset: offset || 0,
       },
     };
   };
@@ -72,23 +73,29 @@ export class ZDK {
 
   tokens = async (
     addresses: string[],
-    paginationOptions?: OverridePaginationOptions,
-    networkOptions?: OverrideNetworkOptions
+    { pagination, network, sort }: ListOptions<TokenSortKeySortInput> = {}
   ) =>
     this.sdk.tokens({
       addresses,
-      ...this.getPaginationOptions(paginationOptions, 'tokenId'),
-      ...this.getNetworkOptions(networkOptions),
+      ...this.getPaginationOptions(pagination),
+      ...this.getNetworkOptions(network),
+      sort: {
+        sortDirection: sort?.sortDirection || SortDirection.Desc,
+        sortKey: sort?.sortKey || TokenSortKey.TokenId,
+      },
     });
 
   tokensSummary = async (
     addresses: string[],
-    paginationOptions?: OverridePaginationOptions,
-    networkOptions?: OverrideNetworkOptions
+    { pagination, network, sort }: ListOptions<TokenSortKeySortInput> = {}
   ) =>
     this.sdk.tokensSummary({
       addresses,
-      ...this.getPaginationOptions(paginationOptions, 'tokenId'),
-      ...this.getNetworkOptions(networkOptions),
+      ...this.getPaginationOptions(pagination),
+      ...this.getNetworkOptions(network),
+      sort: {
+        sortDirection: sort?.sortDirection || SortDirection.Desc,
+        sortKey: sort?.sortKey || TokenSortKey.TokenId,
+      },
     });
 }
