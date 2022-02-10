@@ -6,15 +6,15 @@ fragment CollectionFragment on Collection {
 }
 
 fragment FullMedia on TokenContentMedia {
-size
-    url
-    size
-    mimeType
-    mediaType
-    mediaEncoding {
-      preview
-      original
-    }
+  size
+  url
+  size
+  mimeType
+  mediaType
+  mediaEncoding {
+    preview
+    original
+  }
 }
 
 fragment TokenSummaryFragment on Token {
@@ -25,7 +25,6 @@ fragment TokenSummaryFragment on Token {
     blockNumber
     transactionHash
   }
-  tokenUrl
   tokenAddress
   lastRefreshTime
   owner
@@ -44,11 +43,24 @@ fragment TokenFullFragment on Token {
 
   metadata
 
+  tokenUrl
+  tokenUrlMimeType
+
   # todo(iain): include transfer / market information?
 }
 
-query collections($network: NetworkInput!, $addresses: [String!]!, $pagination: PaginationInput!, $sort: CollectionSortKeySortInput!) {
-  collections(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
+query collections(
+  $network: NetworkInput!
+  $addresses: [String!]!
+  $pagination: PaginationInput!
+  $sort: CollectionSortKeySortInput!
+) {
+  collections(
+    addresses: $addresses
+    network: $network
+    pagination: $pagination
+    sort: $sort
+  ) {
     totalCount
     pageInfo {
       limit
