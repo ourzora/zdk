@@ -7,11 +7,17 @@ describe('zdk', () => {
     zdk = new ZDK(process.env.ZDK_ENDPOINT!, Network.Ethereum, Chain.Mainnet);
   });
   it('should fetch localhost collections empty object', async () => {
-    expect(
-      await zdk.tokens(['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'], {
-        pagination: { limit: 2 },
-      })
-    ).toMatchSnapshot();
+    // expect(
+    //   await zdk.tokens(['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'], {
+    //     pagination: { limit: 2 },
+    //   })
+    // ).toMatchSnapshot();
+    const apiResult = await zdk.tokens(['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'], {
+      pagination: { limit: 2 },
+    })
+    expect(apiResult.tokens.nodes[0]).toMatchSnapshot();
+    expect(apiResult.tokens.nodes[1]).toMatchSnapshot();
+    expect(apiResult.tokens.nodes.length).toBe(2);
   });
   it('should fetch localhost tokens empty object', async () => {
     expect(

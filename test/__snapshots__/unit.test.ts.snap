@@ -11,6 +11,7 @@ Object {
       "mediaType": "IMAGE",
       "mimeType": "image/png",
       "size": "2003",
+      "url": "https://example.com/image.jpg",
     },
     "description": "Token description",
     "image": Object {
@@ -21,6 +22,7 @@ Object {
       "mediaType": "IMAGE",
       "mimeType": "image/png",
       "size": "2003",
+      "url": "https://example.com/image.jpg",
     },
     "lastRefreshTime": 1,
     "metadata": Object {
@@ -35,9 +37,16 @@ Object {
     },
     "minter": "Hello World",
     "name": "Token name",
+    "owner": "Hello World",
     "tokenAddress": "0xCa21d4228cDCc68D4e23807E5e370C07577Dd152",
+    "tokenContract": Object {
+      "name": "Hello World",
+      "symbol": "Hello World",
+      "tokenAddress": "Hello World",
+    },
     "tokenId": "23",
     "tokenUrl": "Hello World",
+    "tokenUrlMimeType": "Hello World",
   },
 }
 `;

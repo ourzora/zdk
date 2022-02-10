@@ -17,9 +17,18 @@ fragment FullMedia on TokenContentMedia {
   }
 }
 
+fragment TokenContractSummary on TokenContract {
+  name
+  symbol
+  tokenAddress
+}
+
 fragment TokenSummaryFragment on Token {
   minter
   tokenId
+  tokenContract {
+    ...TokenContractSummary
+  }
   mintInfo {
     blockTimestamp
     blockNumber
