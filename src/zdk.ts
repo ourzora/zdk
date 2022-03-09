@@ -6,6 +6,15 @@ import {
   SortDirection,
   TokenSortKey,
   TokenSortKeySortInput,
+  TokenInput,
+  TokenMarketsQuery,
+  TokenMarketsQueryInput,
+  TokenMarketsFilterInput,
+  TokenMarketSortKeySortInput,
+  TokenMarketSortKey,
+  CollectionsQueryInput,
+  CollectionSortKeySortInput,
+  CollectionSortKey,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -25,7 +34,10 @@ export interface ListOptions<SortInput> {
   network?: OverrideNetworkOptions;
   pagination?: OverridePaginationOptions;
   sort?: SortInput;
+  isFull?: boolean;
 }
+
+export type TokenQueryList = TokenInput;
 
 export class ZDK {
   endpoint: string;
@@ -64,41 +76,45 @@ export class ZDK {
     };
   };
 
-  token = async (
-    contract: string,
-    tokenId: string,
-    networkOptions?: OverrideNetworkOptions
+  tokenMarkets = async (
+    query: TokenMarketsQueryInput,
+    filter?: TokenMarketsFilterInput,
+    {
+      pagination,
+      network,
+      sort,
+      isFull = false,
+    }: ListOptions<TokenMarketSortKeySortInput> = {}
   ) =>
-    this.sdk.token({
-      token: { tokenId, address: contract },
-      ...this.getNetworkOptions(networkOptions),
-    });
-
-  tokens = async (
-    addresses: string[],
-    { pagination, network, sort }: ListOptions<TokenSortKeySortInput> = {}
-  ) =>
-    this.sdk.tokens({
-      addresses,
-      ...this.getPaginationOptions(pagination),
-      ...this.getNetworkOptions(network),
+    this.sdk.tokenMarkets({
+      query,
+      filter,
+      isFull,
       sort: {
         sortDirection: sort?.sortDirection || SortDirection.Desc,
-        sortKey: sort?.sortKey || TokenSortKey.TokenId,
+        sortKey: sort?.sortKey || TokenMarketSortKey.Minted,
       },
+      ...this.getPaginationOptions(pagination),
+      ...this.getNetworkOptions(network),
     });
 
-  tokensSummary = async (
-    addresses: string[],
-    { pagination, network, sort }: ListOptions<TokenSortKeySortInput> = {}
+  collections = async (
+    query: CollectionsQueryInput,
+    {
+      pagination,
+      network,
+      sort,
+      isFull = false,
+    }: ListOptions<CollectionSortKeySortInput> = {}
   ) =>
-    this.sdk.tokensSummary({
-      addresses,
+    this.sdk.collections({
+      query,
+      isFull,
       ...this.getPaginationOptions(pagination),
       ...this.getNetworkOptions(network),
       sort: {
         sortDirection: sort?.sortDirection || SortDirection.Desc,
-        sortKey: sort?.sortKey || TokenSortKey.TokenId,
+        sortKey: sort?.sortKey || CollectionSortKey.Created,
       },
     });
 }

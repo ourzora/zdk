@@ -8,6 +8,42 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
+input AddressesInput {
+  addresses: [String!]!
+}
+
+type AggregateAttribute {
+  traitType: String!
+  valueMetrics: [AggregateAttributeValue!]!
+}
+
+input AggregateAttributesQueryInput {
+  collectionAddressesInput: AddressesInput = null
+  ownerAddressesInput: AddressesInput = null
+  tokenInputs: [TokenInput!] = null
+}
+
+type AggregateAttributeValue {
+  value: String!
+  count: Int!
+  percent: Float!
+}
+
+type AggregateStat {
+  stat: IntValueFloatValue!
+}
+
+input AggregateStatQueryInput {
+  collectionAddressesInput: AddressesInput = null
+  ownerAddressesInput: AddressesInput = null
+  attributeInputs: [AttributeFilter!] = null
+}
+
+input AttributeFilter {
+  traitType: String!
+  value: String = null
+}
+
 enum Chain {
   MAINNET
   POLYGON
@@ -21,6 +57,18 @@ type Collection {
   description: String!
   totalSupply: Int
   symbol: String!
+  attributes: [CollectionAttribute!]
+}
+
+type CollectionAttribute {
+  traitType: String!
+  valueMetrics: [CollectionAttributeValue!]!
+}
+
+type CollectionAttributeValue {
+  value: String!
+  count: Int!
+  percent: Float!
 }
 
 type CollectionConnection {
@@ -39,16 +87,42 @@ input CollectionSortKeySortInput {
   sortDirection: SortDirection!
 }
 
+input CollectionsQueryInput {
+  collectionAddressesInput: AddressesInput!
+}
+
+type Currency {
+  name: String!
+  address: String!
+  decimals: Int!
+}
+
+type CurrencyAmount {
+  currency: Currency!
+  raw: String!
+  decimal: Float!
+}
+
 """Date (isoformat)"""
 scalar Date
 
-union Event = Transfer | V2AuctionEvent | V3AskEvent
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type Event {
+  eventType: EventType!
+  collectionAddress: String!
+  tokenId: String!
+  properties: EventProperties!
+}
 
 type EventConnection {
   nodes: [Event!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
+
+union EventProperties = MintEvent | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
 
 enum EventSortKey {
   CREATED
@@ -59,10 +133,114 @@ input EventSortKeySortInput {
   sortDirection: SortDirection!
 }
 
+input EventsQueryFilter {
+  eventTypes: [EventType!] = null
+  senderAddresses: [String!] = null
+  recipientAddresses: [String!] = null
+}
+
+input EventsQueryInput {
+  tokenInputs: [TokenInput!] = null
+  collectionAddressesInput: AddressesInput = null
+}
+
+enum EventType {
+  SALE_EVENT
+  MINT_EVENT
+  TRANSFER_EVENT
+  V1_MARKET_EVENT
+  V2_AUCTION_EVENT
+  V3_ASK_EVENT
+}
+
+type FloatValue {
+  value: Float
+  unit: String!
+}
+
+type IntValue {
+  value: Int!
+  unit: String!
+}
+
+union IntValueFloatValue = IntValue | FloatValue
+
 """
 The GenericScalar scalar type represents a generic GraphQL scalar value that could be: List or Object.
 """
 scalar JSONScalar
+
+type Market {
+  networkInfo: NetworkInfo!
+  status: String!
+  marketAddress: String!
+  collectionAddress: String!
+  tokenId: String!
+  marketType: MarketType!
+  properties: MarketProperties!
+  price: PriceAtTime
+}
+
+input MarketFilter {
+  marketType: MarketType!
+  statuses: [MarketStatus!]!
+}
+
+union MarketProperties = V1Ask | V1Offer | V1BidShare | V2Auction | V3Ask
+
+enum MarketSortKey {
+  ETH_PRICE
+  NATIVE_PRICE
+  TIMED_SALE_ENDING
+}
+
+input MarketSortKeySortInput {
+  sortKey: MarketSortKey!
+  sortDirection: SortDirection!
+}
+
+input MarketsQueryFilter {
+  marketFilters: [MarketFilter!] = null
+  priceFilter: PriceFilter = null
+}
+
+input MarketsQueryInput {
+  tokenInputs: [TokenInput!] = null
+  collectionAddressesInput: AddressesInput = null
+  ownerAddressesInput: AddressesInput = null
+}
+
+enum MarketStatus {
+  ACTIVE
+  CANCELED
+  COMPLETED
+}
+
+enum MarketType {
+  V1_ASK
+  V1_BID_SHARE
+  V1_OFFER
+  V2_AUCTION
+  V3_ASK
+}
+
+type MarketWithTokenInfo {
+  networkInfo: NetworkInfo!
+  status: String!
+  marketAddress: String!
+  collectionAddress: String!
+  tokenId: String!
+  marketType: MarketType!
+  properties: MarketProperties!
+  price: PriceAtTime
+  token: Token
+}
+
+type MarketWithTokenInfoConnection {
+  nodes: [MarketWithTokenInfo!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
 
 type MediaEncoding {
   original: String!
@@ -86,6 +264,15 @@ type MintContext {
   blockNumber: Int!
   blockTimestamp: Date!
   transactionHash: String!
+  logIndex: Int!
+}
+
+type MintEvent {
+  tokenId: String!
+  collectionAddress: String!
+  originatorAddress: String!
+  toAddress: String!
+  fee: PriceAtTime!
 }
 
 enum Network {
@@ -114,18 +301,104 @@ input PaginationInput {
   offset: Int!
 }
 
+type PriceAtTime {
+  nativePrice: CurrencyAmount!
+  blockNumber: Int!
+  ethPrice: CurrencyAmount
+  usdcPrice: CurrencyAmount
+}
+
+input PriceFilter {
+  currencyAddress: String = null
+  minimumEthPrice: String = null
+  maximumEthPrice: String = null
+  minimumNativePrice: String = null
+  maximumNativePrice: String = null
+}
+
 type RootQuery {
-  """Get collections by addresses"""
-  collections(pagination: PaginationInput!, sort: CollectionSortKeySortInput!, network: NetworkInput!, addresses: [String!] = null): CollectionConnection!
+  """Calculate aggregate stat"""
+  aggregateStat(network: NetworkInput!, statType: StatType!, input: AggregateStatQueryInput!): AggregateStat!
 
-  """Get events by address and token id"""
-  events(token: TokenInput!, network: NetworkInput!, pagination: PaginationInput!, sort: EventSortKeySortInput!): EventConnection!
+  """Get aggregate attribute set"""
+  aggregateAttributes(network: NetworkInput!, input: AggregateAttributesQueryInput!): [AggregateAttribute!]!
 
-  """Get tokens by addresses"""
-  tokens(network: NetworkInput!, pagination: PaginationInput!, sort: TokenSortKeySortInput!, addresses: [String!] = null): TokenConnection!
+  """Get collections"""
+  collections(pagination: PaginationInput!, sort: CollectionSortKeySortInput!, network: NetworkInput!, input: CollectionsQueryInput = null): CollectionConnection!
 
-  """Get a single token by address and id"""
+  """Get events"""
+  events(network: NetworkInput!, pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null, input: EventsQueryInput = null): EventConnection!
+
+  """Get sales"""
+  sales(network: NetworkInput!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, input: SalesQueryInput = null): SaleConnection!
+
+  """Get tokens"""
+  tokens(network: NetworkInput!, pagination: PaginationInput!, sort: TokenSortKeySortInput!, filter: TokensQueryFilter = null, input: TokensQueryInput = null): TokenConnection!
+
+  """Get token by collection address and token id"""
   token(token: TokenInput!, network: NetworkInput!): Token
+
+  """Get token markets"""
+  tokenMarkets(network: NetworkInput!, pagination: PaginationInput!, sort: TokenMarketSortKeySortInput!, input: TokenMarketsQueryInput = null, filter: TokenMarketsFilterInput = null): TokenMarketConnection!
+
+  """Get markets"""
+  markets(network: NetworkInput!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, input: MarketsQueryInput = null): MarketWithTokenInfoConnection!
+}
+
+type Sale {
+  saleContractAddress: String
+  buyerAddress: String!
+  collectionAddress: String!
+  saleType: SaleEventType!
+  price: PriceAtTime!
+  sellerAddress: String!
+  tokenId: String!
+}
+
+type SaleConnection {
+  nodes: [Sale!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+enum SaleEventType {
+  FOUNDATION_SALE
+  LARVA_LABS_SALE
+  LOOKS_RARE_SALE
+  OPENSEA_SALE
+  RARIBLE_SALE
+  SUPERRARE_SALE
+  ZEROX_SALE
+  ZORA_SALE
+}
+
+input SaleFilter {
+  saleType: SaleType!
+}
+
+enum SaleSortKey {
+  ETH_PRICE
+  NATIVE_PRICE
+}
+
+input SaleSortKeySortInput {
+  sortKey: SaleSortKey!
+  sortDirection: SortDirection!
+}
+
+input SalesQueryFilter {
+  saleFilters: [SaleFilter!]!
+}
+
+input SalesQueryInput {
+  collectionAddressesInput: AddressesInput = null
+  ownerAddressesInput: AddressesInput = null
+  tokenInputs: [TokenInput!] = null
+}
+
+enum SaleType {
+  OPENSEA_SINGLE_SALE
+  OPENSEA_BUNDLE_SALE
 }
 
 enum SortDirection {
@@ -133,10 +406,17 @@ enum SortDirection {
   DESC
 }
 
+enum StatType {
+  NFT_COUNT
+  OWNER_COUNT
+  SALES_VOLUME
+  FLOOR_PRICE
+}
+
 type Token {
-  tokenAddress: String!
+  collectionAddress: String!
   tokenId: String!
-  mintInfo: MintContext!
+  mintInfo: MintContext
   networkInfo: NetworkInfo!
   tokenUrl: String!
   tokenUrlMimeType: String
@@ -178,7 +458,7 @@ type TokenContentMedia {
 }
 
 type TokenContract {
-  tokenAddress: String!
+  collectionAddress: String!
   chain: Int!
   name: String!
   symbol: String!
@@ -196,8 +476,46 @@ input TokenInput {
   tokenId: String!
 }
 
-enum TokenSortKey {
+type TokenMarket {
+  token: Token!
+  markets: [Market!]!
+  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): EventConnection!
+  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): SaleConnection!
+}
+
+type TokenMarketConnection {
+  nodes: [TokenMarket!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input TokenMarketsFilterInput {
+  attributeFilters: [AttributeFilter!] = null
+  marketFilters: [MarketFilter!] = null
+}
+
+enum TokenMarketSortKey {
+  MINTED
+  TIMED_SALE_ENDING
   TOKEN_ID
+  TRANSFERRED
+}
+
+input TokenMarketSortKeySortInput {
+  sortKey: TokenMarketSortKey!
+  sortDirection: SortDirection!
+}
+
+input TokenMarketsQueryInput {
+  collectionAddressesInput: AddressesInput = null
+  ownerAddressesInput: AddressesInput = null
+  tokenInputs: [TokenInput!] = null
+}
+
+enum TokenSortKey {
+  MINTED
+  TOKEN_ID
+  TRANSFERRED
 }
 
 input TokenSortKeySortInput {
@@ -205,11 +523,138 @@ input TokenSortKeySortInput {
   sortDirection: SortDirection!
 }
 
-type Transfer {
+input TokensQueryFilter {
+  attributeFilters: [AttributeFilter!]!
+}
+
+input TokensQueryInput {
+  collectionAddressesInput: AddressesInput = null
+  ownerAddressesInput: AddressesInput = null
+  tokenInputs: [TokenInput!] = null
+}
+
+type TransferEvent {
   fromAddress: String!
   toAddress: String!
+  collectionAddress: String!
+  tokenId: String!
+}
+
+type V1Ask {
+  collectionAddress: String!
+  tokenId: String!
+  amount: PriceAtTime!
+  currency: String!
+  status: V1MarketEntityStatus!
+}
+
+type V1BidShare {
+  tokenId: String!
+  previousOwner: String!
+  creator: String!
+  owner: String!
+  status: V1MarketEntityStatus!
+}
+
+type V1MarketAskCreatedEventProperties {
+  amount: String!
+  price: PriceAtTime!
+  currency: String!
+}
+
+type V1MarketAskRemovedEventProperties {
+  amount: String!
+  price: PriceAtTime!
+  currency: String!
+}
+
+type V1MarketBidShareUpdatedEventProperties {
+  previousOwner: String!
+  creator: String!
+  owner: String!
+}
+
+enum V1MarketEntityStatus {
+  ACTIVE
+  CANCELED
+  COMPLETED
+}
+
+type V1MarketEvent {
+  eventType: V1MarketEventType!
+  address: String!
+  collectionAddress: String!
+  tokenId: String!
+  properties: V1MarketEventProperties!
+}
+
+union V1MarketEventProperties = V1MarketAskCreatedEventProperties | V1MarketAskRemovedEventProperties | V1MarketOfferCreatedEventProperties | V1MarketOfferFinalizedEventProperties | V1MarketOfferRemovedEventProperties | V1MarketBidShareUpdatedEventProperties
+
+enum V1MarketEventType {
+  V1_MARKET_BID_CREATED
+  V1_MARKET_BID_REMOVED
+  V1_MARKET_BID_FINALIZED
+  V1_MARKET_ASK_CREATED
+  V1_MARKET_ASK_REMOVED
+  V1_MARKET_BID_SHARE_UPDATED
+}
+
+type V1MarketOfferCreatedEventProperties {
+  amount: String!
+  price: PriceAtTime!
+  currency: String!
+  bidder: String!
+  recipient: String!
+  sellOnShare: String!
+}
+
+type V1MarketOfferFinalizedEventProperties {
+  amount: String!
+  price: PriceAtTime!
+  currency: String!
+  bidder: String!
+  recipient: String!
+  sellOnShare: String!
+}
+
+type V1MarketOfferRemovedEventProperties {
+  amount: String!
+  price: PriceAtTime!
+  currency: String!
+  bidder: String!
+  recipient: String!
+  sellOnShare: String!
+}
+
+type V1Offer {
+  amount: PriceAtTime!
+  currency: String!
+  bidder: String!
+  recipient: String!
+  sellOnShare: String!
+  tokenId: String!
+  status: V1MarketEntityStatus!
+}
+
+type V2Auction {
   address: String!
   tokenId: String!
+  collectionAddress: String!
+  auctionId: String!
+  status: V2AuctionStatus!
+  approved: Boolean!
+  auctionCurrency: String!
+  highestBidPrice: PriceAtTime
+  duration: String!
+  firstBidTime: DateTime
+  reservePrice: PriceAtTime!
+  curatorFeePercentage: Int!
+  tokenOwner: String!
+  highestBidder: String
+  curator: String!
+  estimatedExpirationTime: DateTime
+  amountCuratorReceived: PriceAtTime
+  amountTokenOwnerReceived: PriceAtTime
 }
 
 type V2AuctionApprovalUpdatedEventProperties {
@@ -220,7 +665,8 @@ type V2AuctionBidEventProperties {
   sender: String!
   firstBid: Boolean!
   extended: Boolean!
-  value: Int!
+  value: String!
+  price: PriceAtTime!
 }
 
 type V2AuctionCanceledEventProperties {
@@ -232,12 +678,13 @@ type V2AuctionCreatedEventProperties {
   tokenOwner: String!
   curator: String!
   curatorFeePercentage: Int!
-  duration: Int!
-  reservePrice: Int!
+  duration: String!
+  reservePrice: String!
+  price: PriceAtTime!
 }
 
 type V2AuctionDurationExtendedEventProperties {
-  duration: Int!
+  duration: String!
 }
 
 type V2AuctionEndedEventProperties {
@@ -245,8 +692,8 @@ type V2AuctionEndedEventProperties {
   curator: String!
   winner: String!
   auctionCurrency: String!
-  amount: Int!
-  curatorFee: Int!
+  amount: String!
+  curatorFee: String!
 }
 
 type V2AuctionEvent {
@@ -254,7 +701,7 @@ type V2AuctionEvent {
   address: String!
   auctionId: Int!
   collectionAddress: String!
-  tokenId: Int!
+  tokenId: String!
   properties: V2AuctionEventProperties!
 }
 
@@ -265,36 +712,59 @@ enum V2AuctionEventType {
   V2_AUCTION_CANCELED
   V2_AUCTION_RESERVE_PRICE_UPDATED
   V2_AUCTION_BID
-  V2_AUCION_DURATION_EXTENDED
+  V2_AUCTION_DURATION_EXTENDED
   V2_AUCTION_APPROVAL_UPDATED
   V2_AUCTION_ENDED
 }
 
 type V2AuctionReservePriceUpdatedEventProperties {
-  reservePrice: Int!
+  reservePrice: String!
+  price: PriceAtTime!
+}
+
+enum V2AuctionStatus {
+  ACTIVE
+  CANCELED
+  COMPLETED
+}
+
+type V3Ask {
+  status: V3AskStatus!
+  address: String!
+  collectionAddress: String!
+  tokenId: String!
+  seller: String!
+  sellerFundsRecipient: String!
+  askCurrency: String!
+  askPrice: PriceAtTime!
+  findersFeeBps: Int!
+  buyer: String
+  finder: String
 }
 
 type V3AskCanceledEventProperties {
   seller: String!
   sellerFundsRecipient: String!
   askCurrency: String!
-  askPrice: Int!
+  askPrice: String!
   findersFeeBps: Int!
+  price: PriceAtTime!
 }
 
 type V3AskCreatedEventProperties {
   seller: String!
   sellerFundsRecipient: String!
   askCurrency: String!
-  askPrice: Int!
+  askPrice: String!
   findersFeeBps: Int!
+  price: PriceAtTime!
 }
 
 type V3AskEvent {
   eventType: V3AskEventType!
   address: String!
   collectionAddress: String!
-  tokenId: Int!
+  tokenId: String!
   properties: V3AskEventProperties!
 }
 
@@ -311,17 +781,25 @@ type V3AskFilledEventProperties {
   seller: String!
   sellerFundsRecipient: String!
   askCurrency: String!
-  askPrice: Int!
+  askPrice: String!
   findersFeeBps: Int!
   buyer: String!
   finder: String!
+  price: PriceAtTime!
 }
 
 type V3AskPriceUpdatedEventProperties {
   seller: String!
   sellerFundsRecipient: String!
   askCurrency: String!
-  askPrice: Int!
+  askPrice: String!
   findersFeeBps: Int!
+  price: PriceAtTime!
+}
+
+enum V3AskStatus {
+  ACTIVE
+  CANCELED
+  COMPLETED
 }
 

@@ -1,8 +1,11 @@
-fragment CollectionFragment on Collection {
+fragment TokenContractInfo on TokenContract {
   name
+  network
+  iconUrl
+  description
+  collectionAddress
   symbol
-  address
-  totalSupply
+  chain
 }
 
 fragment FullMedia on TokenContentMedia {
@@ -17,24 +20,89 @@ fragment FullMedia on TokenContentMedia {
   }
 }
 
-fragment TokenContractSummary on TokenContract {
-  name
-  symbol
-  tokenAddress
+fragment PriceSummary on PriceAtTime {
+  blockNumber
+  ethPrice {
+    decimal
+  }
+  nativePrice {
+    decimal
+    currency {
+      address
+      decimals
+      name
+    }
+  }
+  usdcPrice {
+    decimal
+  }
 }
 
-fragment TokenSummaryFragment on Token {
+fragment MarketPropertiesFull on MarketProperties {
+  ... on V2Auction {
+    __typename
+    firstBidTime
+    highestBidder
+    curator
+    collectionAddress
+    curatorFeePercentage
+    duration
+    estimatedExpirationTime
+    auctionStatus: status
+    tokenOwner
+    address
+    auctionId
+    approved
+    reservePrice {
+      ...PriceSummary
+    }
+  }
+  ... on V3Ask {
+    __typename
+    buyer
+    finder
+    findersFeeBps
+    sellerFundsRecipient
+    askStatus: status
+    seller
+    askPrice {
+      ...PriceSummary
+    }
+  }
+}
+
+fragment MarketInfo on Market {
+  collectionAddress
+  marketAddress
+  marketType
+  price {
+    ...PriceSummary
+  }
+  status
+  networkInfo {
+    chain
+    network
+  }
+}
+
+fragment MarketDetails on Market {
+  properties {
+    ...MarketPropertiesFull
+  }
+}
+
+fragment TokenInfo on Token {
   minter
   tokenId
   tokenContract {
-    ...TokenContractSummary
+    ...TokenContractInfo
   }
   mintInfo {
     blockTimestamp
     blockNumber
     transactionHash
   }
-  tokenAddress
+  collectionAddress
   lastRefreshTime
   owner
   name
@@ -47,25 +115,47 @@ fragment TokenSummaryFragment on Token {
   }
 }
 
-fragment TokenFullFragment on Token {
-  ...TokenSummaryFragment
-
+fragment TokenDetails on Token {
   metadata
 
   tokenUrl
   tokenUrlMimeType
-
   # todo(iain): include transfer / market information?
+}
+
+fragment CollectionInfo on Collection {
+  address
+  description
+  name
+  symbol
+  totalSupply
+}
+
+fragment CollectionDetails on Collection {
+  attributes {
+    traitType
+    valueMetrics {
+      count
+      percent
+      value
+    }
+  }
+}
+
+fragment PageInfoDefault on PageInfo {
+  limit
+  offset
 }
 
 query collections(
   $network: NetworkInput!
-  $addresses: [String!]!
+  $query: CollectionsQueryInput!
   $pagination: PaginationInput!
   $sort: CollectionSortKeySortInput!
+  $isFull: Boolean!
 ) {
   collections(
-    addresses: $addresses
+    input: $query
     network: $network
     pagination: $pagination
     sort: $sort
@@ -76,49 +166,79 @@ query collections(
       offset
     }
     nodes {
-      ...CollectionFragment
+      ...CollectionInfo
+      ...CollectionDetails @include(if: $isFull)
     }
   }
 }
 
-query tokens(
+# query tokens(
+#   $network: NetworkInput!
+#   $addresses: [String!]!
+#   $pagination: PaginationInput!
+#   $sort: TokenSortKeySortInput!
+# ) {
+#   tokens(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
+#     totalCount
+#     pageInfo {
+#       limit
+#       offset
+#     }
+#     nodes {
+#       ...TokenMarketFull
+#     }
+#   }
+# }
+
+query tokenMarkets(
   $network: NetworkInput!
-  $addresses: [String!]!
+  $query: TokenMarketsQueryInput!
   $pagination: PaginationInput!
-  $sort: TokenSortKeySortInput!
+  $filter: TokenMarketsFilterInput
+  $sort: TokenMarketSortKeySortInput!
+  $isFull: Boolean!
 ) {
-  tokens(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
-    totalCount
-    pageInfo {
-      limit
-      offset
-    }
+  # this returns all associated markets
+  tokenMarkets(
+    input: $query
+    network: $network
+    filter: $filter
+    pagination: $pagination
+    sort: $sort
+  ) {
     nodes {
-      ...TokenFullFragment
+      markets {
+        ...MarketInfo
+        ...MarketDetails @include(if: $isFull)
+      }
+      token {
+        ...TokenInfo
+        ...TokenDetails @include(if: $isFull)
+      }
+      # sales {
+      #   ...SaleDetails @include(if: $isFull)
+      # }
+    }
+    pageInfo {
+      ...PageInfoDefault
     }
   }
 }
 
-query token($network: NetworkInput!, $token: TokenInput!) {
-  token(token: $token, network: $network) {
-    ...TokenFullFragment
-  }
-}
-
-query tokensSummary(
-  $network: NetworkInput!
-  $addresses: [String!]!
-  $pagination: PaginationInput!
-  $sort: TokenSortKeySortInput!
-) {
-  tokens(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
-    totalCount
-    pageInfo {
-      limit
-      offset
-    }
-    nodes {
-      ...TokenSummaryFragment
-    }
-  }
-}
+# query tokenMarkets(
+#   $network: NetworkInput!
+#   $addresses: [String!]!
+#   $pagination: PaginationInput!
+#   $sort: TokenSortKeySortInput!
+#   $isFull: Boolean!
+# ) {
+#   tokens(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
+#     totalCount
+#     pageInfo {
+#       ...PageInfoDefault
+#     }
+#     nodes {
+#       ...TokenInfo
+#     }
+#   }
+# }
