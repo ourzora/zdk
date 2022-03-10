@@ -7,26 +7,56 @@ describe('zdk', () => {
     zdk = new ZDK(process.env.ZDK_ENDPOINT!, Network.Ethereum, Chain.Mainnet);
   });
   it('should fetch localhost collections empty object', async () => {
-    // expect(
-    //   await zdk.tokens(['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'], {
-    //     pagination: { limit: 2 },
-    //   })
-    // ).toMatchSnapshot();
-    const apiResult = await zdk.tokens(['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'], {
-      pagination: { limit: 2 },
-    })
-    expect(apiResult.tokens.nodes[0]).toMatchSnapshot();
-    expect(apiResult.tokens.nodes[1]).toMatchSnapshot();
-    expect(apiResult.tokens.nodes.length).toBe(2);
+    const apiResult = await zdk.tokenMarkets({
+      query: {
+        collectionAddressesInput: {
+          addresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
+        },
+      },
+      pagination: {
+        limit: 2,
+      },
+    });
+    expect(apiResult.tokenMarkets.nodes[0]).toMatchSnapshot();
+    expect(apiResult.tokenMarkets.nodes[1]).toMatchSnapshot();
+    expect(apiResult.tokenMarkets.nodes.length).toBe(2);
   });
-  it('should fetch localhost tokens empty object', async () => {
+  it('should fetch localhost token full object', async () => {
     expect(
-      await zdk.token('0xCa21d4228cDCc68D4e23807E5e370C07577Dd152', '12')
+      await zdk.tokenMarkets({
+        query: {
+          tokenInputs: [
+            {
+              address: '0xCa21d4228cDCc68D4e23807E5e370C07577Dd152',
+              tokenId: '48057',
+            },
+          ],
+        },
+        isFull: true,
+      })
     ).toMatchSnapshot();
   });
-  it('should fetch localhost token contract empty object', async () => {
+  it('queries sort collection information', async () => {
     expect(
-      await zdk.tokensSummary(['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'], {pagination: {limit: 4}})
+      await zdk.collections({
+        query: {
+          collectionAddressesInput: {
+            addresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
+          },
+        },
+      })
+    ).toMatchSnapshot();
+  });
+  it('queries long token information', async () => {
+    expect(
+      await zdk.collections({
+        query: {
+          collectionAddressesInput: {
+            addresses: ['0x5180db8f5c931aae63c74266b211f580155ecac8'],
+          },
+        },
+        isFull: true
+      })
     ).toMatchSnapshot();
   });
 });

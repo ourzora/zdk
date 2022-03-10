@@ -4,10 +4,7 @@ import {
   getSdk,
   Network,
   SortDirection,
-  TokenSortKey,
-  TokenSortKeySortInput,
   TokenInput,
-  TokenMarketsQuery,
   TokenMarketsQueryInput,
   TokenMarketsFilterInput,
   TokenMarketSortKeySortInput,
@@ -30,6 +27,17 @@ export type OverridePaginationOptions = {
   offset?: number;
 };
 
+type Query<ArgsInput, SortInput> = ArgsInput & SortInput;
+
+type TokenMarketsQueryArgs = {
+  query: TokenMarketsQueryInput;
+  filter?: TokenMarketsFilterInput;
+};
+
+type CollectionsQueryArgs = {
+  query: CollectionsQueryInput;
+};
+
 export interface ListOptions<SortInput> {
   network?: OverrideNetworkOptions;
   pagination?: OverridePaginationOptions;
@@ -45,7 +53,7 @@ export class ZDK {
   defaultChain: Chain;
   defaultMaxPageSize: number = 200;
 
-  sdk: ReturnType<typeof getSdk>;
+  public sdk: ReturnType<typeof getSdk>;
 
   constructor(endpoint: string, network: Network, chain: Chain) {
     this.endpoint = endpoint;
@@ -58,7 +66,7 @@ export class ZDK {
   // return axios({url, ...options});
   // }
 
-  getNetworkOptions = ({ network, chain }: OverrideNetworkOptions = {}) => {
+  private getNetworkOptions = ({ network, chain }: OverrideNetworkOptions = {}) => {
     return {
       network: {
         network: network ?? this.defaultNetwork,
@@ -67,7 +75,7 @@ export class ZDK {
     };
   };
 
-  getPaginationOptions = ({ limit, offset }: OverridePaginationOptions = {}) => {
+  private getPaginationOptions = ({ limit, offset }: OverridePaginationOptions = {}) => {
     return {
       pagination: {
         limit: limit || this.defaultMaxPageSize,
@@ -76,16 +84,14 @@ export class ZDK {
     };
   };
 
-  tokenMarkets = async (
-    query: TokenMarketsQueryInput,
-    filter?: TokenMarketsFilterInput,
-    {
-      pagination,
-      network,
-      sort,
-      isFull = false,
-    }: ListOptions<TokenMarketSortKeySortInput> = {}
-  ) =>
+  public tokenMarkets = async ({
+    query,
+    filter,
+    pagination,
+    network,
+    sort,
+    isFull = false,
+  }: Query<TokenMarketsQueryArgs, ListOptions<TokenMarketSortKeySortInput>>) =>
     this.sdk.tokenMarkets({
       query,
       filter,
@@ -98,15 +104,13 @@ export class ZDK {
       ...this.getNetworkOptions(network),
     });
 
-  collections = async (
-    query: CollectionsQueryInput,
-    {
-      pagination,
-      network,
-      sort,
-      isFull = false,
-    }: ListOptions<CollectionSortKeySortInput> = {}
-  ) =>
+  public collections = async ({
+    query,
+    pagination,
+    network,
+    sort,
+    isFull = false,
+  }: Query<CollectionsQueryArgs, ListOptions<CollectionSortKeySortInput>>) =>
     this.sdk.collections({
       query,
       isFull,

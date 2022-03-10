@@ -1,182 +1,260 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`zdk queries long token information 1`] = `
+Object {
+  "collections": Object {
+    "nodes": Array [
+      Object {
+        "address": "0x5180db8f5c931aae63c74266b211f580155ecac8",
+        "attributes": null,
+        "description": "TODO",
+        "name": "Crypto Coven",
+        "symbol": "WITCH",
+        "totalSupply": null,
+      },
+    ],
+    "pageInfo": Object {
+      "limit": 200,
+      "offset": 0,
+    },
+    "totalCount": 1,
+  },
+}
+`;
+
+exports[`zdk queries sort collection information 1`] = `
+Object {
+  "collections": Object {
+    "nodes": Array [
+      Object {
+        "address": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+        "description": "TODO",
+        "name": "Zorbs",
+        "symbol": "ZORB",
+        "totalSupply": 56741,
+      },
+    ],
+    "pageInfo": Object {
+      "limit": 200,
+      "offset": 0,
+    },
+    "totalCount": 1,
+  },
+}
+`;
+
 exports[`zdk should fetch localhost collections empty object 1`] = `
 Object {
-  "content": null,
-  "description": null,
-  "image": null,
-  "lastRefreshTime": null,
-  "metadata": null,
-  "mintInfo": Object {
-    "blockNumber": 13917600,
-    "blockTimestamp": "2022-01-01T05:17:54",
-    "transactionHash": "0x815f7d41594f0b33ead84330ccab0366b839eb0d9ed13d5cee5285f3b714f190",
-  },
-  "minter": "0xe24c322324e02cdd9989d3092be456e92cde53f2",
-  "name": "Zorbs",
-  "owner": "0x720d330816afd75a72e012f8d669a19918483375",
-  "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-  "tokenContract": Object {
+  "markets": Array [
+    Object {
+      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+      "marketAddress": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
+      "marketType": "V3_ASK",
+      "networkInfo": Object {
+        "chain": "MAINNET",
+        "network": "ETHEREUM",
+      },
+      "price": Object {
+        "blockNumber": 14036921,
+        "ethPrice": Object {
+          "decimal": 0.05,
+        },
+        "nativePrice": Object {
+          "currency": Object {
+            "address": "0x0000000000000000000000000000000000000000",
+            "decimals": 18,
+            "name": "ETH",
+          },
+          "decimal": 0.05,
+        },
+        "usdcPrice": Object {
+          "decimal": 156.40084904014552,
+        },
+      },
+      "status": "CANCELED",
+    },
+  ],
+  "token": Object {
+    "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+    "content": null,
+    "description": null,
+    "image": null,
+    "lastRefreshTime": null,
+    "mintInfo": Object {
+      "blockNumber": 13927877,
+      "blockTimestamp": "2022-01-02T19:17:42",
+      "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
+    },
+    "minter": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
     "name": "Zorbs",
-    "symbol": "ZORB",
-    "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+    "owner": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+    "tokenContract": Object {
+      "chain": 1,
+      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+      "description": "TODO",
+      "iconUrl": "TODO",
+      "name": "Zorbs",
+      "network": "ETHEREUM",
+      "symbol": "ZORB",
+    },
+    "tokenId": "48057",
   },
-  "tokenId": "999",
-  "tokenUrl": "data:application/json;base64,eyJuYW1lIjogIlpvcmIgIzk5OSIsICJkZXNjcmlwdGlvbiI6ICJab3JicyB3ZXJlIGRpc3RyaWJ1dGVkIGZvciBmcmVlIGJ5IFpPUkEgb24gTmV3IFllYXLigJlzIDIwMjIuIEVhY2ggTkZUIGltYnVlcyB0aGUgcHJvcGVydGllcyBvZiBpdHMgd2FsbGV0IGhvbGRlciwgYW5kIHdoZW4gc2VudCB0byBzb21lb25lIGVsc2UsIHdpbGwgdHJhbnNmb3JtLlxuXG5WaWV3IHRoaXMgTkZUIGF0IFt6b3JiLmRldi9uZnQvOTk5XShodHRwczovL3pvcmIuZGV2L25mdC85OTkpIiwgImltYWdlIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0F4TVRBZ01URXdJajQ4WkdWbWN6NDhjbUZrYVdGc1IzSmhaR2xsYm5RZ2FXUTlJbWQ2Y2lJZ1ozSmhaR2xsYm5SVWNtRnVjMlp2Y20wOUluUnlZVzV6YkdGMFpTZzJOaTQwTlRjNElESTBMak0xTnpVcElITmpZV3hsS0RjMUxqSTVNRGdwSWlCbmNtRmthV1Z1ZEZWdWFYUnpQU0oxYzJWeVUzQmhZMlZQYmxWelpTSWdjajBpTVNJZ1kzZzlJakFpSUdONVBTSXdKU0krUEhOMGIzQWdiMlptYzJWMFBTSXhOUzQyTWlVaUlITjBiM0F0WTI5c2IzSTlJbWh6YkNneE1qY3NJRGN6SlN3Z09UVWxLU0lnTHo0OGMzUnZjQ0J2Wm1aelpYUTlJak01TGpVNEpTSWdjM1J2Y0MxamIyeHZjajBpYUhOc0tERXlPQ3dnT0RBbExDQTRNeVVwSWlBdlBqeHpkRzl3SUc5bVpuTmxkRDBpTnpJdU9USWxJaUJ6ZEc5d0xXTnZiRzl5UFNKb2Myd29NVE0wTENBNU1DVXNJRFl4SlNraUlDOCtQSE4wYjNBZ2IyWm1jMlYwUFNJNU1DNDJNeVVpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4TXpZc0lEazFKU3dnTkRNbEtTSWdMejQ4YzNSdmNDQnZabVp6WlhROUlqRXdNQ1VpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4TXpjc0lEazFKU3dnTkRJbEtTSWdMejQ4TDNKaFpHbGhiRWR5WVdScFpXNTBQand2WkdWbWN6NDhaeUIwY21GdWMyWnZjbTA5SW5SeVlXNXpiR0YwWlNnMUxEVXBJajQ4Y0dGMGFDQmtQU0pOTVRBd0lEVXdRekV3TUNBeU1pNHpPRFU0SURjM0xqWXhORElnTUNBMU1DQXdRekl5TGpNNE5UZ2dNQ0F3SURJeUxqTTROVGdnTUNBMU1FTXdJRGMzTGpZeE5ESWdNakl1TXpnMU9DQXhNREFnTlRBZ01UQXdRemMzTGpZeE5ESWdNVEF3SURFd01DQTNOeTQyTVRReUlERXdNQ0ExTUZvaUlHWnBiR3c5SW5WeWJDZ2paM3B5S1NJZ0x6NDhjR0YwYUNCemRISnZhMlU5SW5KblltRW9NQ3d3TERBc01DNHdOelVwSWlCbWFXeHNQU0owY21GdWMzQmhjbVZ1ZENJZ2MzUnliMnRsTFhkcFpIUm9QU0l4SWlCa1BTSk5OVEFzTUM0MVl6STNMak1zTUN3ME9TNDFMREl5TGpJc05Ea3VOU3cwT1M0MVV6YzNMak1zT1RrdU5TdzFNQ3c1T1M0MVV6QXVOU3czTnk0ekxEQXVOU3cxTUZNeU1pNDNMREF1TlN3MU1Dd3dMalY2SWlBdlBqd3ZaejQ4TDNOMlp6ND0ifQ==",
-  "tokenUrlMimeType": null,
 }
 `;
 
 exports[`zdk should fetch localhost collections empty object 2`] = `
 Object {
-  "content": null,
-  "description": null,
-  "image": null,
-  "lastRefreshTime": null,
-  "metadata": null,
-  "mintInfo": Object {
-    "blockNumber": 13917600,
-    "blockTimestamp": "2022-01-01T05:17:54",
-    "transactionHash": "0xbaa497f446e983d89592cc471db331163c07742bf91f1066bbad5940cd3cd7dd",
-  },
-  "minter": "0x800d0716740b4a7886eff5b0e577bc9969aba55c",
-  "name": "Zorbs",
-  "owner": "0x800d0716740b4a7886eff5b0e577bc9969aba55c",
-  "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-  "tokenContract": Object {
-    "name": "Zorbs",
-    "symbol": "ZORB",
-    "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-  },
-  "tokenId": "998",
-  "tokenUrl": "data:application/json;base64,eyJuYW1lIjogIlpvcmIgIzk5OCIsICJkZXNjcmlwdGlvbiI6ICJab3JicyB3ZXJlIGRpc3RyaWJ1dGVkIGZvciBmcmVlIGJ5IFpPUkEgb24gTmV3IFllYXLigJlzIDIwMjIuIEVhY2ggTkZUIGltYnVlcyB0aGUgcHJvcGVydGllcyBvZiBpdHMgd2FsbGV0IGhvbGRlciwgYW5kIHdoZW4gc2VudCB0byBzb21lb25lIGVsc2UsIHdpbGwgdHJhbnNmb3JtLlxuXG5WaWV3IHRoaXMgTkZUIGF0IFt6b3JiLmRldi9uZnQvOTk4XShodHRwczovL3pvcmIuZGV2L25mdC85OTgpIiwgImltYWdlIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0F4TVRBZ01URXdJajQ4WkdWbWN6NDhjbUZrYVdGc1IzSmhaR2xsYm5RZ2FXUTlJbWQ2Y2lJZ1ozSmhaR2xsYm5SVWNtRnVjMlp2Y20wOUluUnlZVzV6YkdGMFpTZzJOaTQwTlRjNElESTBMak0xTnpVcElITmpZV3hsS0RjMUxqSTVNRGdwSWlCbmNtRmthV1Z1ZEZWdWFYUnpQU0oxYzJWeVUzQmhZMlZQYmxWelpTSWdjajBpTVNJZ1kzZzlJakFpSUdONVBTSXdKU0krUEhOMGIzQWdiMlptYzJWMFBTSXhOUzQyTWlVaUlITjBiM0F0WTI5c2IzSTlJbWh6YkNneE5qa3NJRGN3SlN3Z09USWxLU0lnTHo0OGMzUnZjQ0J2Wm1aelpYUTlJak01TGpVNEpTSWdjM1J2Y0MxamIyeHZjajBpYUhOc0tERTNNaXdnTnpJbExDQTRNQ1VwSWlBdlBqeHpkRzl3SUc5bVpuTmxkRDBpTnpJdU9USWxJaUJ6ZEc5d0xXTnZiRzl5UFNKb2Myd29NVGt3TENBM055VXNJRFkwSlNraUlDOCtQSE4wYjNBZ2IyWm1jMlYwUFNJNU1DNDJNeVVpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4T1RZc0lEa3dKU3dnTlRnbEtTSWdMejQ4YzNSdmNDQnZabVp6WlhROUlqRXdNQ1VpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4T1Rrc0lEazFKU3dnTlRjbEtTSWdMejQ4TDNKaFpHbGhiRWR5WVdScFpXNTBQand2WkdWbWN6NDhaeUIwY21GdWMyWnZjbTA5SW5SeVlXNXpiR0YwWlNnMUxEVXBJajQ4Y0dGMGFDQmtQU0pOTVRBd0lEVXdRekV3TUNBeU1pNHpPRFU0SURjM0xqWXhORElnTUNBMU1DQXdRekl5TGpNNE5UZ2dNQ0F3SURJeUxqTTROVGdnTUNBMU1FTXdJRGMzTGpZeE5ESWdNakl1TXpnMU9DQXhNREFnTlRBZ01UQXdRemMzTGpZeE5ESWdNVEF3SURFd01DQTNOeTQyTVRReUlERXdNQ0ExTUZvaUlHWnBiR3c5SW5WeWJDZ2paM3B5S1NJZ0x6NDhjR0YwYUNCemRISnZhMlU5SW5KblltRW9NQ3d3TERBc01DNHdOelVwSWlCbWFXeHNQU0owY21GdWMzQmhjbVZ1ZENJZ2MzUnliMnRsTFhkcFpIUm9QU0l4SWlCa1BTSk5OVEFzTUM0MVl6STNMak1zTUN3ME9TNDFMREl5TGpJc05Ea3VOU3cwT1M0MVV6YzNMak1zT1RrdU5TdzFNQ3c1T1M0MVV6QXVOU3czTnk0ekxEQXVOU3cxTUZNeU1pNDNMREF1TlN3MU1Dd3dMalY2SWlBdlBqd3ZaejQ4TDNOMlp6ND0ifQ==",
-  "tokenUrlMimeType": null,
-}
-`;
-
-exports[`zdk should fetch localhost token contract empty object 1`] = `
-Object {
-  "tokens": Object {
-    "nodes": Array [
-      Object {
-        "content": null,
-        "description": null,
-        "image": null,
-        "lastRefreshTime": null,
-        "mintInfo": Object {
-          "blockNumber": 13917600,
-          "blockTimestamp": "2022-01-01T05:17:54",
-          "transactionHash": "0x815f7d41594f0b33ead84330ccab0366b839eb0d9ed13d5cee5285f3b714f190",
-        },
-        "minter": "0xe24c322324e02cdd9989d3092be456e92cde53f2",
-        "name": "Zorbs",
-        "owner": "0x720d330816afd75a72e012f8d669a19918483375",
-        "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "tokenContract": Object {
-          "name": "Zorbs",
-          "symbol": "ZORB",
-          "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        },
-        "tokenId": "999",
+  "markets": Array [
+    Object {
+      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+      "marketAddress": "0x6170b3c3a54c3d8c854934cbc314ed479b2b29a3",
+      "marketType": "V3_ASK",
+      "networkInfo": Object {
+        "chain": "MAINNET",
+        "network": "ETHEREUM",
       },
-      Object {
-        "content": null,
-        "description": null,
-        "image": null,
-        "lastRefreshTime": null,
-        "mintInfo": Object {
-          "blockNumber": 13917600,
-          "blockTimestamp": "2022-01-01T05:17:54",
-          "transactionHash": "0xbaa497f446e983d89592cc471db331163c07742bf91f1066bbad5940cd3cd7dd",
+      "price": Object {
+        "blockNumber": 14071638,
+        "ethPrice": Object {
+          "decimal": 0.5,
         },
-        "minter": "0x800d0716740b4a7886eff5b0e577bc9969aba55c",
-        "name": "Zorbs",
-        "owner": "0x800d0716740b4a7886eff5b0e577bc9969aba55c",
-        "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "tokenContract": Object {
-          "name": "Zorbs",
-          "symbol": "ZORB",
-          "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+        "nativePrice": Object {
+          "currency": Object {
+            "address": "0x0000000000000000000000000000000000000000",
+            "decimals": 18,
+            "name": "ETH",
+          },
+          "decimal": 0.5,
         },
-        "tokenId": "998",
+        "usdcPrice": Object {
+          "decimal": 1213.445087470087,
+        },
       },
-      Object {
-        "content": null,
-        "description": null,
-        "image": null,
-        "lastRefreshTime": null,
-        "mintInfo": Object {
-          "blockNumber": 13917600,
-          "blockTimestamp": "2022-01-01T05:17:54",
-          "transactionHash": "0x6a8851a4c4811da94dd0cba95b3401a01433fd9d97d027dd90925efaa4bbcb22",
-        },
-        "minter": "0x7756fc30c1d5734f119456eae2c89ef9d8d24de8",
-        "name": "Zorbs",
-        "owner": "0xf2c06f90fb58844c09220e01e3116a2293df6960",
-        "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "tokenContract": Object {
-          "name": "Zorbs",
-          "symbol": "ZORB",
-          "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        },
-        "tokenId": "997",
-      },
-      Object {
-        "content": null,
-        "description": null,
-        "image": null,
-        "lastRefreshTime": null,
-        "mintInfo": Object {
-          "blockNumber": 13917600,
-          "blockTimestamp": "2022-01-01T05:17:54",
-          "transactionHash": "0xcace85fd18ed1cb0f5612a272e465f531a4083be341bda4ce7887e3b6ce74bef",
-        },
-        "minter": "0x049569adb8a1e8a9349e9f1111c7b7993a4612eb",
-        "name": "Zorbs",
-        "owner": "0x049569adb8a1e8a9349e9f1111c7b7993a4612eb",
-        "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "tokenContract": Object {
-          "name": "Zorbs",
-          "symbol": "ZORB",
-          "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        },
-        "tokenId": "996",
-      },
-    ],
-    "pageInfo": Object {
-      "limit": 4,
-      "offset": 0,
+      "status": "CANCELED",
     },
-    "totalCount": 1210,
-  },
-}
-`;
-
-exports[`zdk should fetch localhost tokens empty object 1`] = `
-Object {
+  ],
   "token": Object {
+    "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
     "content": null,
     "description": null,
     "image": null,
     "lastRefreshTime": null,
-    "metadata": null,
     "mintInfo": Object {
-      "blockNumber": 13917534,
-      "blockTimestamp": "2022-01-01T05:01:43",
-      "transactionHash": "0x33fbbd36c17c22007828616e6e36337867cd372920257c589a098185afae733a",
+      "blockNumber": 13927877,
+      "blockTimestamp": "2022-01-02T19:17:42",
+      "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
     },
-    "minter": "0x51d89665670f554a906f019cb09b97f8a45b8871",
+    "minter": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
     "name": "Zorbs",
-    "owner": "0x51d89665670f554a906f019cb09b97f8a45b8871",
-    "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+    "owner": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
     "tokenContract": Object {
+      "chain": 1,
+      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+      "description": "TODO",
+      "iconUrl": "TODO",
       "name": "Zorbs",
+      "network": "ETHEREUM",
       "symbol": "ZORB",
-      "tokenAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
     },
-    "tokenId": "12",
-    "tokenUrl": "data:application/json;base64,eyJuYW1lIjogIlpvcmIgIzEyIiwgImRlc2NyaXB0aW9uIjogIlpvcmJzIHdlcmUgZGlzdHJpYnV0ZWQgZm9yIGZyZWUgYnkgWk9SQSBvbiBOZXcgWWVhcuKAmXMgMjAyMi4gRWFjaCBORlQgaW1idWVzIHRoZSBwcm9wZXJ0aWVzIG9mIGl0cyB3YWxsZXQgaG9sZGVyLCBhbmQgd2hlbiBzZW50IHRvIHNvbWVvbmUgZWxzZSwgd2lsbCB0cmFuc2Zvcm0uXG5cblZpZXcgdGhpcyBORlQgYXQgW3pvcmIuZGV2L25mdC8xMl0oaHR0cHM6Ly96b3JiLmRldi9uZnQvMTIpIiwgImltYWdlIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0F4TVRBZ01URXdJajQ4WkdWbWN6NDhjbUZrYVdGc1IzSmhaR2xsYm5RZ2FXUTlJbWQ2Y2lJZ1ozSmhaR2xsYm5SVWNtRnVjMlp2Y20wOUluUnlZVzV6YkdGMFpTZzJOaTQwTlRjNElESTBMak0xTnpVcElITmpZV3hsS0RjMUxqSTVNRGdwSWlCbmNtRmthV1Z1ZEZWdWFYUnpQU0oxYzJWeVUzQmhZMlZQYmxWelpTSWdjajBpTVNJZ1kzZzlJakFpSUdONVBTSXdKU0krUEhOMGIzQWdiMlptYzJWMFBTSXhOUzQyTWlVaUlITjBiM0F0WTI5c2IzSTlJbWh6YkNneE1EUXNJRGN6SlN3Z09URWxLU0lnTHo0OGMzUnZjQ0J2Wm1aelpYUTlJak01TGpVNEpTSWdjM1J2Y0MxamIyeHZjajBpYUhOc0tERXdOU3dnTnprbExDQTRNU1VwSWlBdlBqeHpkRzl3SUc5bVpuTmxkRDBpTnpJdU9USWxJaUJ6ZEc5d0xXTnZiRzl5UFNKb2Myd29NVEV4TENBNE9TVXNJRFl5SlNraUlDOCtQSE4wYjNBZ2IyWm1jMlYwUFNJNU1DNDJNeVVpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4TVRNc0lEa3pKU3dnTkRZbEtTSWdMejQ4YzNSdmNDQnZabVp6WlhROUlqRXdNQ1VpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4TVRRc0lEa3pKU3dnTkRVbEtTSWdMejQ4TDNKaFpHbGhiRWR5WVdScFpXNTBQand2WkdWbWN6NDhaeUIwY21GdWMyWnZjbTA5SW5SeVlXNXpiR0YwWlNnMUxEVXBJajQ4Y0dGMGFDQmtQU0pOTVRBd0lEVXdRekV3TUNBeU1pNHpPRFU0SURjM0xqWXhORElnTUNBMU1DQXdRekl5TGpNNE5UZ2dNQ0F3SURJeUxqTTROVGdnTUNBMU1FTXdJRGMzTGpZeE5ESWdNakl1TXpnMU9DQXhNREFnTlRBZ01UQXdRemMzTGpZeE5ESWdNVEF3SURFd01DQTNOeTQyTVRReUlERXdNQ0ExTUZvaUlHWnBiR3c5SW5WeWJDZ2paM3B5S1NJZ0x6NDhjR0YwYUNCemRISnZhMlU5SW5KblltRW9NQ3d3TERBc01DNHdOelVwSWlCbWFXeHNQU0owY21GdWMzQmhjbVZ1ZENJZ2MzUnliMnRsTFhkcFpIUm9QU0l4SWlCa1BTSk5OVEFzTUM0MVl6STNMak1zTUN3ME9TNDFMREl5TGpJc05Ea3VOU3cwT1M0MVV6YzNMak1zT1RrdU5TdzFNQ3c1T1M0MVV6QXVOU3czTnk0ekxEQXVOU3cxTUZNeU1pNDNMREF1TlN3MU1Dd3dMalY2SWlBdlBqd3ZaejQ4TDNOMlp6ND0ifQ==",
-    "tokenUrlMimeType": null,
+    "tokenId": "48056",
+  },
+}
+`;
+
+exports[`zdk should fetch localhost token full object 1`] = `
+Object {
+  "tokenMarkets": Object {
+    "nodes": Array [
+      Object {
+        "markets": Array [
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "marketAddress": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
+            "marketType": "V3_ASK",
+            "networkInfo": Object {
+              "chain": "MAINNET",
+              "network": "ETHEREUM",
+            },
+            "price": Object {
+              "blockNumber": 14036921,
+              "ethPrice": Object {
+                "decimal": 0.05,
+              },
+              "nativePrice": Object {
+                "currency": Object {
+                  "address": "0x0000000000000000000000000000000000000000",
+                  "decimals": 18,
+                  "name": "ETH",
+                },
+                "decimal": 0.05,
+              },
+              "usdcPrice": Object {
+                "decimal": 156.40084904014552,
+              },
+            },
+            "properties": Object {
+              "__typename": "V3Ask",
+              "askPrice": Object {
+                "blockNumber": 14036921,
+                "ethPrice": Object {
+                  "decimal": 0.05,
+                },
+                "nativePrice": Object {
+                  "currency": Object {
+                    "address": "0x0000000000000000000000000000000000000000",
+                    "decimals": 18,
+                    "name": "ETH",
+                  },
+                  "decimal": 0.05,
+                },
+                "usdcPrice": Object {
+                  "decimal": 156.40084904014552,
+                },
+              },
+              "askStatus": "CANCELED",
+              "buyer": null,
+              "finder": null,
+              "findersFeeBps": 100,
+              "seller": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+              "sellerFundsRecipient": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+            },
+            "status": "CANCELED",
+          },
+        ],
+        "token": Object {
+          "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+          "content": null,
+          "description": null,
+          "image": null,
+          "lastRefreshTime": null,
+          "metadata": null,
+          "mintInfo": Object {
+            "blockNumber": 13927877,
+            "blockTimestamp": "2022-01-02T19:17:42",
+            "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
+          },
+          "minter": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+          "name": "Zorbs",
+          "owner": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+          "tokenContract": Object {
+            "chain": 1,
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "description": "TODO",
+            "iconUrl": "TODO",
+            "name": "Zorbs",
+            "network": "ETHEREUM",
+            "symbol": "ZORB",
+          },
+          "tokenId": "48057",
+          "tokenUrl": "data:application/json;base64,eyJuYW1lIjogIlpvcmIgIzQ4MDU3IiwgImRlc2NyaXB0aW9uIjogIlpvcmJzIHdlcmUgZGlzdHJpYnV0ZWQgZm9yIGZyZWUgYnkgWk9SQSBvbiBOZXcgWWVhcuKAmXMgMjAyMi4gRWFjaCBORlQgaW1idWVzIHRoZSBwcm9wZXJ0aWVzIG9mIGl0cyB3YWxsZXQgaG9sZGVyLCBhbmQgd2hlbiBzZW50IHRvIHNvbWVvbmUgZWxzZSwgd2lsbCB0cmFuc2Zvcm0uXG5cblZpZXcgdGhpcyBORlQgYXQgW3pvcmIuZGV2L25mdC80ODA1N10oaHR0cHM6Ly96b3JiLmRldi9uZnQvNDgwNTcpIiwgImltYWdlIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0F4TVRBZ01URXdJajQ4WkdWbWN6NDhjbUZrYVdGc1IzSmhaR2xsYm5RZ2FXUTlJbWQ2Y2lJZ1ozSmhaR2xsYm5SVWNtRnVjMlp2Y20wOUluUnlZVzV6YkdGMFpTZzJOaTQwTlRjNElESTBMak0xTnpVcElITmpZV3hsS0RjMUxqSTVNRGdwSWlCbmNtRmthV1Z1ZEZWdWFYUnpQU0oxYzJWeVUzQmhZMlZQYmxWelpTSWdjajBpTVNJZ1kzZzlJakFpSUdONVBTSXdKU0krUEhOMGIzQWdiMlptYzJWMFBTSXhOUzQyTWlVaUlITjBiM0F0WTI5c2IzSTlJbWh6YkNneE5qTXNJRGN4SlN3Z09EY2xLU0lnTHo0OGMzUnZjQ0J2Wm1aelpYUTlJak01TGpVNEpTSWdjM1J2Y0MxamIyeHZjajBpYUhOc0tERTJNeXdnTnpNbExDQTNNU1VwSWlBdlBqeHpkRzl3SUc5bVpuTmxkRDBpTnpJdU9USWxJaUJ6ZEc5d0xXTnZiRzl5UFNKb2Myd29NVGt3TENBM055VXNJRFE1SlNraUlDOCtQSE4wYjNBZ2IyWm1jMlYwUFNJNU1DNDJNeVVpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4T1RJc0lEZzNKU3dnTkRFbEtTSWdMejQ4YzNSdmNDQnZabVp6WlhROUlqRXdNQ1VpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4T1RJc0lEa3hKU3dnTkRBbEtTSWdMejQ4TDNKaFpHbGhiRWR5WVdScFpXNTBQand2WkdWbWN6NDhaeUIwY21GdWMyWnZjbTA5SW5SeVlXNXpiR0YwWlNnMUxEVXBJajQ4Y0dGMGFDQmtQU0pOTVRBd0lEVXdRekV3TUNBeU1pNHpPRFU0SURjM0xqWXhORElnTUNBMU1DQXdRekl5TGpNNE5UZ2dNQ0F3SURJeUxqTTROVGdnTUNBMU1FTXdJRGMzTGpZeE5ESWdNakl1TXpnMU9DQXhNREFnTlRBZ01UQXdRemMzTGpZeE5ESWdNVEF3SURFd01DQTNOeTQyTVRReUlERXdNQ0ExTUZvaUlHWnBiR3c5SW5WeWJDZ2paM3B5S1NJZ0x6NDhjR0YwYUNCemRISnZhMlU5SW5KblltRW9NQ3d3TERBc01DNHdOelVwSWlCbWFXeHNQU0owY21GdWMzQmhjbVZ1ZENJZ2MzUnliMnRsTFhkcFpIUm9QU0l4SWlCa1BTSk5OVEFzTUM0MVl6STNMak1zTUN3ME9TNDFMREl5TGpJc05Ea3VOU3cwT1M0MVV6YzNMak1zT1RrdU5TdzFNQ3c1T1M0MVV6QXVOU3czTnk0ekxEQXVOU3cxTUZNeU1pNDNMREF1TlN3MU1Dd3dMalY2SWlBdlBqd3ZaejQ4TDNOMlp6ND0ifQ==",
+          "tokenUrlMimeType": null,
+        },
+      },
+    ],
+    "pageInfo": Object {
+      "limit": 200,
+      "offset": 0,
+    },
   },
 }
 `;
