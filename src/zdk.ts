@@ -9,9 +9,15 @@ import {
   TokenMarketsFilterInput,
   TokenMarketSortKeySortInput,
   TokenMarketSortKey,
+  TokensQueryInput,
+  TokensQueryFilter,
+  TokenSortKeySortInput,
   CollectionsQueryInput,
   CollectionSortKeySortInput,
   CollectionSortKey,
+  TokenSortKey,
+  AggregateStatsQueryVariables,
+  AggregateAttributesQueryVariables,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -35,6 +41,11 @@ type TokenMarketsQueryArgs = {
   includeSalesHistory?: boolean;
 };
 
+type TokensQueryArgs = {
+  query: TokensQueryInput;
+  filter?: TokensQueryFilter;
+};
+
 type CollectionsQueryArgs = {
   query: CollectionsQueryInput;
 };
@@ -44,6 +55,10 @@ export interface ListOptions<SortInput> {
   pagination?: OverridePaginationOptions;
   sort?: SortInput;
   includeFullDetails?: boolean;
+}
+
+export interface AggregateOptions {
+  network?: OverrideNetworkOptions;
 }
 
 export type TokenQueryList = TokenInput;
@@ -85,6 +100,26 @@ export class ZDK {
     };
   };
 
+  public tokens = async ({
+    query,
+    filter,
+    pagination,
+    network,
+    sort,
+    includeFullDetails = false,
+  }: Query<TokensQueryArgs, ListOptions<TokenSortKeySortInput>>) =>
+    this.sdk.tokens({
+      query,
+      filter,
+      sort: {
+        sortDirection: sort?.sortDirection || SortDirection.Asc,
+        sortKey: sort?.sortKey || TokenSortKey.Transferred,
+      },
+      includeFullDetails,
+      ...this.getPaginationOptions(pagination),
+      ...this.getNetworkOptions(network),
+    });
+
   public tokenMarkets = async ({
     query,
     filter,
@@ -124,4 +159,21 @@ export class ZDK {
         sortKey: sort?.sortKey || CollectionSortKey.Created,
       },
     });
+
+  public aggregateStats = async ({
+    query,
+    network,
+    statType,
+  }: AggregateStatsQueryVariables) =>
+    this.sdk.aggregateStats({
+      query,
+      network,
+      statType,
+    });
+
+  public aggregateAttributes = async ({
+    query,
+    network,
+  }: AggregateAttributesQueryVariables) =>
+    this.sdk.aggregateAttributes({ query, network });
 }

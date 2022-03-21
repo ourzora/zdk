@@ -6,8 +6,7 @@ Object {
     "nodes": Array [
       Object {
         "address": "0x5180db8f5c931aae63c74266b211f580155ecac8",
-        "attributes": null,
-        "description": "TODO",
+        "description": "",
         "name": "Crypto Coven",
         "symbol": "WITCH",
         "totalSupply": null,
@@ -28,7 +27,7 @@ Object {
     "nodes": Array [
       Object {
         "address": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "description": "TODO",
+        "description": "",
         "name": "Zorbs",
         "symbol": "ZORB",
         "totalSupply": 56741,
@@ -71,9 +70,10 @@ Object {
           "decimal": 156.40084904014552,
         },
       },
-      "status": "CANCELED",
+      "status": "ACTIVE",
     },
   ],
+  "sales": Object {},
   "token": Object {
     "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
     "content": null,
@@ -81,18 +81,38 @@ Object {
     "image": null,
     "lastRefreshTime": null,
     "mintInfo": Object {
-      "blockNumber": 13927877,
-      "blockTimestamp": "2022-01-02T19:17:42",
-      "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
+      "mintContext": Object {
+        "blockNumber": 13927877,
+        "blockTimestamp": "2022-01-02T19:17:42",
+        "logIndex": 318,
+        "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
+      },
+      "originatorAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+      "price": Object {
+        "blockNumber": 13927877,
+        "ethPrice": Object {
+          "decimal": 0,
+        },
+        "nativePrice": Object {
+          "currency": Object {
+            "address": "0x0000000000000000000000000000000000000000",
+            "decimals": 18,
+            "name": "ETH",
+          },
+          "decimal": 0,
+        },
+        "usdcPrice": Object {
+          "decimal": 0,
+        },
+      },
+      "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
     },
-    "minter": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
     "name": "Zorbs",
     "owner": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
     "tokenContract": Object {
       "chain": 1,
       "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "description": "TODO",
-      "iconUrl": "TODO",
+      "description": "",
       "name": "Zorbs",
       "network": "ETHEREUM",
       "symbol": "ZORB",
@@ -130,9 +150,10 @@ Object {
           "decimal": 1213.445087470087,
         },
       },
-      "status": "CANCELED",
+      "status": "ACTIVE",
     },
   ],
+  "sales": Object {},
   "token": Object {
     "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
     "content": null,
@@ -140,18 +161,38 @@ Object {
     "image": null,
     "lastRefreshTime": null,
     "mintInfo": Object {
-      "blockNumber": 13927877,
-      "blockTimestamp": "2022-01-02T19:17:42",
-      "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
+      "mintContext": Object {
+        "blockNumber": 13927877,
+        "blockTimestamp": "2022-01-02T19:17:42",
+        "logIndex": 317,
+        "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
+      },
+      "originatorAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+      "price": Object {
+        "blockNumber": 13927877,
+        "ethPrice": Object {
+          "decimal": 0,
+        },
+        "nativePrice": Object {
+          "currency": Object {
+            "address": "0x0000000000000000000000000000000000000000",
+            "decimals": 18,
+            "name": "ETH",
+          },
+          "decimal": 0,
+        },
+        "usdcPrice": Object {
+          "decimal": 0,
+        },
+      },
+      "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
     },
-    "minter": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
     "name": "Zorbs",
     "owner": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
     "tokenContract": Object {
       "chain": 1,
       "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "description": "TODO",
-      "iconUrl": "TODO",
+      "description": "",
       "name": "Zorbs",
       "network": "ETHEREUM",
       "symbol": "ZORB",
@@ -211,16 +252,17 @@ Object {
                   "decimal": 156.40084904014552,
                 },
               },
-              "askStatus": "CANCELED",
+              "askStatus": "ACTIVE",
               "buyer": null,
               "finder": null,
               "findersFeeBps": 100,
               "seller": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
               "sellerFundsRecipient": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
             },
-            "status": "CANCELED",
+            "status": "ACTIVE",
           },
         ],
+        "sales": Object {},
         "token": Object {
           "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
           "content": null,
@@ -229,18 +271,38 @@ Object {
           "lastRefreshTime": null,
           "metadata": null,
           "mintInfo": Object {
-            "blockNumber": 13927877,
-            "blockTimestamp": "2022-01-02T19:17:42",
-            "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
+            "mintContext": Object {
+              "blockNumber": 13927877,
+              "blockTimestamp": "2022-01-02T19:17:42",
+              "logIndex": 318,
+              "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
+            },
+            "originatorAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+            "price": Object {
+              "blockNumber": 13927877,
+              "ethPrice": Object {
+                "decimal": 0,
+              },
+              "nativePrice": Object {
+                "currency": Object {
+                  "address": "0x0000000000000000000000000000000000000000",
+                  "decimals": 18,
+                  "name": "ETH",
+                },
+                "decimal": 0,
+              },
+              "usdcPrice": Object {
+                "decimal": 0,
+              },
+            },
+            "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
           },
-          "minter": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
           "name": "Zorbs",
           "owner": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
           "tokenContract": Object {
             "chain": 1,
             "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-            "description": "TODO",
-            "iconUrl": "TODO",
+            "description": "",
             "name": "Zorbs",
             "network": "ETHEREUM",
             "symbol": "ZORB",

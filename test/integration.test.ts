@@ -9,9 +9,7 @@ describe('zdk', () => {
   it('should fetch localhost collections empty object', async () => {
     const apiResult = await zdk.tokenMarkets({
       query: {
-        collectionAddressesInput: {
-          addresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
-        },
+        collectionAddresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
       },
       pagination: {
         limit: 2,
@@ -25,14 +23,15 @@ describe('zdk', () => {
     expect(
       await zdk.tokenMarkets({
         query: {
-          tokenInputs: [
+          tokens: [
             {
               address: '0xCa21d4228cDCc68D4e23807E5e370C07577Dd152',
               tokenId: '48057',
             },
           ],
         },
-        isFull: true,
+        includeFullDetails: true,
+        includeSalesHistory: false,
       })
     ).toMatchSnapshot();
   });
@@ -40,9 +39,7 @@ describe('zdk', () => {
     expect(
       await zdk.collections({
         query: {
-          collectionAddressesInput: {
-            addresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
-          },
+          collectionAddresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
         },
       })
     ).toMatchSnapshot();
@@ -51,11 +48,8 @@ describe('zdk', () => {
     expect(
       await zdk.collections({
         query: {
-          collectionAddressesInput: {
-            addresses: ['0x5180db8f5c931aae63c74266b211f580155ecac8'],
-          },
+          collectionAddresses: ['0x5180db8f5c931aae63c74266b211f580155ecac8'],
         },
-        : true
       })
     ).toMatchSnapshot();
   });

@@ -39,7 +39,6 @@ fragment PriceSummary on PriceAtTime {
   }
 }
 
-
 fragment MintDetails on MintInfo {
   price {
     ...PriceSummary
@@ -66,7 +65,7 @@ fragment SaleInfo on Sale {
   buyerAddress
   collectionAddress
   # saleType{ SaleEventType!}
-  price { 
+  price {
     ...PriceSummary
   }
   sellerAddress
@@ -159,7 +158,12 @@ fragment TokenDetails on Token {
 
   tokenUrl
   tokenUrlMimeType
-  # todo(iain): include transfer / market information?
+
+  attributes {
+    traitType
+    value
+    displayType
+  }
 }
 
 fragment CollectionInfo on Collection {
@@ -206,23 +210,32 @@ query collections(
   }
 }
 
-# query tokens(
-#   $network: NetworkInput!
-#   $addresses: [String!]!
-#   $pagination: PaginationInput!
-#   $sort: TokenSortKeySortInput!
-# ) {
-#   tokens(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
-#     totalCount
-#     pageInfo {
-#       limit
-#       offset
-#     }
-#     nodes {
-#       ...TokenMarketFull
-#     }
-#   }
-# }
+query tokens(
+  $network: NetworkInput!
+  $query: TokensQueryInput
+  $filter: TokensQueryFilter
+  $pagination: PaginationInput!
+  $sort: TokenSortKeySortInput!
+  $includeFullDetails: Boolean!
+) {
+  tokens(
+    query: $query
+    network: $network
+    pagination: $pagination
+    sort: $sort
+    filter: $filter
+  ) {
+    totalCount
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      ...TokenInfo
+      ...TokenDetails @include(if: $includeFullDetails)
+    }
+  }
+}
 
 query tokenMarkets(
   $network: NetworkInput!
@@ -250,7 +263,10 @@ query tokenMarkets(
         ...TokenInfo
         ...TokenDetails @include(if: $includeFullDetails)
       }
-      sales(pagination: {limit: 10, offset:0}, sort: {sortKey: TIME, sortDirection: DESC}) {
+      sales(
+        pagination: { limit: 10, offset: 0 }
+        sort: { sortKey: TIME, sortDirection: DESC }
+      ) {
         ...SaleDetails @include(if: $includeSalesHistory)
       }
     }
@@ -260,20 +276,35 @@ query tokenMarkets(
   }
 }
 
-# query tokenMarkets(
-#   $network: NetworkInput!
-#   $addresses: [String!]!
-#   $pagination: PaginationInput!
-#   $sort: TokenSortKeySortInput!
-#   $isFull: Boolean!
-# ) {
-#   tokens(addresses: $addresses, network: $network, pagination: $pagination, sort: $sort) {
-#     totalCount
-#     pageInfo {
-#       ...PageInfoDefault
-#     }
-#     nodes {
-#       ...TokenInfo
-#     }
-#   }
-# }
+query aggregateStats(
+  $network: NetworkInput!
+  $query: AggregateStatQueryInput!
+  $statType: StatType!
+) {
+  aggregateStat(network: $network, query: $query, statType: $statType) {
+    stat {
+      ... on FloatValue {
+        floatValue: value
+        unit
+      }
+      ... on IntValue {
+        intValue: value
+        unit
+      }
+    }
+  }
+}
+
+query aggregateAttributes(
+  $network: NetworkInput!
+  $query: AggregateAttributesQueryInput!
+) {
+  aggregateAttributes(network: $network, query: $query) {
+    traitType
+    valueMetrics {
+      value
+      count
+      percent
+    }
+  }
+}
