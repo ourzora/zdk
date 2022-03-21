@@ -1,7 +1,6 @@
 fragment TokenContractInfo on TokenContract {
   name
   network
-  iconUrl
   description
   collectionAddress
   symbol
@@ -13,10 +12,12 @@ fragment FullMedia on TokenContentMedia {
   url
   size
   mimeType
-  mediaType
+  mimeType
   mediaEncoding {
+    large
+    poster
     preview
-    original
+    thumbnail
   }
 }
 
@@ -35,6 +36,47 @@ fragment PriceSummary on PriceAtTime {
   }
   usdcPrice {
     decimal
+  }
+}
+
+
+fragment MintDetails on MintInfo {
+  price {
+    ...PriceSummary
+  }
+  originatorAddress
+  toAddress
+  mintContext {
+    ...TransactionDetails
+  }
+}
+
+fragment TransactionDetails on TransactionInfo {
+  blockNumber
+  blockTimestamp
+  transactionHash
+  logIndex
+}
+
+fragment SaleInfo on Sale {
+  saleContractAddress
+  transactionInfo {
+    ...TransactionDetails
+  }
+  buyerAddress
+  collectionAddress
+  # saleType{ SaleEventType!}
+  price { 
+    ...PriceSummary
+  }
+  sellerAddress
+  tokenId
+}
+
+fragment SaleDetails on SaleConnection {
+  totalCount
+  nodes {
+    ...SaleInfo
   }
 }
 
@@ -92,15 +134,12 @@ fragment MarketDetails on Market {
 }
 
 fragment TokenInfo on Token {
-  minter
   tokenId
   tokenContract {
     ...TokenContractInfo
   }
   mintInfo {
-    blockTimestamp
-    blockNumber
-    transactionHash
+    ...MintDetails
   }
   collectionAddress
   lastRefreshTime
@@ -152,14 +191,9 @@ query collections(
   $query: CollectionsQueryInput!
   $pagination: PaginationInput!
   $sort: CollectionSortKeySortInput!
-  $isFull: Boolean!
+  $includeFullDetails: Boolean!
 ) {
-  collections(
-    input: $query
-    network: $network
-    pagination: $pagination
-    sort: $sort
-  ) {
+  collections(query: $query, network: $network, pagination: $pagination, sort: $sort) {
     totalCount
     pageInfo {
       limit
@@ -167,7 +201,7 @@ query collections(
     }
     nodes {
       ...CollectionInfo
-      ...CollectionDetails @include(if: $isFull)
+      ...CollectionDetails @include(if: $includeFullDetails)
     }
   }
 }
@@ -196,11 +230,12 @@ query tokenMarkets(
   $pagination: PaginationInput!
   $filter: TokenMarketsFilterInput
   $sort: TokenMarketSortKeySortInput!
-  $isFull: Boolean!
+  $includeFullDetails: Boolean!
+  $includeSalesHistory: Boolean!
 ) {
   # this returns all associated markets
   tokenMarkets(
-    input: $query
+    query: $query
     network: $network
     filter: $filter
     pagination: $pagination
@@ -209,15 +244,15 @@ query tokenMarkets(
     nodes {
       markets {
         ...MarketInfo
-        ...MarketDetails @include(if: $isFull)
+        ...MarketDetails @include(if: $includeFullDetails)
       }
       token {
         ...TokenInfo
-        ...TokenDetails @include(if: $isFull)
+        ...TokenDetails @include(if: $includeFullDetails)
       }
-      # sales {
-      #   ...SaleDetails @include(if: $isFull)
-      # }
+      sales(pagination: {limit: 10, offset:0}, sort: {sortKey: TIME, sortDirection: DESC}) {
+        ...SaleDetails @include(if: $includeSalesHistory)
+      }
     }
     pageInfo {
       ...PageInfoDefault

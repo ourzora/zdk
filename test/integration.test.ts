@@ -55,7 +55,7 @@ describe('zdk', () => {
             addresses: ['0x5180db8f5c931aae63c74266b211f580155ecac8'],
           },
         },
-        isFull: true
+        : true
       })
     ).toMatchSnapshot();
   });

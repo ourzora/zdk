@@ -8,19 +8,15 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
-input AddressesInput {
-  addresses: [String!]!
-}
-
 type AggregateAttribute {
   traitType: String!
   valueMetrics: [AggregateAttributeValue!]!
 }
 
 input AggregateAttributesQueryInput {
-  collectionAddressesInput: AddressesInput = null
-  ownerAddressesInput: AddressesInput = null
-  tokenInputs: [TokenInput!] = null
+  collectionAddresses: [String!] = null
+  ownerAddresses: [String!] = null
+  tokens: [TokenInput!] = null
 }
 
 type AggregateAttributeValue {
@@ -34,9 +30,9 @@ type AggregateStat {
 }
 
 input AggregateStatQueryInput {
-  collectionAddressesInput: AddressesInput = null
-  ownerAddressesInput: AddressesInput = null
-  attributeInputs: [AttributeFilter!] = null
+  collectionAddresses: [String!] = null
+  ownerAddresses: [String!] = null
+  attributes: [AttributeFilter!] = null
 }
 
 input AttributeFilter {
@@ -46,17 +42,14 @@ input AttributeFilter {
 
 enum Chain {
   MAINNET
-  POLYGON
-  RINKEBY
-  ROPSTEN
 }
 
 type Collection {
-  name: String!
   address: String!
   description: String!
+  name: String
+  symbol: String
   totalSupply: Int
-  symbol: String!
   attributes: [CollectionAttribute!]
 }
 
@@ -88,7 +81,7 @@ input CollectionSortKeySortInput {
 }
 
 input CollectionsQueryInput {
-  collectionAddressesInput: AddressesInput!
+  collectionAddresses: [String!]!
 }
 
 type Currency {
@@ -110,6 +103,7 @@ scalar Date
 scalar DateTime
 
 type Event {
+  transactionInfo: TransactionInfo!
   eventType: EventType!
   collectionAddress: String!
   tokenId: String!
@@ -140,12 +134,11 @@ input EventsQueryFilter {
 }
 
 input EventsQueryInput {
-  tokenInputs: [TokenInput!] = null
-  collectionAddressesInput: AddressesInput = null
+  tokens: [TokenInput!] = null
+  collectionAddresses: [String!] = null
 }
 
 enum EventType {
-  SALE_EVENT
   MINT_EVENT
   TRANSFER_EVENT
   V1_MARKET_EVENT
@@ -172,6 +165,7 @@ scalar JSONScalar
 
 type Market {
   networkInfo: NetworkInfo!
+  transactionInfo: TransactionInfo!
   status: String!
   marketAddress: String!
   collectionAddress: String!
@@ -183,7 +177,8 @@ type Market {
 
 input MarketFilter {
   marketType: MarketType!
-  statuses: [MarketStatus!]!
+  statuses: [MarketStatus!] = null
+  bidderAddresses: [String!] = null
 }
 
 union MarketProperties = V1Ask | V1Offer | V1BidShare | V2Auction | V3Ask
@@ -205,9 +200,8 @@ input MarketsQueryFilter {
 }
 
 input MarketsQueryInput {
-  tokenInputs: [TokenInput!] = null
-  collectionAddressesInput: AddressesInput = null
-  ownerAddressesInput: AddressesInput = null
+  tokens: [TokenInput!] = null
+  collectionAddresses: [String!] = null
 }
 
 enum MarketStatus {
@@ -226,6 +220,7 @@ enum MarketType {
 
 type MarketWithTokenInfo {
   networkInfo: NetworkInfo!
+  transactionInfo: TransactionInfo!
   status: String!
   marketAddress: String!
   collectionAddress: String!
@@ -243,28 +238,10 @@ type MarketWithTokenInfoConnection {
 }
 
 type MediaEncoding {
-  original: String!
   large: String!
   poster: String!
   preview: String!
   thumbnail: String!
-}
-
-enum MediaType {
-  IMAGE
-  ANIMATION
-  TEXT
-  HTML
-  VIDEO
-  AUDIO
-  UNKNOWN
-}
-
-type MintContext {
-  blockNumber: Int!
-  blockTimestamp: Date!
-  transactionHash: String!
-  logIndex: Int!
 }
 
 type MintEvent {
@@ -275,10 +252,15 @@ type MintEvent {
   fee: PriceAtTime!
 }
 
+type MintInfo {
+  mintContext: TransactionInfo!
+  originatorAddress: String!
+  toAddress: String!
+  price: PriceAtTime!
+}
+
 enum Network {
   ETHEREUM
-  FLOW
-  SOLANA
 }
 
 type NetworkInfo {
@@ -318,35 +300,36 @@ input PriceFilter {
 
 type RootQuery {
   """Calculate aggregate stat"""
-  aggregateStat(network: NetworkInput!, statType: StatType!, input: AggregateStatQueryInput!): AggregateStat!
+  aggregateStat(network: NetworkInput!, statType: StatType!, query: AggregateStatQueryInput!): AggregateStat!
 
   """Get aggregate attribute set"""
-  aggregateAttributes(network: NetworkInput!, input: AggregateAttributesQueryInput!): [AggregateAttribute!]!
+  aggregateAttributes(network: NetworkInput!, query: AggregateAttributesQueryInput!): [AggregateAttribute!]!
 
   """Get collections"""
-  collections(pagination: PaginationInput!, sort: CollectionSortKeySortInput!, network: NetworkInput!, input: CollectionsQueryInput = null): CollectionConnection!
+  collections(pagination: PaginationInput!, sort: CollectionSortKeySortInput!, network: NetworkInput!, query: CollectionsQueryInput = null): CollectionConnection!
 
   """Get events"""
-  events(network: NetworkInput!, pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null, input: EventsQueryInput = null): EventConnection!
+  events(network: NetworkInput!, pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null, query: EventsQueryInput = null): EventConnection!
 
   """Get sales"""
-  sales(network: NetworkInput!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, input: SalesQueryInput = null): SaleConnection!
+  sales(network: NetworkInput!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, query: SalesQueryInput = null): SaleConnection!
 
   """Get tokens"""
-  tokens(network: NetworkInput!, pagination: PaginationInput!, sort: TokenSortKeySortInput!, filter: TokensQueryFilter = null, input: TokensQueryInput = null): TokenConnection!
+  tokens(network: NetworkInput!, pagination: PaginationInput!, sort: TokenSortKeySortInput!, filter: TokensQueryFilter = null, query: TokensQueryInput = null): TokenConnection!
 
   """Get token by collection address and token id"""
   token(token: TokenInput!, network: NetworkInput!): Token
 
   """Get token markets"""
-  tokenMarkets(network: NetworkInput!, pagination: PaginationInput!, sort: TokenMarketSortKeySortInput!, input: TokenMarketsQueryInput = null, filter: TokenMarketsFilterInput = null): TokenMarketConnection!
+  tokenMarkets(network: NetworkInput!, pagination: PaginationInput!, sort: TokenMarketSortKeySortInput!, query: TokenMarketsQueryInput = null, filter: TokenMarketsFilterInput = null): TokenMarketConnection!
 
   """Get markets"""
-  markets(network: NetworkInput!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, input: MarketsQueryInput = null): MarketWithTokenInfoConnection!
+  markets(network: NetworkInput!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, query: MarketsQueryInput = null): MarketWithTokenInfoConnection!
 }
 
 type Sale {
   saleContractAddress: String
+  transactionInfo: TransactionInfo!
   buyerAddress: String!
   collectionAddress: String!
   saleType: SaleEventType!
@@ -379,6 +362,7 @@ input SaleFilter {
 enum SaleSortKey {
   ETH_PRICE
   NATIVE_PRICE
+  TIME
 }
 
 input SaleSortKeySortInput {
@@ -391,14 +375,23 @@ input SalesQueryFilter {
 }
 
 input SalesQueryInput {
-  collectionAddressesInput: AddressesInput = null
-  ownerAddressesInput: AddressesInput = null
-  tokenInputs: [TokenInput!] = null
+  collectionAddresses: [String!] = null
+  sellerAddresses: [String!] = null
+  buyerAddresses: [String!] = null
+  tokens: [TokenInput!] = null
 }
 
 enum SaleType {
+  FOUNDATION_SALE
+  LARVA_LABS_SALE
+  LOOKS_RARE_SALE
   OPENSEA_SINGLE_SALE
   OPENSEA_BUNDLE_SALE
+  RARIBLE_SALE
+  SUPERRARE_SALE
+  ZEROX_SALE
+  ZORA_V2_AUCTION_SALE
+  ZORA_V3_ASK_SALE
 }
 
 enum SortDirection {
@@ -416,31 +409,25 @@ enum StatType {
 type Token {
   collectionAddress: String!
   tokenId: String!
-  mintInfo: MintContext
+  mintInfo: MintInfo
   networkInfo: NetworkInfo!
   tokenUrl: String!
   tokenUrlMimeType: String
   content: TokenContentMedia
   image: TokenContentMedia
-  owner: String!
-  tokenContract: TokenContract!
+  owner: String
+  tokenContract: TokenContract
   name: String
   description: String
   metadata: JSONScalar
   attributes: [TokenAttribute!]
-  minter: String
   lastRefreshTime: Int
 }
 
 type TokenAttribute {
   traitType: String!
-  name: String
   value: String
-  role: String
   displayType: String
-  maxValue: String
-  traitCount: Int
-  shares: Int
 }
 
 type TokenConnection {
@@ -450,7 +437,6 @@ type TokenConnection {
 }
 
 type TokenContentMedia {
-  mediaType: MediaType
   url: String
   mimeType: String
   size: String
@@ -463,11 +449,7 @@ type TokenContract {
   name: String!
   symbol: String!
   totalSupply: Int
-  schema: String!
   description: String!
-  creator: String!
-  externalUrl: String!
-  iconUrl: String!
   network: String!
 }
 
@@ -492,11 +474,11 @@ type TokenMarketConnection {
 input TokenMarketsFilterInput {
   attributeFilters: [AttributeFilter!] = null
   marketFilters: [MarketFilter!] = null
+  priceFilter: PriceFilter = null
 }
 
 enum TokenMarketSortKey {
   MINTED
-  TIMED_SALE_ENDING
   TOKEN_ID
   TRANSFERRED
 }
@@ -507,9 +489,9 @@ input TokenMarketSortKeySortInput {
 }
 
 input TokenMarketsQueryInput {
-  collectionAddressesInput: AddressesInput = null
-  ownerAddressesInput: AddressesInput = null
-  tokenInputs: [TokenInput!] = null
+  collectionAddresses: [String!] = null
+  ownerAddresses: [String!] = null
+  tokens: [TokenInput!] = null
 }
 
 enum TokenSortKey {
@@ -528,9 +510,16 @@ input TokensQueryFilter {
 }
 
 input TokensQueryInput {
-  collectionAddressesInput: AddressesInput = null
-  ownerAddressesInput: AddressesInput = null
-  tokenInputs: [TokenInput!] = null
+  collectionAddresses: [String!] = null
+  ownerAddresses: [String!] = null
+  tokens: [TokenInput!] = null
+}
+
+type TransactionInfo {
+  blockNumber: Int!
+  blockTimestamp: Date!
+  transactionHash: String
+  logIndex: Int
 }
 
 type TransferEvent {
@@ -550,6 +539,7 @@ type V1Ask {
 
 type V1BidShare {
   tokenId: String!
+  collectionAddress: String!
   previousOwner: String!
   creator: String!
   owner: String!
@@ -633,6 +623,7 @@ type V1Offer {
   recipient: String!
   sellOnShare: String!
   tokenId: String!
+  collectionAddress: String!
   status: V1MarketEntityStatus!
 }
 

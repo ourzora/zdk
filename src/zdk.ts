@@ -32,6 +32,7 @@ type Query<ArgsInput, SortInput> = ArgsInput & SortInput;
 type TokenMarketsQueryArgs = {
   query: TokenMarketsQueryInput;
   filter?: TokenMarketsFilterInput;
+  includeSalesHistory?: boolean;
 };
 
 type CollectionsQueryArgs = {
@@ -42,7 +43,7 @@ export interface ListOptions<SortInput> {
   network?: OverrideNetworkOptions;
   pagination?: OverridePaginationOptions;
   sort?: SortInput;
-  isFull?: boolean;
+  includeFullDetails?: boolean;
 }
 
 export type TokenQueryList = TokenInput;
@@ -90,12 +91,14 @@ export class ZDK {
     pagination,
     network,
     sort,
-    isFull = false,
+    includeFullDetails = false,
+    includeSalesHistory = false,
   }: Query<TokenMarketsQueryArgs, ListOptions<TokenMarketSortKeySortInput>>) =>
     this.sdk.tokenMarkets({
       query,
       filter,
-      isFull,
+      includeSalesHistory,
+      includeFullDetails,
       sort: {
         sortDirection: sort?.sortDirection || SortDirection.Desc,
         sortKey: sort?.sortKey || TokenMarketSortKey.Minted,
@@ -109,11 +112,11 @@ export class ZDK {
     pagination,
     network,
     sort,
-    isFull = false,
+    includeFullDetails = false,
   }: Query<CollectionsQueryArgs, ListOptions<CollectionSortKeySortInput>>) =>
     this.sdk.collections({
       query,
-      isFull,
+      includeFullDetails,
       ...this.getPaginationOptions(pagination),
       ...this.getNetworkOptions(network),
       sort: {
