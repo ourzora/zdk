@@ -193,13 +193,13 @@ fragment PageInfoDefault on PageInfo {
 }
 
 query collections(
-  $network: NetworkInput!
+  $networks: [NetworkInput!]!
   $where: CollectionsQueryInput!
   $pagination: PaginationInput!
   $sort: CollectionSortKeySortInput!
   $includeFullDetails: Boolean!
 ) {
-  collections(where: $where, network: $network, pagination: $pagination, sort: $sort) {
+  collections(where: $where, networks: $networks, pagination: $pagination, sort: $sort) {
     totalCount
     pageInfo {
       limit
@@ -213,7 +213,7 @@ query collections(
 }
 
 query tokens(
-  $network: NetworkInput!
+  $networks: [NetworkInput!]!
   $where: TokensQueryInput
   $filter: TokensQueryFilter
   $pagination: PaginationInput!
@@ -222,7 +222,7 @@ query tokens(
 ) {
   tokens(
     where: $where
-    network: $network
+    networks: $networks
     pagination: $pagination
     sort: $sort
     filter: $filter
@@ -238,9 +238,8 @@ query tokens(
     }
   }
 }
-
 query tokenMarkets(
-  $network: NetworkInput!
+  $networks: [NetworkInput!]!
   $where: TokenMarketsQueryInput!
   $pagination: PaginationInput!
   $filter: TokenMarketsFilterInput
@@ -251,7 +250,7 @@ query tokenMarkets(
   # this returns all associated markets
   tokenMarkets(
     where: $where
-    network: $network
+    networks: $networks
     filter: $filter
     pagination: $pagination
     sort: $sort
@@ -279,11 +278,11 @@ query tokenMarkets(
 }
 
 query aggregateStats(
-  $network: NetworkInput!
+  $networks: [NetworkInput!]!
   $where: AggregateStatQueryInput!
   $statType: StatType!
 ) {
-  aggregateStat(network: $network, where: $where, statType: $statType) {
+  aggregateStat(networks: $networks, where: $where, statType: $statType) {
     stat {
       ... on FloatValue {
         floatValue: value
@@ -298,10 +297,10 @@ query aggregateStats(
 }
 
 query aggregateAttributes(
-  $network: NetworkInput!
+  $networks: [NetworkInput!]!
   $where: AggregateAttributesQueryInput!
 ) {
-  aggregateAttributes(network: $network, where: $where) {
+  aggregateAttributes(networks: $networks, where: $where) {
     traitType
     valueMetrics {
       value

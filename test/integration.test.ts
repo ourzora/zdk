@@ -4,11 +4,11 @@ import { ZDK } from '../src/zdk';
 describe('zdk', () => {
   let zdk: ZDK;
   beforeEach(() => {
-    zdk = new ZDK(process.env.ZDK_ENDPOINT!, Network.Ethereum, Chain.Mainnet);
+    zdk = new ZDK(process.env.ZDK_ENDPOINT!, [{ network: Network.Ethereum, chain: Chain.Mainnet }]);
   });
   it('should fetch localhost collections empty object', async () => {
     const apiResult = await zdk.tokenMarkets({
-      query: {
+      where: {
         collectionAddresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
       },
       pagination: {
@@ -22,7 +22,7 @@ describe('zdk', () => {
   it('should fetch localhost token full object', async () => {
     expect(
       await zdk.tokenMarkets({
-        query: {
+        where: {
           tokens: [
             {
               address: '0xCa21d4228cDCc68D4e23807E5e370C07577Dd152',
@@ -38,7 +38,7 @@ describe('zdk', () => {
   it('queries sort collection information', async () => {
     expect(
       await zdk.collections({
-        query: {
+        where: {
           collectionAddresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
         },
       })
@@ -47,7 +47,7 @@ describe('zdk', () => {
   it('queries long token information', async () => {
     expect(
       await zdk.collections({
-        query: {
+        where: {
           collectionAddresses: ['0x5180db8f5c931aae63c74266b211f580155ecac8'],
         },
       })

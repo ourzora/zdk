@@ -57,6 +57,7 @@ Object {
         "blockNumber": 14036921,
         "ethPrice": Object {
           "decimal": 0.05,
+          "raw": "50000000000000000",
         },
         "nativePrice": Object {
           "currency": Object {
@@ -68,6 +69,7 @@ Object {
         },
         "usdcPrice": Object {
           "decimal": 156.40084904014552,
+          "raw": "156400849040145514496",
         },
       },
       "status": "ACTIVE",
@@ -92,6 +94,7 @@ Object {
         "blockNumber": 13927877,
         "ethPrice": Object {
           "decimal": 0,
+          "raw": "0",
         },
         "nativePrice": Object {
           "currency": Object {
@@ -103,6 +106,7 @@ Object {
         },
         "usdcPrice": Object {
           "decimal": 0,
+          "raw": "0",
         },
       },
       "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
@@ -137,6 +141,7 @@ Object {
         "blockNumber": 14071638,
         "ethPrice": Object {
           "decimal": 0.5,
+          "raw": "500000000000000000",
         },
         "nativePrice": Object {
           "currency": Object {
@@ -148,6 +153,7 @@ Object {
         },
         "usdcPrice": Object {
           "decimal": 1213.445087470087,
+          "raw": "1213445087470087045120",
         },
       },
       "status": "ACTIVE",
@@ -172,6 +178,7 @@ Object {
         "blockNumber": 13927877,
         "ethPrice": Object {
           "decimal": 0,
+          "raw": "0",
         },
         "nativePrice": Object {
           "currency": Object {
@@ -183,6 +190,7 @@ Object {
         },
         "usdcPrice": Object {
           "decimal": 0,
+          "raw": "0",
         },
       },
       "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
@@ -220,6 +228,7 @@ Object {
               "blockNumber": 14036921,
               "ethPrice": Object {
                 "decimal": 0.05,
+                "raw": "50000000000000000",
               },
               "nativePrice": Object {
                 "currency": Object {
@@ -231,6 +240,7 @@ Object {
               },
               "usdcPrice": Object {
                 "decimal": 156.40084904014552,
+                "raw": "156400849040145514496",
               },
             },
             "properties": Object {
@@ -239,6 +249,7 @@ Object {
                 "blockNumber": 14036921,
                 "ethPrice": Object {
                   "decimal": 0.05,
+                  "raw": "50000000000000000",
                 },
                 "nativePrice": Object {
                   "currency": Object {
@@ -250,6 +261,7 @@ Object {
                 },
                 "usdcPrice": Object {
                   "decimal": 156.40084904014552,
+                  "raw": "156400849040145514496",
                 },
               },
               "askStatus": "ACTIVE",
@@ -264,6 +276,7 @@ Object {
         ],
         "sales": Object {},
         "token": Object {
+          "attributes": null,
           "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
           "content": null,
           "description": null,
@@ -282,6 +295,7 @@ Object {
               "blockNumber": 13927877,
               "ethPrice": Object {
                 "decimal": 0,
+                "raw": "0",
               },
               "nativePrice": Object {
                 "currency": Object {
@@ -293,6 +307,7 @@ Object {
               },
               "usdcPrice": Object {
                 "decimal": 0,
+                "raw": "0",
               },
             },
             "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
