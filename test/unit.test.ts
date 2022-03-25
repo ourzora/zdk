@@ -10,7 +10,7 @@ describe('unit zdk', () => {
   let querySpy: any;
   beforeEach(() => {
     querySpy = spyOn(registry, 'query');
-    zdk = new ZDK(ZORA_TESTING_PATH, Network.Ethereum, Chain.Mainnet);
+    zdk = new ZDK(ZORA_TESTING_PATH, { network: Network.Ethereum, chain: Chain.Mainnet });
   });
 
   it('should fetch mock token', async () => {
