@@ -263,6 +263,15 @@ export type MediaEncoding = {
   thumbnail: Scalars['String'];
 };
 
+export enum MediaType {
+  Audio = 'AUDIO',
+  Gif = 'GIF',
+  Html = 'HTML',
+  Image = 'IMAGE',
+  Text = 'TEXT',
+  Video = 'VIDEO'
+}
+
 export type MintEvent = {
   __typename?: 'MintEvent';
   collectionAddress: Scalars['String'];
@@ -291,8 +300,8 @@ export type NetworkInfo = {
 };
 
 export type NetworkInput = {
-  chain: Chain;
-  network: Network;
+  chain?: Chain;
+  network?: Network;
 };
 
 export type PageInfo = {
@@ -302,8 +311,8 @@ export type PageInfo = {
 };
 
 export type PaginationInput = {
-  limit: Scalars['Int'];
-  offset: Scalars['Int'];
+  limit?: Scalars['Int'];
+  offset?: Scalars['Int'];
 };
 
 export type PriceAtTime = {
@@ -346,50 +355,50 @@ export type RootQuery = {
 
 
 export type RootQueryAggregateAttributesArgs = {
-  network: NetworkInput;
-  query: AggregateAttributesQueryInput;
+  networks: Array<NetworkInput>;
+  where: AggregateAttributesQueryInput;
 };
 
 
 export type RootQueryAggregateStatArgs = {
-  network: NetworkInput;
-  query: AggregateStatQueryInput;
+  networks: Array<NetworkInput>;
   statType: StatType;
+  where: AggregateStatQueryInput;
 };
 
 
 export type RootQueryCollectionsArgs = {
-  network: NetworkInput;
+  networks: Array<NetworkInput>;
   pagination: PaginationInput;
-  query?: InputMaybe<CollectionsQueryInput>;
   sort: CollectionSortKeySortInput;
+  where?: InputMaybe<CollectionsQueryInput>;
 };
 
 
 export type RootQueryEventsArgs = {
   filter?: InputMaybe<EventsQueryFilter>;
-  network: NetworkInput;
+  networks: Array<NetworkInput>;
   pagination: PaginationInput;
-  query?: InputMaybe<EventsQueryInput>;
   sort: EventSortKeySortInput;
+  where?: InputMaybe<EventsQueryInput>;
 };
 
 
 export type RootQueryMarketsArgs = {
   filter?: InputMaybe<MarketsQueryFilter>;
-  network: NetworkInput;
+  networks: Array<NetworkInput>;
   pagination: PaginationInput;
-  query?: InputMaybe<MarketsQueryInput>;
   sort: MarketSortKeySortInput;
+  where?: InputMaybe<MarketsQueryInput>;
 };
 
 
 export type RootQuerySalesArgs = {
   filter?: InputMaybe<SalesQueryFilter>;
-  network: NetworkInput;
+  networks: Array<NetworkInput>;
   pagination: PaginationInput;
-  query?: InputMaybe<SalesQueryInput>;
   sort: SaleSortKeySortInput;
+  where?: InputMaybe<SalesQueryInput>;
 };
 
 
@@ -401,19 +410,19 @@ export type RootQueryTokenArgs = {
 
 export type RootQueryTokenMarketsArgs = {
   filter?: InputMaybe<TokenMarketsFilterInput>;
-  network: NetworkInput;
+  networks: Array<NetworkInput>;
   pagination: PaginationInput;
-  query?: InputMaybe<TokenMarketsQueryInput>;
   sort: TokenMarketSortKeySortInput;
+  where?: InputMaybe<TokenMarketsQueryInput>;
 };
 
 
 export type RootQueryTokensArgs = {
   filter?: InputMaybe<TokensQueryFilter>;
-  network: NetworkInput;
+  networks: Array<NetworkInput>;
   pagination: PaginationInput;
-  query?: InputMaybe<TokensQueryInput>;
   sort: TokenSortKeySortInput;
+  where?: InputMaybe<TokensQueryInput>;
 };
 
 export type Sale = {
@@ -596,12 +605,17 @@ export type TokenMarketSortKeySortInput = {
 
 export type TokenMarketsFilterInput = {
   attributeFilters?: InputMaybe<Array<AttributeFilter>>;
+  hideTokensWithMarkets?: Scalars['Boolean'];
+  hideTokensWithoutMarkets?: Scalars['Boolean'];
   marketFilters?: InputMaybe<Array<MarketFilter>>;
+  mediaType?: InputMaybe<MediaType>;
+  minterAddresses?: InputMaybe<Array<Scalars['String']>>;
   priceFilter?: InputMaybe<PriceFilter>;
 };
 
 export type TokenMarketsQueryInput = {
   collectionAddresses?: InputMaybe<Array<Scalars['String']>>;
+  minterAddresses?: InputMaybe<Array<Scalars['String']>>;
   ownerAddresses?: InputMaybe<Array<Scalars['String']>>;
   tokens?: InputMaybe<Array<TokenInput>>;
 };
@@ -618,7 +632,9 @@ export type TokenSortKeySortInput = {
 };
 
 export type TokensQueryFilter = {
-  attributeFilters: Array<AttributeFilter>;
+  attributeFilters?: InputMaybe<Array<AttributeFilter>>;
+  mediaType?: InputMaybe<MediaType>;
+  minterAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type TokensQueryInput = {
@@ -1142,10 +1158,10 @@ export const PageInfoDefaultFragmentDoc = gql`
 }
     `;
 export const CollectionsDocument = gql`
-    query collections($network: NetworkInput!, $query: CollectionsQueryInput!, $pagination: PaginationInput!, $sort: CollectionSortKeySortInput!, $includeFullDetails: Boolean!) {
+    query collections($networks: [NetworkInput!]!, $where: CollectionsQueryInput!, $pagination: PaginationInput!, $sort: CollectionSortKeySortInput!, $includeFullDetails: Boolean!) {
   collections(
-    query: $query
-    network: $network
+    where: $where
+    networks: $networks
     pagination: $pagination
     sort: $sort
   ) {
@@ -1163,10 +1179,10 @@ export const CollectionsDocument = gql`
     ${CollectionInfoFragmentDoc}
 ${CollectionDetailsFragmentDoc}`;
 export const TokensDocument = gql`
-    query tokens($network: NetworkInput!, $query: TokensQueryInput, $filter: TokensQueryFilter, $pagination: PaginationInput!, $sort: TokenSortKeySortInput!, $includeFullDetails: Boolean!) {
+    query tokens($networks: [NetworkInput!]!, $where: TokensQueryInput, $filter: TokensQueryFilter, $pagination: PaginationInput!, $sort: TokenSortKeySortInput!, $includeFullDetails: Boolean!) {
   tokens(
-    query: $query
-    network: $network
+    where: $where
+    networks: $networks
     pagination: $pagination
     sort: $sort
     filter: $filter
@@ -1185,10 +1201,10 @@ export const TokensDocument = gql`
     ${TokenInfoFragmentDoc}
 ${TokenDetailsFragmentDoc}`;
 export const TokenMarketsDocument = gql`
-    query tokenMarkets($network: NetworkInput!, $query: TokenMarketsQueryInput!, $pagination: PaginationInput!, $filter: TokenMarketsFilterInput, $sort: TokenMarketSortKeySortInput!, $includeFullDetails: Boolean!, $includeSalesHistory: Boolean!) {
+    query tokenMarkets($networks: [NetworkInput!]!, $where: TokenMarketsQueryInput!, $pagination: PaginationInput!, $filter: TokenMarketsFilterInput, $sort: TokenMarketSortKeySortInput!, $includeFullDetails: Boolean!, $includeSalesHistory: Boolean!) {
   tokenMarkets(
-    query: $query
-    network: $network
+    where: $where
+    networks: $networks
     filter: $filter
     pagination: $pagination
     sort: $sort
@@ -1221,8 +1237,8 @@ ${TokenDetailsFragmentDoc}
 ${SaleDetailsFragmentDoc}
 ${PageInfoDefaultFragmentDoc}`;
 export const AggregateStatsDocument = gql`
-    query aggregateStats($network: NetworkInput!, $query: AggregateStatQueryInput!, $statType: StatType!) {
-  aggregateStat(network: $network, query: $query, statType: $statType) {
+    query aggregateStats($networks: [NetworkInput!]!, $where: AggregateStatQueryInput!, $statType: StatType!) {
+  aggregateStat(networks: $networks, where: $where, statType: $statType) {
     stat {
       ... on FloatValue {
         floatValue: value
@@ -1237,8 +1253,8 @@ export const AggregateStatsDocument = gql`
 }
     `;
 export const AggregateAttributesDocument = gql`
-    query aggregateAttributes($network: NetworkInput!, $query: AggregateAttributesQueryInput!) {
-  aggregateAttributes(network: $network, query: $query) {
+    query aggregateAttributes($networks: [NetworkInput!]!, $where: AggregateAttributesQueryInput!) {
+  aggregateAttributes(networks: $networks, where: $where) {
     traitType
     valueMetrics {
       value
@@ -1315,8 +1331,8 @@ export type CollectionDetailsFragment = { __typename?: 'Collection', attributes?
 export type PageInfoDefaultFragment = { __typename?: 'PageInfo', limit: number, offset: number };
 
 export type CollectionsQueryVariables = Exact<{
-  network: NetworkInput;
-  query: CollectionsQueryInput;
+  networks: Array<NetworkInput> | NetworkInput;
+  where: CollectionsQueryInput;
   pagination: PaginationInput;
   sort: CollectionSortKeySortInput;
   includeFullDetails: Scalars['Boolean'];
@@ -1326,8 +1342,8 @@ export type CollectionsQueryVariables = Exact<{
 export type CollectionsQuery = { __typename?: 'RootQuery', collections: { __typename?: 'CollectionConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Collection', address: string, description: string, name?: string | null, symbol?: string | null, totalSupply?: number | null, attributes?: Array<{ __typename?: 'CollectionAttribute', traitType: string, valueMetrics: Array<{ __typename?: 'CollectionAttributeValue', count: number, percent: number, value: string }> }> | null }> } };
 
 export type TokensQueryVariables = Exact<{
-  network: NetworkInput;
-  query?: InputMaybe<TokensQueryInput>;
+  networks: Array<NetworkInput> | NetworkInput;
+  where?: InputMaybe<TokensQueryInput>;
   filter?: InputMaybe<TokensQueryFilter>;
   pagination: PaginationInput;
   sort: TokenSortKeySortInput;
@@ -1338,8 +1354,8 @@ export type TokensQueryVariables = Exact<{
 export type TokensQuery = { __typename?: 'RootQuery', tokens: { __typename?: 'TokenConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: number | null, owner?: string | null, name?: string | null, description?: string | null, metadata?: any | null, tokenUrl: string, tokenUrlMimeType?: string | null, tokenContract?: { __typename?: 'TokenContract', name: string, network: string, description: string, collectionAddress: string, symbol: string, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType: string, value?: string | null, displayType?: string | null }> | null }> } };
 
 export type TokenMarketsQueryVariables = Exact<{
-  network: NetworkInput;
-  query: TokenMarketsQueryInput;
+  networks: Array<NetworkInput> | NetworkInput;
+  where: TokenMarketsQueryInput;
   pagination: PaginationInput;
   filter?: InputMaybe<TokenMarketsFilterInput>;
   sort: TokenMarketSortKeySortInput;
@@ -1351,8 +1367,8 @@ export type TokenMarketsQueryVariables = Exact<{
 export type TokenMarketsQuery = { __typename?: 'RootQuery', tokenMarkets: { __typename?: 'TokenMarketConnection', nodes: Array<{ __typename?: 'TokenMarket', markets: Array<{ __typename?: 'Market', collectionAddress: string, marketAddress: string, marketType: MarketType, status: string, price?: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null } | null, networkInfo: { __typename?: 'NetworkInfo', chain: Chain, network: Network }, properties: { __typename?: 'V1Ask' } | { __typename?: 'V1BidShare' } | { __typename?: 'V1Offer' } | { __typename: 'V2Auction', firstBidTime?: any | null, highestBidder?: string | null, curator: string, collectionAddress: string, curatorFeePercentage: number, duration: string, estimatedExpirationTime?: any | null, tokenOwner: string, address: string, auctionId: string, approved: boolean, auctionStatus: V2AuctionStatus, reservePrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null } } | { __typename: 'V3Ask', buyer?: string | null, finder?: string | null, findersFeeBps: number, sellerFundsRecipient: string, seller: string, askStatus: V3AskStatus, askPrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null } } }>, token: { __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: number | null, owner?: string | null, name?: string | null, description?: string | null, metadata?: any | null, tokenUrl: string, tokenUrlMimeType?: string | null, tokenContract?: { __typename?: 'TokenContract', name: string, network: string, description: string, collectionAddress: string, symbol: string, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType: string, value?: string | null, displayType?: string | null }> | null }, sales: { __typename?: 'SaleConnection', totalCount: number, nodes: Array<{ __typename?: 'Sale', saleContractAddress?: string | null, buyerAddress: string, collectionAddress: string, sellerAddress: string, tokenId: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number } | null } }> } }>, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number } } };
 
 export type AggregateStatsQueryVariables = Exact<{
-  network: NetworkInput;
-  query: AggregateStatQueryInput;
+  networks: Array<NetworkInput> | NetworkInput;
+  where: AggregateStatQueryInput;
   statType: StatType;
 }>;
 
@@ -1360,8 +1376,8 @@ export type AggregateStatsQueryVariables = Exact<{
 export type AggregateStatsQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', stat: { __typename?: 'FloatValue', unit: string, floatValue?: number | null } | { __typename?: 'IntValue', unit: string, intValue: number } } };
 
 export type AggregateAttributesQueryVariables = Exact<{
-  network: NetworkInput;
-  query: AggregateAttributesQueryInput;
+  networks: Array<NetworkInput> | NetworkInput;
+  where: AggregateAttributesQueryInput;
 }>;
 
 

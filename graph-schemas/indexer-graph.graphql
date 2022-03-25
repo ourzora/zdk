@@ -244,6 +244,15 @@ type MediaEncoding {
   thumbnail: String!
 }
 
+enum MediaType {
+  IMAGE
+  GIF
+  VIDEO
+  AUDIO
+  TEXT
+  HTML
+}
+
 type MintEvent {
   tokenId: String!
   collectionAddress: String!
@@ -269,8 +278,8 @@ type NetworkInfo {
 }
 
 input NetworkInput {
-  network: Network!
-  chain: Chain!
+  network: Network! = ETHEREUM
+  chain: Chain! = MAINNET
 }
 
 type PageInfo {
@@ -279,8 +288,8 @@ type PageInfo {
 }
 
 input PaginationInput {
-  limit: Int!
-  offset: Int!
+  limit: Int! = 10
+  offset: Int! = 0
 }
 
 type PriceAtTime {
@@ -300,31 +309,31 @@ input PriceFilter {
 
 type RootQuery {
   """Calculate aggregate stat"""
-  aggregateStat(network: NetworkInput!, statType: StatType!, query: AggregateStatQueryInput!): AggregateStat!
+  aggregateStat(networks: [NetworkInput!]!, statType: StatType!, where: AggregateStatQueryInput!): AggregateStat!
 
   """Get aggregate attribute set"""
-  aggregateAttributes(network: NetworkInput!, query: AggregateAttributesQueryInput!): [AggregateAttribute!]!
+  aggregateAttributes(networks: [NetworkInput!]!, where: AggregateAttributesQueryInput!): [AggregateAttribute!]!
 
   """Get collections"""
-  collections(pagination: PaginationInput!, sort: CollectionSortKeySortInput!, network: NetworkInput!, query: CollectionsQueryInput = null): CollectionConnection!
+  collections(pagination: PaginationInput!, sort: CollectionSortKeySortInput!, networks: [NetworkInput!]!, where: CollectionsQueryInput = null): CollectionConnection!
 
   """Get events"""
-  events(network: NetworkInput!, pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null, query: EventsQueryInput = null): EventConnection!
+  events(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null, where: EventsQueryInput = null): EventConnection!
 
   """Get sales"""
-  sales(network: NetworkInput!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, query: SalesQueryInput = null): SaleConnection!
+  sales(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, where: SalesQueryInput = null): SaleConnection!
 
   """Get tokens"""
-  tokens(network: NetworkInput!, pagination: PaginationInput!, sort: TokenSortKeySortInput!, filter: TokensQueryFilter = null, query: TokensQueryInput = null): TokenConnection!
+  tokens(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenSortKeySortInput!, filter: TokensQueryFilter = null, where: TokensQueryInput = null): TokenConnection!
 
   """Get token by collection address and token id"""
   token(token: TokenInput!, network: NetworkInput!): Token
 
   """Get token markets"""
-  tokenMarkets(network: NetworkInput!, pagination: PaginationInput!, sort: TokenMarketSortKeySortInput!, query: TokenMarketsQueryInput = null, filter: TokenMarketsFilterInput = null): TokenMarketConnection!
+  tokenMarkets(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenMarketSortKeySortInput!, where: TokenMarketsQueryInput = null, filter: TokenMarketsFilterInput = null): TokenMarketConnection!
 
   """Get markets"""
-  markets(network: NetworkInput!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, query: MarketsQueryInput = null): MarketWithTokenInfoConnection!
+  markets(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, where: MarketsQueryInput = null): MarketWithTokenInfoConnection!
 }
 
 type Sale {
@@ -475,6 +484,10 @@ input TokenMarketsFilterInput {
   attributeFilters: [AttributeFilter!] = null
   marketFilters: [MarketFilter!] = null
   priceFilter: PriceFilter = null
+  minterAddresses: [String!] = null
+  hideTokensWithoutMarkets: Boolean! = false
+  hideTokensWithMarkets: Boolean! = false
+  mediaType: MediaType = null
 }
 
 enum TokenMarketSortKey {
@@ -490,6 +503,7 @@ input TokenMarketSortKeySortInput {
 
 input TokenMarketsQueryInput {
   collectionAddresses: [String!] = null
+  minterAddresses: [String!] = null
   ownerAddresses: [String!] = null
   tokens: [TokenInput!] = null
 }
@@ -506,7 +520,9 @@ input TokenSortKeySortInput {
 }
 
 input TokensQueryFilter {
-  attributeFilters: [AttributeFilter!]!
+  attributeFilters: [AttributeFilter!] = null
+  minterAddresses: [String!] = null
+  mediaType: MediaType = null
 }
 
 input TokensQueryInput {
