@@ -24,7 +24,7 @@ import {
 // Export chain and network for API users
 export { Chain as ZDKChain, Network as ZDKNetwork };
 
-export type OverrideNetworksOption = NetworkInput | NetworkInput[];
+export type OverrideNetworksOption = NetworkInput[];
 
 export type OverridePaginationOptions = {
   limit?: number;
@@ -72,7 +72,9 @@ export class ZDK {
 
   constructor(
     endpoint: string = DEFAULT_PROD_ENDPOINT,
-    networks: OverrideNetworksOption = { network: Network.Ethereum, chain: Chain.Mainnet }
+    networks: OverrideNetworksOption = [
+      { network: Network.Ethereum, chain: Chain.Mainnet },
+    ]
   ) {
     this.endpoint = endpoint;
     this.defaultNetworks = networks;
@@ -117,6 +119,28 @@ export class ZDK {
       ...this.getPaginationOptions(pagination),
       ...this.getNetworksOption(networks),
     });
+
+  public token = async ({
+    address,
+    tokenId,
+    networks,
+  }: {
+    address: string;
+    tokenId: string;
+    networks: OverrideNetworksOption;
+  }) => {
+    const tokens = await this.sdk.tokens({
+      networks,
+      where: { tokens: [{ address, tokenId }] },
+      pagination: { limit: 1, offset: 0 },
+      sort: { sortDirection: SortDirection.Asc, sortKey: TokenSortKey.Minted },
+      includeFullDetails: true,
+    });
+    if (!tokens?.tokens.nodes[0]) {
+      throw new Error('Could not find token');
+    }
+    return tokens.tokens.nodes[0];
+  };
 
   public tokenMarkets = async ({
     where,

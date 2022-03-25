@@ -13,19 +13,21 @@ describe('unit zdk', () => {
     zdk = new ZDK(ZORA_TESTING_PATH, { network: Network.Ethereum, chain: Chain.Mainnet });
   });
 
-  it('should fetch mock token', async () => {
-    const token = await zdk.token('0xCa21d4228cDCc68D4e23807E5e370C07577Dd152', '12');
-    expect(token).toMatchSnapshot();
-    expect(querySpy).toBeCalledWith('token', {
-      network: {
-        network: 'ETHEREUM',
-        chain: 'MAINNET',
-      },
-      token: { tokenId: '12', address: '0xCa21d4228cDCc68D4e23807E5e370C07577Dd152' },
-    });
-  });
+  // it('should fetch mock token', async () => {
+  //   const token = await zdk.token('0xCa21d4228cDCc68D4e23807E5e370C07577Dd152', '12');
+  //   expect(token).toMatchSnapshot();
+  //   expect(querySpy).toBeCalledWith('token', {
+  //     network: {
+  //       network: 'ETHEREUM',
+  //       chain: 'MAINNET',
+  //     },
+  //     token: { tokenId: '12', address: '0xCa21d4228cDCc68D4e23807E5e370C07577Dd152' },
+  //   });
+  // });
+
   it('should fetch mock tokens', async () => {
-    const tokens = await zdk.tokens(['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'], {
+    const tokens = await zdk.tokens({
+      where: { collectionAddresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'] },
       pagination: { limit: 2 },
     });
     expect(tokens.tokens.nodes.length).toBe(2);

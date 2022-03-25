@@ -4,7 +4,7 @@ import { ZDK } from '../src/zdk';
 describe('zdk', () => {
   let zdk: ZDK;
   beforeEach(() => {
-    zdk = new ZDK(process.env.ZDK_ENDPOINT!, { network: Network.Ethereum, chain: Chain.Mainnet });
+    zdk = new ZDK(process.env.ZDK_ENDPOINT!, [{ network: Network.Ethereum, chain: Chain.Mainnet }]);
   });
   it('should fetch localhost collections empty object', async () => {
     const apiResult = await zdk.tokenMarkets({

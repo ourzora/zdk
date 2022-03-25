@@ -238,7 +238,6 @@ query tokens(
     }
   }
 }
-
 query tokenMarkets(
   $networks: [NetworkInput!]!
   $where: TokenMarketsQueryInput!
