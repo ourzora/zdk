@@ -63,6 +63,8 @@ export interface AggregateOptions {
 
 export type TokenQueryList = TokenInput;
 
+const DEFAULT_PROD_ENDPOINT = 'https://api.zora.co/';
+
 export class ZDK {
   endpoint: string;
   defaultNetwork: Network;
@@ -71,7 +73,11 @@ export class ZDK {
 
   public sdk: ReturnType<typeof getSdk>;
 
-  constructor(endpoint: string, network: Network, chain: Chain) {
+  constructor(
+    endpoint: string = DEFAULT_PROD_ENDPOINT,
+    network: Network = Network.Ethereum,
+    chain: Chain = Chain.Mainnet
+  ) {
     this.endpoint = endpoint;
     this.defaultNetwork = network;
     this.defaultChain = chain;
@@ -79,7 +85,7 @@ export class ZDK {
   }
 
   // private fetch(url: string, options: any) {
-  // return axios({url, ...options});
+  //   return axios({url, ...options});
   // }
 
   private getNetworkOptions = ({ network, chain }: OverrideNetworkOptions = {}) => {

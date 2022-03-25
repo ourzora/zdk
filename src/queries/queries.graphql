@@ -25,6 +25,7 @@ fragment PriceSummary on PriceAtTime {
   blockNumber
   ethPrice {
     decimal
+    raw
   }
   nativePrice {
     decimal
@@ -36,6 +37,7 @@ fragment PriceSummary on PriceAtTime {
   }
   usdcPrice {
     decimal
+    raw
   }
 }
 
@@ -192,12 +194,12 @@ fragment PageInfoDefault on PageInfo {
 
 query collections(
   $network: NetworkInput!
-  $query: CollectionsQueryInput!
+  $where: CollectionsQueryInput!
   $pagination: PaginationInput!
   $sort: CollectionSortKeySortInput!
   $includeFullDetails: Boolean!
 ) {
-  collections(query: $query, network: $network, pagination: $pagination, sort: $sort) {
+  collections(where: $where, network: $network, pagination: $pagination, sort: $sort) {
     totalCount
     pageInfo {
       limit
@@ -212,14 +214,14 @@ query collections(
 
 query tokens(
   $network: NetworkInput!
-  $query: TokensQueryInput
+  $where: TokensQueryInput
   $filter: TokensQueryFilter
   $pagination: PaginationInput!
   $sort: TokenSortKeySortInput!
   $includeFullDetails: Boolean!
 ) {
   tokens(
-    query: $query
+    where: $where
     network: $network
     pagination: $pagination
     sort: $sort
@@ -239,7 +241,7 @@ query tokens(
 
 query tokenMarkets(
   $network: NetworkInput!
-  $query: TokenMarketsQueryInput!
+  $where: TokenMarketsQueryInput!
   $pagination: PaginationInput!
   $filter: TokenMarketsFilterInput
   $sort: TokenMarketSortKeySortInput!
@@ -248,7 +250,7 @@ query tokenMarkets(
 ) {
   # this returns all associated markets
   tokenMarkets(
-    query: $query
+    where: $where
     network: $network
     filter: $filter
     pagination: $pagination
@@ -278,10 +280,10 @@ query tokenMarkets(
 
 query aggregateStats(
   $network: NetworkInput!
-  $query: AggregateStatQueryInput!
+  $where: AggregateStatQueryInput!
   $statType: StatType!
 ) {
-  aggregateStat(network: $network, query: $query, statType: $statType) {
+  aggregateStat(network: $network, where: $where, statType: $statType) {
     stat {
       ... on FloatValue {
         floatValue: value
@@ -297,9 +299,9 @@ query aggregateStats(
 
 query aggregateAttributes(
   $network: NetworkInput!
-  $query: AggregateAttributesQueryInput!
+  $where: AggregateAttributesQueryInput!
 ) {
-  aggregateAttributes(network: $network, query: $query) {
+  aggregateAttributes(network: $network, where: $where) {
     traitType
     valueMetrics {
       value
