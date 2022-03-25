@@ -24,7 +24,7 @@ import {
 // Export chain and network for API users
 export { Chain as ZDKChain, Network as ZDKNetwork };
 
-export type OverrideNetworksOption = NetworkInput | NetworkInput[]
+export type OverrideNetworksOption = NetworkInput | NetworkInput[];
 
 export type OverridePaginationOptions = {
   limit?: number;
@@ -61,24 +61,19 @@ export interface AggregateOptions {
 
 export type TokenQueryList = TokenInput;
 
-const DEFAULT_PROD_ENDPOINT = 'https://api.zora.co/';
+const DEFAULT_PROD_ENDPOINT = 'https://api.zora.co/graphql';
 
 export class ZDK {
   endpoint: string;
-  defaultNetworks: NetworkInput | NetworkInput[];
+  defaultNetworks: OverrideNetworksOption;
   defaultMaxPageSize: number = 200;
 
   public sdk: ReturnType<typeof getSdk>;
 
-<<<<<<< HEAD
-  constructor(endpoint: string, networks: NetworkInput | NetworkInput[]) {
-=======
   constructor(
     endpoint: string = DEFAULT_PROD_ENDPOINT,
-    network: Network = Network.Ethereum,
-    chain: Chain = Chain.Mainnet
+    networks: OverrideNetworksOption = { network: Network.Ethereum, chain: Chain.Mainnet }
   ) {
->>>>>>> main
     this.endpoint = endpoint;
     this.defaultNetworks = networks;
     this.sdk = getSdk(new GraphQLClient(this.endpoint));
@@ -90,7 +85,7 @@ export class ZDK {
 
   private getNetworksOption = (networks?: OverrideNetworksOption) => {
     return {
-      networks: networks ?? this.defaultNetworks
+      networks: networks ?? this.defaultNetworks,
     };
   };
 
