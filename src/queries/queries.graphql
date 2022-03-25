@@ -25,6 +25,7 @@ fragment PriceSummary on PriceAtTime {
   blockNumber
   ethPrice {
     decimal
+    raw
   }
   nativePrice {
     decimal
@@ -36,6 +37,7 @@ fragment PriceSummary on PriceAtTime {
   }
   usdcPrice {
     decimal
+    raw
   }
 }
 

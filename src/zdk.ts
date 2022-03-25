@@ -61,6 +61,8 @@ export interface AggregateOptions {
 
 export type TokenQueryList = TokenInput;
 
+const DEFAULT_PROD_ENDPOINT = 'https://api.zora.co/';
+
 export class ZDK {
   endpoint: string;
   defaultNetworks: NetworkInput | NetworkInput[];
@@ -68,14 +70,22 @@ export class ZDK {
 
   public sdk: ReturnType<typeof getSdk>;
 
+<<<<<<< HEAD
   constructor(endpoint: string, networks: NetworkInput | NetworkInput[]) {
+=======
+  constructor(
+    endpoint: string = DEFAULT_PROD_ENDPOINT,
+    network: Network = Network.Ethereum,
+    chain: Chain = Chain.Mainnet
+  ) {
+>>>>>>> main
     this.endpoint = endpoint;
     this.defaultNetworks = networks;
     this.sdk = getSdk(new GraphQLClient(this.endpoint));
   }
 
   // private fetch(url: string, options: any) {
-  // return axios({url, ...options});
+  //   return axios({url, ...options});
   // }
 
   private getNetworksOption = (networks?: OverrideNetworksOption) => {
