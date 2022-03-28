@@ -118,6 +118,9 @@ fragment MarketInfo on Market {
   collectionAddress
   marketAddress
   marketType
+  transactionInfo {
+    ...TransactionDetails
+  }
   price {
     ...PriceSummary
   }
