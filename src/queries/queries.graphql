@@ -81,37 +81,48 @@ fragment SaleDetails on SaleConnection {
   }
 }
 
+fragment V2AuctionMarketProperties on V2Auction {
+  __typename
+  firstBidTime
+  highestBidder
+  curator
+  collectionAddress
+  curatorFeePercentage
+  status
+  tokenId
+  auctionCurrency
+  duration
+  estimatedExpirationTime
+  auctionStatus: status
+  tokenOwner
+  address
+  auctionId
+  approved
+  reservePrice {
+    ...PriceSummary
+  }
+}
+
+fragment V3AskProperties on V3Ask {
+  __typename
+  buyer
+  finder
+  findersFeeBps
+  sellerFundsRecipient
+  askStatus: status
+  seller
+  address
+  askCurrency
+  collectionAddress
+  askPrice {
+    ...PriceSummary
+  }
+}
+
 fragment MarketPropertiesFull on MarketProperties {
-  ... on V2Auction {
-    __typename
-    firstBidTime
-    highestBidder
-    curator
-    collectionAddress
-    curatorFeePercentage
-    duration
-    estimatedExpirationTime
-    auctionStatus: status
-    tokenOwner
-    address
-    auctionId
-    approved
-    reservePrice {
-      ...PriceSummary
-    }
-  }
-  ... on V3Ask {
-    __typename
-    buyer
-    finder
-    findersFeeBps
-    sellerFundsRecipient
-    askStatus: status
-    seller
-    askPrice {
-      ...PriceSummary
-    }
-  }
+  # TODO: iain support v1 liquidity?
+  ...V2AuctionMarketProperties
+  ...V3AskProperties
 }
 
 fragment MarketInfo on Market {
