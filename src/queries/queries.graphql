@@ -29,6 +29,7 @@ fragment PriceSummary on PriceAtTime {
   }
   nativePrice {
     decimal
+    raw
     currency {
       address
       decimals
@@ -99,6 +100,9 @@ fragment V2AuctionMarketProperties on V2Auction {
   auctionId
   approved
   reservePrice {
+    ...PriceSummary
+  }
+  highestBidPrice {
     ...PriceSummary
   }
 }
