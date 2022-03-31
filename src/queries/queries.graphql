@@ -76,7 +76,7 @@ fragment SaleInfo on Sale {
 }
 
 fragment SaleDetails on SaleConnection {
-  totalCount
+  hasNextPage
   nodes {
     ...SaleInfo
   }
@@ -210,6 +210,11 @@ fragment PageInfoDefault on PageInfo {
   offset
 }
 
+fragment OwnerCountInfo on OwnerCount {
+  owner
+  count
+}
+
 query collections(
   $networks: [NetworkInput!]!
   $where: CollectionsQueryInput!
@@ -218,7 +223,7 @@ query collections(
   $includeFullDetails: Boolean!
 ) {
   collections(where: $where, networks: $networks, pagination: $pagination, sort: $sort) {
-    totalCount
+    hasNextPage
     pageInfo {
       limit
       offset
@@ -245,7 +250,7 @@ query tokens(
     sort: $sort
     filter: $filter
   ) {
-    totalCount
+    hasNextPage
     pageInfo {
       limit
       offset
@@ -295,22 +300,42 @@ query tokenMarkets(
   }
 }
 
-query aggregateStats(
+query salesVolume(
   $networks: [NetworkInput!]!
-  $where: AggregateStatQueryInput!
-  $statType: StatType!
+  $where: CollectionAddressAndAttributesInput!
+  $timeFilter: TimeFilter
 ) {
-  aggregateStat(networks: $networks, where: $where, statType: $statType) {
-    stat {
-      ... on FloatValue {
-        floatValue: value
-        unit
+  aggregateStat {
+    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter)
+  }
+}
+
+query ownersByCount(
+  $networks: [NetworkInput!]!
+  $pagination: PaginationInput!
+  $where: CollectionAddressAndAttributesInput!
+) {
+  aggregateStat {
+    ownersByCount(networks: $networks, pagination: $pagination, where: $where) {
+      hasNextPage
+      pageInfo {
+        limit
+        offset
       }
-      ... on IntValue {
-        intValue: value
-        unit
+      nodes {
+        ...OwnerCountInfo
       }
     }
+  }
+}
+
+query salesVolume(
+  $networks: [NetworkInput!]!
+  $where: CollectionAddressAndAttributesInput!
+  $timeFilter: TimeFilter
+) {
+  aggregateStat {
+    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter)
   }
 }
 

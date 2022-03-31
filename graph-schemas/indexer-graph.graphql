@@ -26,13 +26,11 @@ type AggregateAttributeValue {
 }
 
 type AggregateStat {
-  stat: IntValueFloatValue!
-}
-
-input AggregateStatQueryInput {
-  collectionAddresses: [String!] = null
-  ownerAddresses: [String!] = null
-  attributes: [AttributeFilter!] = null
+  floorPrice(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!): Float!
+  nftCount(networks: [NetworkInput!]!, where: CollectionAddressOwnerAddressAttributesInput!): Int!
+  ownerCount(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!): Int!
+  ownersByCount(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!, pagination: PaginationInput!): OwnerCountConnection!
+  salesVolume(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!, timeFilter: TimeFilter = null): Float!
 }
 
 input AttributeFilter {
@@ -53,6 +51,17 @@ type Collection {
   attributes: [CollectionAttribute!]
 }
 
+input CollectionAddressAndAttributesInput {
+  collectionAddresses: [String!] = null
+  attributes: [AttributeFilter!] = null
+}
+
+input CollectionAddressOwnerAddressAttributesInput {
+  collectionAddresses: [String!] = null
+  ownerAddresses: [String!] = null
+  attributes: [AttributeFilter!] = null
+}
+
 type CollectionAttribute {
   traitType: String!
   valueMetrics: [CollectionAttributeValue!]!
@@ -67,10 +76,11 @@ type CollectionAttributeValue {
 type CollectionConnection {
   nodes: [Collection!]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  hasNextPage: Boolean!
 }
 
 enum CollectionSortKey {
+  NONE
   NAME
   CREATED
 }
@@ -113,12 +123,13 @@ type Event {
 type EventConnection {
   nodes: [Event!]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  hasNextPage: Boolean!
 }
 
 union EventProperties = MintEvent | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
 
 enum EventSortKey {
+  NONE
   CREATED
 }
 
@@ -131,6 +142,7 @@ input EventsQueryFilter {
   eventTypes: [EventType!] = null
   senderAddresses: [String!] = null
   recipientAddresses: [String!] = null
+  timeFilter: TimeFilter = null
 }
 
 input EventsQueryInput {
@@ -145,18 +157,6 @@ enum EventType {
   V2_AUCTION_EVENT
   V3_ASK_EVENT
 }
-
-type FloatValue {
-  value: Float
-  unit: String!
-}
-
-type IntValue {
-  value: Int!
-  unit: String!
-}
-
-union IntValueFloatValue = IntValue | FloatValue
 
 """
 The GenericScalar scalar type represents a generic GraphQL scalar value that could be: List or Object.
@@ -175,6 +175,12 @@ type Market {
   price: PriceAtTime
 }
 
+type MarketConnection {
+  nodes: [Market!]!
+  pageInfo: PageInfo!
+  hasNextPage: Boolean!
+}
+
 input MarketFilter {
   marketType: MarketType!
   statuses: [MarketStatus!] = null
@@ -184,6 +190,7 @@ input MarketFilter {
 union MarketProperties = V1Ask | V1Offer | V1BidShare | V2Auction | V3Ask
 
 enum MarketSortKey {
+  NONE
   ETH_PRICE
   NATIVE_PRICE
   TIMED_SALE_ENDING
@@ -219,22 +226,14 @@ enum MarketType {
 }
 
 type MarketWithTokenInfo {
-  networkInfo: NetworkInfo!
-  transactionInfo: TransactionInfo!
-  status: String!
-  marketAddress: String!
-  collectionAddress: String!
-  tokenId: String!
-  marketType: MarketType!
-  properties: MarketProperties!
-  price: PriceAtTime
+  market: Market!
   token: Token
 }
 
 type MarketWithTokenInfoConnection {
   nodes: [MarketWithTokenInfo!]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  hasNextPage: Boolean!
 }
 
 type MediaEncoding {
@@ -253,6 +252,16 @@ enum MediaType {
   HTML
 }
 
+type Mint {
+  tokenId: String!
+  collectionAddress: String!
+  originatorAddress: String!
+  toAddress: String!
+  fee: PriceAtTime!
+  transactionInfo: TransactionInfo!
+  networkInfo: NetworkInfo!
+}
+
 type MintEvent {
   tokenId: String!
   collectionAddress: String!
@@ -268,6 +277,42 @@ type MintInfo {
   price: PriceAtTime!
 }
 
+enum MintSortKey {
+  NONE
+  TIME
+  TOKEN_ID
+  PRICE
+}
+
+input MintSortKeySortInput {
+  sortKey: MintSortKey!
+  sortDirection: SortDirection!
+}
+
+input MintsQueryFilter {
+  priceFilter: PriceFilter = null
+  timeFilter: TimeFilter = null
+}
+
+input MintsQueryInput {
+  minterAddresses: [String!] = null
+  recipientAddresses: [String!] = null
+  collectionAddresses: [String!] = null
+  tokens: [TokenInput!] = null
+}
+
+type MintWithTokenAndMarkets {
+  mint: Mint!
+  token: Token
+  markets(pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null): MarketConnection!
+}
+
+type MintWithTokenAndMarketsConnection {
+  nodes: [MintWithTokenAndMarkets!]!
+  pageInfo: PageInfo!
+  hasNextPage: Boolean!
+}
+
 enum Network {
   ETHEREUM
 }
@@ -280,6 +325,17 @@ type NetworkInfo {
 input NetworkInput {
   network: Network! = ETHEREUM
   chain: Chain! = MAINNET
+}
+
+type OwnerCount {
+  owner: String!
+  count: Int!
+}
+
+type OwnerCountConnection {
+  nodes: [OwnerCount!]!
+  pageInfo: PageInfo!
+  hasNextPage: Boolean!
 }
 
 type PageInfo {
@@ -309,7 +365,7 @@ input PriceFilter {
 
 type RootQuery {
   """Calculate aggregate stat"""
-  aggregateStat(networks: [NetworkInput!]!, statType: StatType!, where: AggregateStatQueryInput!): AggregateStat!
+  aggregateStat: AggregateStat!
 
   """Get aggregate attribute set"""
   aggregateAttributes(networks: [NetworkInput!]!, where: AggregateAttributesQueryInput!): [AggregateAttribute!]!
@@ -320,8 +376,14 @@ type RootQuery {
   """Get events"""
   events(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null, where: EventsQueryInput = null): EventConnection!
 
+  """Get markets"""
+  markets(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, where: MarketsQueryInput = null): MarketWithTokenInfoConnection!
+
+  """Get mints"""
+  mints(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: MintSortKeySortInput!, filter: MintsQueryFilter = null, where: MintsQueryInput = null): MintWithTokenAndMarketsConnection!
+
   """Get sales"""
-  sales(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, where: SalesQueryInput = null): SaleConnection!
+  sales(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, where: SalesQueryInput = null): SaleWithTokenInfoConnection!
 
   """Get tokens"""
   tokens(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenSortKeySortInput!, filter: TokensQueryFilter = null, where: TokensQueryInput = null): TokenConnection!
@@ -331,17 +393,15 @@ type RootQuery {
 
   """Get token markets"""
   tokenMarkets(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenMarketSortKeySortInput!, where: TokenMarketsQueryInput = null, filter: TokenMarketsFilterInput = null): TokenMarketConnection!
-
-  """Get markets"""
-  markets(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, where: MarketsQueryInput = null): MarketWithTokenInfoConnection!
 }
 
 type Sale {
   saleContractAddress: String
   transactionInfo: TransactionInfo!
+  networkInfo: NetworkInfo!
   buyerAddress: String!
   collectionAddress: String!
-  saleType: SaleEventType!
+  saleType: SaleType!
   price: PriceAtTime!
   sellerAddress: String!
   tokenId: String!
@@ -350,25 +410,11 @@ type Sale {
 type SaleConnection {
   nodes: [Sale!]!
   pageInfo: PageInfo!
-  totalCount: Int!
-}
-
-enum SaleEventType {
-  FOUNDATION_SALE
-  LARVA_LABS_SALE
-  LOOKS_RARE_SALE
-  OPENSEA_SALE
-  RARIBLE_SALE
-  SUPERRARE_SALE
-  ZEROX_SALE
-  ZORA_SALE
-}
-
-input SaleFilter {
-  saleType: SaleType!
+  hasNextPage: Boolean!
 }
 
 enum SaleSortKey {
+  NONE
   ETH_PRICE
   NATIVE_PRICE
   TIME
@@ -380,7 +426,9 @@ input SaleSortKeySortInput {
 }
 
 input SalesQueryFilter {
-  saleFilters: [SaleFilter!]!
+  saleTypes: [SaleType!] = null
+  priceFilter: PriceFilter = null
+  timeFilter: TimeFilter = null
 }
 
 input SalesQueryInput {
@@ -403,16 +451,26 @@ enum SaleType {
   ZORA_V3_ASK_SALE
 }
 
+type SaleWithTokenInfo {
+  sale: Sale!
+  token: Token
+}
+
+type SaleWithTokenInfoConnection {
+  nodes: [SaleWithTokenInfo!]!
+  pageInfo: PageInfo!
+  hasNextPage: Boolean!
+}
+
 enum SortDirection {
   ASC
   DESC
 }
 
-enum StatType {
-  NFT_COUNT
-  OWNER_COUNT
-  SALES_VOLUME
-  FLOOR_PRICE
+input TimeFilter {
+  startDate: String = null
+  endDate: String = null
+  lookbackHours: Int = null
 }
 
 type Token {
@@ -420,7 +478,7 @@ type Token {
   tokenId: String!
   mintInfo: MintInfo
   networkInfo: NetworkInfo!
-  tokenUrl: String!
+  tokenUrl: String
   tokenUrlMimeType: String
   content: TokenContentMedia
   image: TokenContentMedia
@@ -442,7 +500,7 @@ type TokenAttribute {
 type TokenConnection {
   nodes: [Token!]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  hasNextPage: Boolean!
 }
 
 type TokenContentMedia {
@@ -455,10 +513,10 @@ type TokenContentMedia {
 type TokenContract {
   collectionAddress: String!
   chain: Int!
-  name: String!
-  symbol: String!
+  name: String
+  symbol: String
   totalSupply: Int
-  description: String!
+  description: String
   network: String!
 }
 
@@ -477,20 +535,20 @@ type TokenMarket {
 type TokenMarketConnection {
   nodes: [TokenMarket!]!
   pageInfo: PageInfo!
-  totalCount: Int!
+  hasNextPage: Boolean!
 }
 
 input TokenMarketsFilterInput {
   attributeFilters: [AttributeFilter!] = null
   marketFilters: [MarketFilter!] = null
   priceFilter: PriceFilter = null
-  minterAddresses: [String!] = null
   hideTokensWithoutMarkets: Boolean! = false
   hideTokensWithMarkets: Boolean! = false
   mediaType: MediaType = null
 }
 
 enum TokenMarketSortKey {
+  NONE
   MINTED
   TOKEN_ID
   TRANSFERRED
@@ -503,12 +561,12 @@ input TokenMarketSortKeySortInput {
 
 input TokenMarketsQueryInput {
   collectionAddresses: [String!] = null
-  minterAddresses: [String!] = null
   ownerAddresses: [String!] = null
   tokens: [TokenInput!] = null
 }
 
 enum TokenSortKey {
+  NONE
   MINTED
   TOKEN_ID
   TRANSFERRED
@@ -521,7 +579,6 @@ input TokenSortKeySortInput {
 
 input TokensQueryFilter {
   attributeFilters: [AttributeFilter!] = null
-  minterAddresses: [String!] = null
   mediaType: MediaType = null
 }
 

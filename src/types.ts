@@ -1,7 +1,5 @@
-
 export type {
   AggregateAttributesQueryVariables,
-  AggregateStatsQueryVariables,
   CollectionSortKey,
   CollectionSortKeySortInput,
   CollectionsQuery,
@@ -16,16 +14,14 @@ export type {
   TokenSortKey,
   TokenSortKeySortInput,
   TokensQuery,
+  SalesVolumeQueryVariables,
+  OwnersByCountQueryVariables,
   TokensQueryFilter,
   TokensQueryInput,
 } from './queries/queries-sdk';
 
 /// imports for local use
-import {
-  TokenMarketsQuery,
-  CollectionsQuery,
-  TokensQuery,
-} from './queries/queries-sdk';
+import { TokenMarketsQuery, CollectionsQuery, TokensQuery } from './queries/queries-sdk';
 
 // convenience types for token market responses
 export type TokenMarketResponseList = TokenMarketsQuery['tokenMarkets']['nodes'];

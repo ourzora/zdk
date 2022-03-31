@@ -42,13 +42,43 @@ export type AggregateAttributesQueryInput = {
 
 export type AggregateStat = {
   __typename?: 'AggregateStat';
-  stat: IntValueFloatValue;
+  floorPrice: Scalars['Float'];
+  nftCount: Scalars['Int'];
+  ownerCount: Scalars['Int'];
+  ownersByCount: OwnerCountConnection;
+  salesVolume: Scalars['Float'];
 };
 
-export type AggregateStatQueryInput = {
-  attributes?: InputMaybe<Array<AttributeFilter>>;
-  collectionAddresses?: InputMaybe<Array<Scalars['String']>>;
-  ownerAddresses?: InputMaybe<Array<Scalars['String']>>;
+
+export type AggregateStatFloorPriceArgs = {
+  networks: Array<NetworkInput>;
+  where: CollectionAddressAndAttributesInput;
+};
+
+
+export type AggregateStatNftCountArgs = {
+  networks: Array<NetworkInput>;
+  where: CollectionAddressOwnerAddressAttributesInput;
+};
+
+
+export type AggregateStatOwnerCountArgs = {
+  networks: Array<NetworkInput>;
+  where: CollectionAddressAndAttributesInput;
+};
+
+
+export type AggregateStatOwnersByCountArgs = {
+  networks: Array<NetworkInput>;
+  pagination: PaginationInput;
+  where: CollectionAddressAndAttributesInput;
+};
+
+
+export type AggregateStatSalesVolumeArgs = {
+  networks: Array<NetworkInput>;
+  timeFilter?: InputMaybe<TimeFilter>;
+  where: CollectionAddressAndAttributesInput;
 };
 
 export type AttributeFilter = {
@@ -70,6 +100,17 @@ export type Collection = {
   totalSupply?: Maybe<Scalars['Int']>;
 };
 
+export type CollectionAddressAndAttributesInput = {
+  attributes?: InputMaybe<Array<AttributeFilter>>;
+  collectionAddresses?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type CollectionAddressOwnerAddressAttributesInput = {
+  attributes?: InputMaybe<Array<AttributeFilter>>;
+  collectionAddresses?: InputMaybe<Array<Scalars['String']>>;
+  ownerAddresses?: InputMaybe<Array<Scalars['String']>>;
+};
+
 export type CollectionAttribute = {
   __typename?: 'CollectionAttribute';
   traitType: Scalars['String'];
@@ -85,14 +126,15 @@ export type CollectionAttributeValue = {
 
 export type CollectionConnection = {
   __typename?: 'CollectionConnection';
+  hasNextPage: Scalars['Boolean'];
   nodes: Array<Collection>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
 };
 
 export enum CollectionSortKey {
   Created = 'CREATED',
-  Name = 'NAME'
+  Name = 'NAME',
+  None = 'NONE'
 }
 
 export type CollectionSortKeySortInput = {
@@ -129,15 +171,16 @@ export type Event = {
 
 export type EventConnection = {
   __typename?: 'EventConnection';
+  hasNextPage: Scalars['Boolean'];
   nodes: Array<Event>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
 };
 
 export type EventProperties = MintEvent | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent;
 
 export enum EventSortKey {
-  Created = 'CREATED'
+  Created = 'CREATED',
+  None = 'NONE'
 }
 
 export type EventSortKeySortInput = {
@@ -157,26 +200,13 @@ export type EventsQueryFilter = {
   eventTypes?: InputMaybe<Array<EventType>>;
   recipientAddresses?: InputMaybe<Array<Scalars['String']>>;
   senderAddresses?: InputMaybe<Array<Scalars['String']>>;
+  timeFilter?: InputMaybe<TimeFilter>;
 };
 
 export type EventsQueryInput = {
   collectionAddresses?: InputMaybe<Array<Scalars['String']>>;
   tokens?: InputMaybe<Array<TokenInput>>;
 };
-
-export type FloatValue = {
-  __typename?: 'FloatValue';
-  unit: Scalars['String'];
-  value?: Maybe<Scalars['Float']>;
-};
-
-export type IntValue = {
-  __typename?: 'IntValue';
-  unit: Scalars['String'];
-  value: Scalars['Int'];
-};
-
-export type IntValueFloatValue = FloatValue | IntValue;
 
 export type Market = {
   __typename?: 'Market';
@@ -191,6 +221,13 @@ export type Market = {
   transactionInfo: TransactionInfo;
 };
 
+export type MarketConnection = {
+  __typename?: 'MarketConnection';
+  hasNextPage: Scalars['Boolean'];
+  nodes: Array<Market>;
+  pageInfo: PageInfo;
+};
+
 export type MarketFilter = {
   bidderAddresses?: InputMaybe<Array<Scalars['String']>>;
   marketType: MarketType;
@@ -202,6 +239,7 @@ export type MarketProperties = V1Ask | V1BidShare | V1Offer | V2Auction | V3Ask;
 export enum MarketSortKey {
   EthPrice = 'ETH_PRICE',
   NativePrice = 'NATIVE_PRICE',
+  None = 'NONE',
   TimedSaleEnding = 'TIMED_SALE_ENDING'
 }
 
@@ -226,23 +264,15 @@ export enum MarketType {
 
 export type MarketWithTokenInfo = {
   __typename?: 'MarketWithTokenInfo';
-  collectionAddress: Scalars['String'];
-  marketAddress: Scalars['String'];
-  marketType: MarketType;
-  networkInfo: NetworkInfo;
-  price?: Maybe<PriceAtTime>;
-  properties: MarketProperties;
-  status: Scalars['String'];
+  market: Market;
   token?: Maybe<Token>;
-  tokenId: Scalars['String'];
-  transactionInfo: TransactionInfo;
 };
 
 export type MarketWithTokenInfoConnection = {
   __typename?: 'MarketWithTokenInfoConnection';
+  hasNextPage: Scalars['Boolean'];
   nodes: Array<MarketWithTokenInfo>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
 };
 
 export type MarketsQueryFilter = {
@@ -272,6 +302,17 @@ export enum MediaType {
   Video = 'VIDEO'
 }
 
+export type Mint = {
+  __typename?: 'Mint';
+  collectionAddress: Scalars['String'];
+  fee: PriceAtTime;
+  networkInfo: NetworkInfo;
+  originatorAddress: Scalars['String'];
+  toAddress: Scalars['String'];
+  tokenId: Scalars['String'];
+  transactionInfo: TransactionInfo;
+};
+
 export type MintEvent = {
   __typename?: 'MintEvent';
   collectionAddress: Scalars['String'];
@@ -289,6 +330,51 @@ export type MintInfo = {
   toAddress: Scalars['String'];
 };
 
+export enum MintSortKey {
+  None = 'NONE',
+  Price = 'PRICE',
+  Time = 'TIME',
+  TokenId = 'TOKEN_ID'
+}
+
+export type MintSortKeySortInput = {
+  sortDirection: SortDirection;
+  sortKey: MintSortKey;
+};
+
+export type MintWithTokenAndMarkets = {
+  __typename?: 'MintWithTokenAndMarkets';
+  markets: MarketConnection;
+  mint: Mint;
+  token?: Maybe<Token>;
+};
+
+
+export type MintWithTokenAndMarketsMarketsArgs = {
+  filter?: InputMaybe<MarketsQueryFilter>;
+  pagination: PaginationInput;
+  sort: MarketSortKeySortInput;
+};
+
+export type MintWithTokenAndMarketsConnection = {
+  __typename?: 'MintWithTokenAndMarketsConnection';
+  hasNextPage: Scalars['Boolean'];
+  nodes: Array<MintWithTokenAndMarkets>;
+  pageInfo: PageInfo;
+};
+
+export type MintsQueryFilter = {
+  priceFilter?: InputMaybe<PriceFilter>;
+  timeFilter?: InputMaybe<TimeFilter>;
+};
+
+export type MintsQueryInput = {
+  collectionAddresses?: InputMaybe<Array<Scalars['String']>>;
+  minterAddresses?: InputMaybe<Array<Scalars['String']>>;
+  recipientAddresses?: InputMaybe<Array<Scalars['String']>>;
+  tokens?: InputMaybe<Array<TokenInput>>;
+};
+
 export enum Network {
   Ethereum = 'ETHEREUM'
 }
@@ -302,6 +388,19 @@ export type NetworkInfo = {
 export type NetworkInput = {
   chain?: Chain;
   network?: Network;
+};
+
+export type OwnerCount = {
+  __typename?: 'OwnerCount';
+  count: Scalars['Int'];
+  owner: Scalars['String'];
+};
+
+export type OwnerCountConnection = {
+  __typename?: 'OwnerCountConnection';
+  hasNextPage: Scalars['Boolean'];
+  nodes: Array<OwnerCount>;
+  pageInfo: PageInfo;
 };
 
 export type PageInfo = {
@@ -343,8 +442,10 @@ export type RootQuery = {
   events: EventConnection;
   /** Get markets */
   markets: MarketWithTokenInfoConnection;
+  /** Get mints */
+  mints: MintWithTokenAndMarketsConnection;
   /** Get sales */
-  sales: SaleConnection;
+  sales: SaleWithTokenInfoConnection;
   /** Get token by collection address and token id */
   token?: Maybe<Token>;
   /** Get token markets */
@@ -357,13 +458,6 @@ export type RootQuery = {
 export type RootQueryAggregateAttributesArgs = {
   networks: Array<NetworkInput>;
   where: AggregateAttributesQueryInput;
-};
-
-
-export type RootQueryAggregateStatArgs = {
-  networks: Array<NetworkInput>;
-  statType: StatType;
-  where: AggregateStatQueryInput;
 };
 
 
@@ -390,6 +484,15 @@ export type RootQueryMarketsArgs = {
   pagination: PaginationInput;
   sort: MarketSortKeySortInput;
   where?: InputMaybe<MarketsQueryInput>;
+};
+
+
+export type RootQueryMintsArgs = {
+  filter?: InputMaybe<MintsQueryFilter>;
+  networks: Array<NetworkInput>;
+  pagination: PaginationInput;
+  sort: MintSortKeySortInput;
+  where?: InputMaybe<MintsQueryInput>;
 };
 
 
@@ -429,9 +532,10 @@ export type Sale = {
   __typename?: 'Sale';
   buyerAddress: Scalars['String'];
   collectionAddress: Scalars['String'];
+  networkInfo: NetworkInfo;
   price: PriceAtTime;
   saleContractAddress?: Maybe<Scalars['String']>;
-  saleType: SaleEventType;
+  saleType: SaleType;
   sellerAddress: Scalars['String'];
   tokenId: Scalars['String'];
   transactionInfo: TransactionInfo;
@@ -439,29 +543,15 @@ export type Sale = {
 
 export type SaleConnection = {
   __typename?: 'SaleConnection';
+  hasNextPage: Scalars['Boolean'];
   nodes: Array<Sale>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
-};
-
-export enum SaleEventType {
-  FoundationSale = 'FOUNDATION_SALE',
-  LarvaLabsSale = 'LARVA_LABS_SALE',
-  LooksRareSale = 'LOOKS_RARE_SALE',
-  OpenseaSale = 'OPENSEA_SALE',
-  RaribleSale = 'RARIBLE_SALE',
-  SuperrareSale = 'SUPERRARE_SALE',
-  ZeroxSale = 'ZEROX_SALE',
-  ZoraSale = 'ZORA_SALE'
-}
-
-export type SaleFilter = {
-  saleType: SaleType;
 };
 
 export enum SaleSortKey {
   EthPrice = 'ETH_PRICE',
   NativePrice = 'NATIVE_PRICE',
+  None = 'NONE',
   Time = 'TIME'
 }
 
@@ -483,8 +573,23 @@ export enum SaleType {
   ZoraV3AskSale = 'ZORA_V3_ASK_SALE'
 }
 
+export type SaleWithTokenInfo = {
+  __typename?: 'SaleWithTokenInfo';
+  sale: Sale;
+  token?: Maybe<Token>;
+};
+
+export type SaleWithTokenInfoConnection = {
+  __typename?: 'SaleWithTokenInfoConnection';
+  hasNextPage: Scalars['Boolean'];
+  nodes: Array<SaleWithTokenInfo>;
+  pageInfo: PageInfo;
+};
+
 export type SalesQueryFilter = {
-  saleFilters: Array<SaleFilter>;
+  priceFilter?: InputMaybe<PriceFilter>;
+  saleTypes?: InputMaybe<Array<SaleType>>;
+  timeFilter?: InputMaybe<TimeFilter>;
 };
 
 export type SalesQueryInput = {
@@ -499,12 +604,11 @@ export enum SortDirection {
   Desc = 'DESC'
 }
 
-export enum StatType {
-  FloorPrice = 'FLOOR_PRICE',
-  NftCount = 'NFT_COUNT',
-  OwnerCount = 'OWNER_COUNT',
-  SalesVolume = 'SALES_VOLUME'
-}
+export type TimeFilter = {
+  endDate?: InputMaybe<Scalars['String']>;
+  lookbackHours?: InputMaybe<Scalars['Int']>;
+  startDate?: InputMaybe<Scalars['String']>;
+};
 
 export type Token = {
   __typename?: 'Token';
@@ -521,7 +625,7 @@ export type Token = {
   owner?: Maybe<Scalars['String']>;
   tokenContract?: Maybe<TokenContract>;
   tokenId: Scalars['String'];
-  tokenUrl: Scalars['String'];
+  tokenUrl?: Maybe<Scalars['String']>;
   tokenUrlMimeType?: Maybe<Scalars['String']>;
 };
 
@@ -534,9 +638,9 @@ export type TokenAttribute = {
 
 export type TokenConnection = {
   __typename?: 'TokenConnection';
+  hasNextPage: Scalars['Boolean'];
   nodes: Array<Token>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
 };
 
 export type TokenContentMedia = {
@@ -551,10 +655,10 @@ export type TokenContract = {
   __typename?: 'TokenContract';
   chain: Scalars['Int'];
   collectionAddress: Scalars['String'];
-  description: Scalars['String'];
-  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
   network: Scalars['String'];
-  symbol: Scalars['String'];
+  symbol?: Maybe<Scalars['String']>;
   totalSupply?: Maybe<Scalars['Int']>;
 };
 
@@ -587,13 +691,14 @@ export type TokenMarketSalesArgs = {
 
 export type TokenMarketConnection = {
   __typename?: 'TokenMarketConnection';
+  hasNextPage: Scalars['Boolean'];
   nodes: Array<TokenMarket>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
 };
 
 export enum TokenMarketSortKey {
   Minted = 'MINTED',
+  None = 'NONE',
   TokenId = 'TOKEN_ID',
   Transferred = 'TRANSFERRED'
 }
@@ -609,19 +714,18 @@ export type TokenMarketsFilterInput = {
   hideTokensWithoutMarkets?: Scalars['Boolean'];
   marketFilters?: InputMaybe<Array<MarketFilter>>;
   mediaType?: InputMaybe<MediaType>;
-  minterAddresses?: InputMaybe<Array<Scalars['String']>>;
   priceFilter?: InputMaybe<PriceFilter>;
 };
 
 export type TokenMarketsQueryInput = {
   collectionAddresses?: InputMaybe<Array<Scalars['String']>>;
-  minterAddresses?: InputMaybe<Array<Scalars['String']>>;
   ownerAddresses?: InputMaybe<Array<Scalars['String']>>;
   tokens?: InputMaybe<Array<TokenInput>>;
 };
 
 export enum TokenSortKey {
   Minted = 'MINTED',
+  None = 'NONE',
   TokenId = 'TOKEN_ID',
   Transferred = 'TRANSFERRED'
 }
@@ -634,7 +738,6 @@ export type TokenSortKeySortInput = {
 export type TokensQueryFilter = {
   attributeFilters?: InputMaybe<Array<AttributeFilter>>;
   mediaType?: InputMaybe<MediaType>;
-  minterAddresses?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type TokensQueryInput = {
@@ -997,7 +1100,7 @@ export const SaleInfoFragmentDoc = gql`
 ${PriceSummaryFragmentDoc}`;
 export const SaleDetailsFragmentDoc = gql`
     fragment SaleDetails on SaleConnection {
-  totalCount
+  hasNextPage
   nodes {
     ...SaleInfo
   }
@@ -1180,6 +1283,12 @@ export const PageInfoDefaultFragmentDoc = gql`
   offset
 }
     `;
+export const OwnerCountInfoFragmentDoc = gql`
+    fragment OwnerCountInfo on OwnerCount {
+  owner
+  count
+}
+    `;
 export const CollectionsDocument = gql`
     query collections($networks: [NetworkInput!]!, $where: CollectionsQueryInput!, $pagination: PaginationInput!, $sort: CollectionSortKeySortInput!, $includeFullDetails: Boolean!) {
   collections(
@@ -1188,7 +1297,7 @@ export const CollectionsDocument = gql`
     pagination: $pagination
     sort: $sort
   ) {
-    totalCount
+    hasNextPage
     pageInfo {
       limit
       offset
@@ -1210,7 +1319,7 @@ export const TokensDocument = gql`
     sort: $sort
     filter: $filter
   ) {
-    totalCount
+    hasNextPage
     pageInfo {
       limit
       offset
@@ -1259,22 +1368,29 @@ ${TokenInfoFragmentDoc}
 ${TokenDetailsFragmentDoc}
 ${SaleDetailsFragmentDoc}
 ${PageInfoDefaultFragmentDoc}`;
-export const AggregateStatsDocument = gql`
-    query aggregateStats($networks: [NetworkInput!]!, $where: AggregateStatQueryInput!, $statType: StatType!) {
-  aggregateStat(networks: $networks, where: $where, statType: $statType) {
-    stat {
-      ... on FloatValue {
-        floatValue: value
-        unit
+export const SalesVolumeDocument = gql`
+    query salesVolume($networks: [NetworkInput!]!, $where: CollectionAddressAndAttributesInput!, $timeFilter: TimeFilter) {
+  aggregateStat {
+    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter)
+  }
+}
+    `;
+export const OwnersByCountDocument = gql`
+    query ownersByCount($networks: [NetworkInput!]!, $pagination: PaginationInput!, $where: CollectionAddressAndAttributesInput!) {
+  aggregateStat {
+    ownersByCount(networks: $networks, pagination: $pagination, where: $where) {
+      hasNextPage
+      pageInfo {
+        limit
+        offset
       }
-      ... on IntValue {
-        intValue: value
-        unit
+      nodes {
+        ...OwnerCountInfo
       }
     }
   }
 }
-    `;
+    ${OwnerCountInfoFragmentDoc}`;
 export const AggregateAttributesDocument = gql`
     query aggregateAttributes($networks: [NetworkInput!]!, $where: AggregateAttributesQueryInput!) {
   aggregateAttributes(networks: $networks, where: $where) {
@@ -1304,8 +1420,11 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     tokenMarkets(variables: TokenMarketsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TokenMarketsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TokenMarketsQuery>(TokenMarketsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'tokenMarkets');
     },
-    aggregateStats(variables: AggregateStatsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AggregateStatsQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AggregateStatsQuery>(AggregateStatsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'aggregateStats');
+    salesVolume(variables: SalesVolumeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SalesVolumeQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SalesVolumeQuery>(SalesVolumeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'salesVolume');
+    },
+    ownersByCount(variables: OwnersByCountQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OwnersByCountQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OwnersByCountQuery>(OwnersByCountDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ownersByCount');
     },
     aggregateAttributes(variables: AggregateAttributesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AggregateAttributesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<AggregateAttributesQuery>(AggregateAttributesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'aggregateAttributes');
@@ -1313,7 +1432,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;
-export type TokenContractInfoFragment = { __typename?: 'TokenContract', name: string, network: string, description: string, collectionAddress: string, symbol: string, chain: number };
+export type TokenContractInfoFragment = { __typename?: 'TokenContract', name?: string | null, network: string, description?: string | null, collectionAddress: string, symbol?: string | null, chain: number };
 
 export type FullMediaFragment = { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null };
 
@@ -1325,7 +1444,7 @@ export type TransactionDetailsFragment = { __typename?: 'TransactionInfo', block
 
 export type SaleInfoFragment = { __typename?: 'Sale', saleContractAddress?: string | null, buyerAddress: string, collectionAddress: string, sellerAddress: string, tokenId: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } };
 
-export type SaleDetailsFragment = { __typename?: 'SaleConnection', totalCount: number, nodes: Array<{ __typename?: 'Sale', saleContractAddress?: string | null, buyerAddress: string, collectionAddress: string, sellerAddress: string, tokenId: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } }> };
+export type SaleDetailsFragment = { __typename?: 'SaleConnection', hasNextPage: boolean, nodes: Array<{ __typename?: 'Sale', saleContractAddress?: string | null, buyerAddress: string, collectionAddress: string, sellerAddress: string, tokenId: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } }> };
 
 export type V2AuctionMarketPropertiesFragment = { __typename: 'V2Auction', firstBidTime?: any | null, highestBidder?: string | null, curator: string, collectionAddress: string, curatorFeePercentage: number, status: V2AuctionStatus, tokenId: string, auctionCurrency: string, duration: string, estimatedExpirationTime?: any | null, tokenOwner: string, address: string, auctionId: string, approved: boolean, auctionStatus: V2AuctionStatus, reservePrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, highestBidPrice?: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } | null };
 
@@ -1347,15 +1466,17 @@ export type MarketInfoFragment = { __typename?: 'Market', collectionAddress: str
 
 export type MarketDetailsFragment = { __typename?: 'Market', properties: { __typename?: 'V1Ask' } | { __typename?: 'V1BidShare' } | { __typename?: 'V1Offer' } | { __typename: 'V2Auction', firstBidTime?: any | null, highestBidder?: string | null, curator: string, collectionAddress: string, curatorFeePercentage: number, status: V2AuctionStatus, tokenId: string, auctionCurrency: string, duration: string, estimatedExpirationTime?: any | null, tokenOwner: string, address: string, auctionId: string, approved: boolean, auctionStatus: V2AuctionStatus, reservePrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, highestBidPrice?: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } | null } | { __typename: 'V3Ask', buyer?: string | null, finder?: string | null, findersFeeBps: number, sellerFundsRecipient: string, seller: string, address: string, askCurrency: string, collectionAddress: string, askStatus: V3AskStatus, askPrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } } };
 
-export type TokenInfoFragment = { __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: number | null, owner?: string | null, name?: string | null, description?: string | null, tokenContract?: { __typename?: 'TokenContract', name: string, network: string, description: string, collectionAddress: string, symbol: string, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null };
+export type TokenInfoFragment = { __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: number | null, owner?: string | null, name?: string | null, description?: string | null, tokenContract?: { __typename?: 'TokenContract', name?: string | null, network: string, description?: string | null, collectionAddress: string, symbol?: string | null, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null };
 
-export type TokenDetailsFragment = { __typename?: 'Token', metadata?: any | null, tokenUrl: string, tokenUrlMimeType?: string | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType: string, value?: string | null, displayType?: string | null }> | null };
+export type TokenDetailsFragment = { __typename?: 'Token', metadata?: any | null, tokenUrl?: string | null, tokenUrlMimeType?: string | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType: string, value?: string | null, displayType?: string | null }> | null };
 
 export type CollectionInfoFragment = { __typename?: 'Collection', address: string, description: string, name?: string | null, symbol?: string | null, totalSupply?: number | null };
 
 export type CollectionDetailsFragment = { __typename?: 'Collection', attributes?: Array<{ __typename?: 'CollectionAttribute', traitType: string, valueMetrics: Array<{ __typename?: 'CollectionAttributeValue', count: number, percent: number, value: string }> }> | null };
 
 export type PageInfoDefaultFragment = { __typename?: 'PageInfo', limit: number, offset: number };
+
+export type OwnerCountInfoFragment = { __typename?: 'OwnerCount', owner: string, count: number };
 
 export type CollectionsQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;
@@ -1366,7 +1487,7 @@ export type CollectionsQueryVariables = Exact<{
 }>;
 
 
-export type CollectionsQuery = { __typename?: 'RootQuery', collections: { __typename?: 'CollectionConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Collection', address: string, description: string, name?: string | null, symbol?: string | null, totalSupply?: number | null, attributes?: Array<{ __typename?: 'CollectionAttribute', traitType: string, valueMetrics: Array<{ __typename?: 'CollectionAttributeValue', count: number, percent: number, value: string }> }> | null }> } };
+export type CollectionsQuery = { __typename?: 'RootQuery', collections: { __typename?: 'CollectionConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Collection', address: string, description: string, name?: string | null, symbol?: string | null, totalSupply?: number | null, attributes?: Array<{ __typename?: 'CollectionAttribute', traitType: string, valueMetrics: Array<{ __typename?: 'CollectionAttributeValue', count: number, percent: number, value: string }> }> | null }> } };
 
 export type TokensQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;
@@ -1378,7 +1499,7 @@ export type TokensQueryVariables = Exact<{
 }>;
 
 
-export type TokensQuery = { __typename?: 'RootQuery', tokens: { __typename?: 'TokenConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: number | null, owner?: string | null, name?: string | null, description?: string | null, metadata?: any | null, tokenUrl: string, tokenUrlMimeType?: string | null, tokenContract?: { __typename?: 'TokenContract', name: string, network: string, description: string, collectionAddress: string, symbol: string, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType: string, value?: string | null, displayType?: string | null }> | null }> } };
+export type TokensQuery = { __typename?: 'RootQuery', tokens: { __typename?: 'TokenConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: number | null, owner?: string | null, name?: string | null, description?: string | null, metadata?: any | null, tokenUrl?: string | null, tokenUrlMimeType?: string | null, tokenContract?: { __typename?: 'TokenContract', name?: string | null, network: string, description?: string | null, collectionAddress: string, symbol?: string | null, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType: string, value?: string | null, displayType?: string | null }> | null }> } };
 
 export type TokenMarketsQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;
@@ -1391,16 +1512,25 @@ export type TokenMarketsQueryVariables = Exact<{
 }>;
 
 
-export type TokenMarketsQuery = { __typename?: 'RootQuery', tokenMarkets: { __typename?: 'TokenMarketConnection', nodes: Array<{ __typename?: 'TokenMarket', markets: Array<{ __typename?: 'Market', collectionAddress: string, marketAddress: string, marketType: MarketType, status: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price?: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } | null, networkInfo: { __typename?: 'NetworkInfo', chain: Chain, network: Network }, properties: { __typename?: 'V1Ask' } | { __typename?: 'V1BidShare' } | { __typename?: 'V1Offer' } | { __typename: 'V2Auction', firstBidTime?: any | null, highestBidder?: string | null, curator: string, collectionAddress: string, curatorFeePercentage: number, status: V2AuctionStatus, tokenId: string, auctionCurrency: string, duration: string, estimatedExpirationTime?: any | null, tokenOwner: string, address: string, auctionId: string, approved: boolean, auctionStatus: V2AuctionStatus, reservePrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, highestBidPrice?: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } | null } | { __typename: 'V3Ask', buyer?: string | null, finder?: string | null, findersFeeBps: number, sellerFundsRecipient: string, seller: string, address: string, askCurrency: string, collectionAddress: string, askStatus: V3AskStatus, askPrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } } }>, token: { __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: number | null, owner?: string | null, name?: string | null, description?: string | null, metadata?: any | null, tokenUrl: string, tokenUrlMimeType?: string | null, tokenContract?: { __typename?: 'TokenContract', name: string, network: string, description: string, collectionAddress: string, symbol: string, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType: string, value?: string | null, displayType?: string | null }> | null }, sales: { __typename?: 'SaleConnection', totalCount: number, nodes: Array<{ __typename?: 'Sale', saleContractAddress?: string | null, buyerAddress: string, collectionAddress: string, sellerAddress: string, tokenId: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } }> } }>, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number } } };
+export type TokenMarketsQuery = { __typename?: 'RootQuery', tokenMarkets: { __typename?: 'TokenMarketConnection', nodes: Array<{ __typename?: 'TokenMarket', markets: Array<{ __typename?: 'Market', collectionAddress: string, marketAddress: string, marketType: MarketType, status: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price?: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } | null, networkInfo: { __typename?: 'NetworkInfo', chain: Chain, network: Network }, properties: { __typename?: 'V1Ask' } | { __typename?: 'V1BidShare' } | { __typename?: 'V1Offer' } | { __typename: 'V2Auction', firstBidTime?: any | null, highestBidder?: string | null, curator: string, collectionAddress: string, curatorFeePercentage: number, status: V2AuctionStatus, tokenId: string, auctionCurrency: string, duration: string, estimatedExpirationTime?: any | null, tokenOwner: string, address: string, auctionId: string, approved: boolean, auctionStatus: V2AuctionStatus, reservePrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, highestBidPrice?: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } | null } | { __typename: 'V3Ask', buyer?: string | null, finder?: string | null, findersFeeBps: number, sellerFundsRecipient: string, seller: string, address: string, askCurrency: string, collectionAddress: string, askStatus: V3AskStatus, askPrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } } }>, token: { __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: number | null, owner?: string | null, name?: string | null, description?: string | null, metadata?: any | null, tokenUrl?: string | null, tokenUrlMimeType?: string | null, tokenContract?: { __typename?: 'TokenContract', name?: string | null, network: string, description?: string | null, collectionAddress: string, symbol?: string | null, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType: string, value?: string | null, displayType?: string | null }> | null }, sales: { __typename?: 'SaleConnection', hasNextPage: boolean, nodes: Array<{ __typename?: 'Sale', saleContractAddress?: string | null, buyerAddress: string, collectionAddress: string, sellerAddress: string, tokenId: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } }> } }>, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number } } };
 
-export type AggregateStatsQueryVariables = Exact<{
+export type SalesVolumeQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;
-  where: AggregateStatQueryInput;
-  statType: StatType;
+  where: CollectionAddressAndAttributesInput;
+  timeFilter?: InputMaybe<TimeFilter>;
 }>;
 
 
-export type AggregateStatsQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', stat: { __typename?: 'FloatValue', unit: string, floatValue?: number | null } | { __typename?: 'IntValue', unit: string, intValue: number } } };
+export type SalesVolumeQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', salesVolume: number } };
+
+export type OwnersByCountQueryVariables = Exact<{
+  networks: Array<NetworkInput> | NetworkInput;
+  pagination: PaginationInput;
+  where: CollectionAddressAndAttributesInput;
+}>;
+
+
+export type OwnersByCountQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', ownersByCount: { __typename?: 'OwnerCountConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'OwnerCount', owner: string, count: number }> } } };
 
 export type AggregateAttributesQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;

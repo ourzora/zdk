@@ -17,8 +17,9 @@ import {
   CollectionSortKeySortInput,
   CollectionSortKey,
   TokenSortKey,
-  AggregateStatsQueryVariables,
   AggregateAttributesQueryVariables,
+  OwnersByCountQueryVariables,
+  SalesVolumeQueryVariables,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -182,15 +183,26 @@ export class ZDK {
       },
     });
 
-  public aggregateStats = async ({
+  public ownersByCount = async ({
     where,
     networks,
-    statType,
-  }: AggregateStatsQueryVariables) =>
-    this.sdk.aggregateStats({
+    pagination,
+  }: OwnersByCountQueryVariables) =>
+    this.sdk.ownersByCount({
       where,
       networks,
-      statType,
+      pagination,
+    });
+
+  public salesVolume = async ({
+    where,
+    networks,
+    timeFilter,
+  }: SalesVolumeQueryVariables) =>
+    this.sdk.salesVolume({
+      where,
+      networks,
+      timeFilter,
     });
 
   public aggregateAttributes = async ({
