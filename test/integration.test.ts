@@ -7,7 +7,7 @@ describe('zdk', () => {
     zdk = new ZDK(process.env.ZDK_ENDPOINT!, [{ network: Network.Ethereum, chain: Chain.Mainnet }]);
   });
   it('should fetch localhost collections empty object', async () => {
-    const apiResult = await zdk.tokenMarkets({
+    const apiResult = await zdk.tokens({
       where: {
         collectionAddresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
       },
@@ -15,13 +15,13 @@ describe('zdk', () => {
         limit: 2,
       },
     });
-    expect(apiResult.tokenMarkets.nodes[0]).toMatchSnapshot();
-    expect(apiResult.tokenMarkets.nodes[1]).toMatchSnapshot();
-    expect(apiResult.tokenMarkets.nodes.length).toBe(2);
+    expect(apiResult.tokens.nodes[0]).toMatchSnapshot();
+    expect(apiResult.tokens.nodes[1]).toMatchSnapshot();
+    expect(apiResult.tokens.nodes.length).toBe(2);
   });
   it('should fetch localhost token full object', async () => {
     expect(
-      await zdk.tokenMarkets({
+      await zdk.tokens({
         where: {
           tokens: [
             {

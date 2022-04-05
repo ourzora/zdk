@@ -6,15 +6,11 @@ import {
   NetworkInput,
   SortDirection,
   TokenInput,
-  TokenMarketsQueryInput,
-  TokenMarketsFilterInput,
-  TokenMarketSortKeySortInput,
-  TokenMarketSortKey,
   TokensQueryInput,
   TokensQueryFilter,
-  TokenSortKeySortInput,
   CollectionsQueryInput,
   CollectionSortKeySortInput,
+  TokenSortInput,
   CollectionSortKey,
   TokenSortKey,
   AggregateAttributesQueryVariables,
@@ -34,15 +30,10 @@ export type OverridePaginationOptions = {
 
 type Query<ArgsInput, SortInput> = ArgsInput & SortInput;
 
-type TokenMarketsQueryArgs = {
-  where: TokenMarketsQueryInput;
-  filter?: TokenMarketsFilterInput;
-  includeSalesHistory?: boolean;
-};
-
 type TokensQueryArgs = {
   where: TokensQueryInput;
   filter?: TokensQueryFilter;
+  includeSalesHistory?: boolean;
 };
 
 type CollectionsQueryArgs = {
@@ -108,15 +99,18 @@ export class ZDK {
     networks,
     sort,
     includeFullDetails = false,
-  }: Query<TokensQueryArgs, ListOptions<TokenSortKeySortInput>>) =>
+    includeSalesHistory = false,
+  }: Query<TokensQueryArgs, ListOptions<TokenSortInput>>) =>
     this.sdk.tokens({
       where,
       filter,
       sort: {
         sortDirection: sort?.sortDirection || SortDirection.Asc,
         sortKey: sort?.sortKey || TokenSortKey.Transferred,
+        sortAxis: sort?.sortAxis,
       },
       includeFullDetails,
+      includeSalesHistory,
       ...this.getPaginationOptions(pagination),
       ...this.getNetworksOption(networks),
     });
@@ -130,40 +124,23 @@ export class ZDK {
     tokenId: string;
     networks: OverrideNetworksOption;
   }) => {
-    const tokens = await this.sdk.tokens({
-      networks,
-      where: { tokens: [{ address, tokenId }] },
+    const tokens = await this.tokens({
+      where: {
+        tokens: [
+          {
+            address,
+            tokenId,
+          },
+        ],
+      },
       pagination: { limit: 1, offset: 0 },
-      sort: { sortDirection: SortDirection.Asc, sortKey: TokenSortKey.Minted },
-      includeFullDetails: true,
+      networks,
     });
     if (!tokens?.tokens.nodes[0]) {
       throw new Error('Could not find token');
     }
     return tokens.tokens.nodes[0];
   };
-
-  public tokenMarkets = async ({
-    where,
-    filter,
-    pagination,
-    networks,
-    sort,
-    includeFullDetails = false,
-    includeSalesHistory = false,
-  }: Query<TokenMarketsQueryArgs, ListOptions<TokenMarketSortKeySortInput>>) =>
-    this.sdk.tokenMarkets({
-      where,
-      filter,
-      includeSalesHistory,
-      includeFullDetails,
-      sort: {
-        sortDirection: sort?.sortDirection || SortDirection.Desc,
-        sortKey: sort?.sortKey || TokenMarketSortKey.Minted,
-      },
-      ...this.getPaginationOptions(pagination),
-      ...this.getNetworksOption(networks),
-    });
 
   public collections = async ({
     where,

@@ -6,13 +6,7 @@ export type {
   CollectionsQueryInput,
   SortDirection,
   TokenInput,
-  TokenMarketsFilterInput,
-  TokenMarketSortKey,
-  TokenMarketSortKeySortInput,
-  TokenMarketsQuery,
-  TokenMarketsQueryInput,
   TokenSortKey,
-  TokenSortKeySortInput,
   TokensQuery,
   SalesVolumeQueryVariables,
   OwnersByCountQueryVariables,
@@ -21,11 +15,7 @@ export type {
 } from './queries/queries-sdk';
 
 /// imports for local use
-import { TokenMarketsQuery, CollectionsQuery, TokensQuery } from './queries/queries-sdk';
-
-// convenience types for token market responses
-export type TokenMarketResponseList = TokenMarketsQuery['tokenMarkets']['nodes'];
-export type TokenMarketResponseItem = TokenMarketResponseList[0];
+import { CollectionsQuery, TokensQuery } from './queries/queries-sdk';
 
 // convenience types for collection responses
 export type CollectionResponseList = CollectionsQuery['collections']['nodes'];

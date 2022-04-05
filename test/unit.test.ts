@@ -1,5 +1,4 @@
 import { registry } from '../mocks/handlers';
-import { Chain, Network } from '../src/queries/queries-sdk';
 import { ZDK } from '../src/zdk';
 import './setup-mocks';
 
@@ -10,7 +9,7 @@ describe('unit zdk', () => {
   let querySpy: any;
   beforeEach(() => {
     querySpy = spyOn(registry, 'query');
-    zdk = new ZDK(ZORA_TESTING_PATH, { network: Network.Ethereum, chain: Chain.Mainnet });
+    zdk = new ZDK(ZORA_TESTING_PATH);
   });
 
   // it('should fetch mock token', async () => {
@@ -31,7 +30,7 @@ describe('unit zdk', () => {
       pagination: { limit: 2 },
     });
     expect(tokens.tokens.nodes.length).toBe(2);
-    expect(tokens.tokens.totalCount).toBe(2);
+    expect(tokens.tokens.hasNextPage).toBe(false);
     expect(querySpy).toBeCalledWith('tokens', {
       pagination: { limit: 2, offset: 0 },
       sort: { sortDirection: 'DESC', sortKey: 'TOKEN_ID' },

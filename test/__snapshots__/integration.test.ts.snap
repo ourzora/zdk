@@ -3,6 +3,7 @@
 exports[`zdk queries long token information 1`] = `
 Object {
   "collections": Object {
+    "hasNextPage": false,
     "nodes": Array [
       Object {
         "address": "0x5180db8f5c931aae63c74266b211f580155ecac8",
@@ -16,7 +17,6 @@ Object {
       "limit": 200,
       "offset": 0,
     },
-    "totalCount": 1,
   },
 }
 `;
@@ -24,6 +24,7 @@ Object {
 exports[`zdk queries sort collection information 1`] = `
 Object {
   "collections": Object {
+    "hasNextPage": false,
     "nodes": Array [
       Object {
         "address": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
@@ -37,7 +38,6 @@ Object {
       "limit": 200,
       "offset": 0,
     },
-    "totalCount": 1,
   },
 }
 `;
