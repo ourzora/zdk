@@ -26,7 +26,7 @@ type AggregateAttributeValue {
 }
 
 type AggregateStat {
-  floorPrice(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!): Float!
+  floorPrice(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!): Float
   nftCount(networks: [NetworkInput!]!, where: CollectionAddressOwnerAddressAttributesInput!): Int!
   ownerCount(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!): Int!
   ownersByCount(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!, pagination: PaginationInput!): OwnerCountConnection!
@@ -175,16 +175,16 @@ type Market {
   price: PriceAtTime
 }
 
+enum MarketCategory {
+  ASK
+  OFFER
+  AUCTION
+}
+
 type MarketConnection {
   nodes: [Market!]!
   pageInfo: PageInfo!
   hasNextPage: Boolean!
-}
-
-input MarketFilter {
-  marketType: MarketType!
-  statuses: [MarketStatus!] = null
-  bidderAddresses: [String!] = null
 }
 
 union MarketProperties = V1Ask | V1Offer | V1BidShare | V2Auction | V3Ask
@@ -202,7 +202,7 @@ input MarketSortKeySortInput {
 }
 
 input MarketsQueryFilter {
-  marketFilters: [MarketFilter!] = null
+  marketFilters: [MarketTypeFilter!] = null
   priceFilter: PriceFilter = null
 }
 
@@ -223,6 +223,12 @@ enum MarketType {
   V1_OFFER
   V2_AUCTION
   V3_ASK
+}
+
+input MarketTypeFilter {
+  marketType: MarketType!
+  statuses: [MarketStatus!] = null
+  bidderAddresses: [String!] = null
 }
 
 type MarketWithTokenInfo {
@@ -386,13 +392,10 @@ type RootQuery {
   sales(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, where: SalesQueryInput = null): SaleWithTokenInfoConnection!
 
   """Get tokens"""
-  tokens(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenSortKeySortInput!, filter: TokensQueryFilter = null, where: TokensQueryInput = null): TokenConnection!
+  tokens(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenSortInput!, where: TokensQueryInput = null, filter: TokensQueryFilter = null): TokenWithMarketsConnection!
 
   """Get token by collection address and token id"""
   token(token: TokenInput!, network: NetworkInput!): Token
-
-  """Get token markets"""
-  tokenMarkets(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenMarketSortKeySortInput!, where: TokenMarketsQueryInput = null, filter: TokenMarketsFilterInput = null): TokenMarketConnection!
 }
 
 type Sale {
@@ -497,12 +500,6 @@ type TokenAttribute {
   displayType: String
 }
 
-type TokenConnection {
-  nodes: [Token!]!
-  pageInfo: PageInfo!
-  hasNextPage: Boolean!
-}
-
 type TokenContentMedia {
   url: String
   mimeType: String
@@ -525,44 +522,10 @@ input TokenInput {
   tokenId: String!
 }
 
-type TokenMarket {
-  token: Token!
-  markets: [Market!]!
-  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): EventConnection!
-  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): SaleConnection!
-}
-
-type TokenMarketConnection {
-  nodes: [TokenMarket!]!
-  pageInfo: PageInfo!
-  hasNextPage: Boolean!
-}
-
-input TokenMarketsFilterInput {
-  attributeFilters: [AttributeFilter!] = null
-  marketFilters: [MarketFilter!] = null
-  priceFilter: PriceFilter = null
-  hideTokensWithoutMarkets: Boolean! = false
-  hideTokensWithMarkets: Boolean! = false
-  mediaType: MediaType = null
-}
-
-enum TokenMarketSortKey {
-  NONE
-  MINTED
-  TOKEN_ID
-  TRANSFERRED
-}
-
-input TokenMarketSortKeySortInput {
-  sortKey: TokenMarketSortKey!
+input TokenSortInput {
+  sortKey: TokenSortKey!
   sortDirection: SortDirection!
-}
-
-input TokenMarketsQueryInput {
-  collectionAddresses: [String!] = null
-  ownerAddresses: [String!] = null
-  tokens: [TokenInput!] = null
+  sortAxis: MarketCategory = null
 }
 
 enum TokenSortKey {
@@ -570,22 +533,35 @@ enum TokenSortKey {
   MINTED
   TOKEN_ID
   TRANSFERRED
-}
-
-input TokenSortKeySortInput {
-  sortKey: TokenSortKey!
-  sortDirection: SortDirection!
+  ETH_PRICE
+  NATIVE_PRICE
+  TIMED_SALE_ENDING
 }
 
 input TokensQueryFilter {
   attributeFilters: [AttributeFilter!] = null
   mediaType: MediaType = null
+  marketFilters: [MarketTypeFilter!] = null
+  priceFilter: PriceFilter = null
 }
 
 input TokensQueryInput {
   collectionAddresses: [String!] = null
   ownerAddresses: [String!] = null
   tokens: [TokenInput!] = null
+}
+
+type TokenWithMarkets {
+  token: Token!
+  markets: [Market!]!
+  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): EventConnection!
+  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): SaleConnection!
+}
+
+type TokenWithMarketsConnection {
+  nodes: [TokenWithMarkets!]!
+  pageInfo: PageInfo!
+  hasNextPage: Boolean!
 }
 
 type TransactionInfo {
