@@ -197,14 +197,14 @@ fragment EventInfo on Event {
       tokenId
     }
     ... on V1MarketEvent {
-      eventType
+      marketEventType: eventType
       address
       collectionAddress
       tokenId
       # todo: properties
     }
     ... on V2AuctionEvent {
-      eventType
+      auctionEventType: eventType
       address
       auctionId
       collectionAddress
@@ -212,7 +212,7 @@ fragment EventInfo on Event {
       # todo: properties
     }
     ... on V3AskEvent {
-      eventType
+      v3AskEventType: eventType
       address
       collectionAddress
       tokenId
@@ -283,7 +283,7 @@ query events(
       offset
     }
     nodes {
-      EventInfo
+      ...EventInfo
     }
   }
 }
@@ -323,10 +323,10 @@ query markets(
 
 query mints(
   $networks: [NetworkInput!]!
-  $filter: MarketsQueryFilter
+  $filter: MintsQueryFilter
   $pagination: PaginationInput!
   $sort: MarketSortKeySortInput!
-  $where: MarketsQueryInput
+  $where: MintsQueryInput
 ) {
   mints(
     where: $where
@@ -406,8 +406,9 @@ query tokens(
   }
 }
 
-query token($networks: [NetworkInput!]!, $token: TokenInput!) {
-  token(networks: $networks, token: $token) {
+# TODO(steve): Use networks
+query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: Boolean!) {
+  token(network: $network, token: $token) {
     token {
       ...TokenInfo
       ...TokenDetails @include(if: $includeFullDetails)
@@ -424,16 +425,6 @@ query token($networks: [NetworkInput!]!, $token: TokenInput!) {
     #   ...MarketInfo
     #   ...MarketDetails @include(if: $includeFullDetails)
     # }
-  }
-}
-
-query salesVolume(
-  $networks: [NetworkInput!]!
-  $where: CollectionAddressAndAttributesInput!
-  $timeFilter: TimeFilter
-) {
-  aggregateStat {
-    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter)
   }
 }
 
@@ -462,7 +453,11 @@ query salesVolume(
   $timeFilter: TimeFilter
 ) {
   aggregateStat {
-    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter)
+    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter) {
+      ethPrice
+      usdcPrice
+      totalCount
+    }
   }
 }
 
@@ -479,3 +474,9 @@ query aggregateAttributes(
     }
   }
 }
+
+# new queries to implement:
+# aggregateStat
+#  nftCount
+#  floorPrice
+#  ownerCount
