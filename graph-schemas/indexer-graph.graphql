@@ -30,7 +30,7 @@ type AggregateStat {
   nftCount(networks: [NetworkInput!]!, where: CollectionAddressOwnerAddressAttributesInput!): Int!
   ownerCount(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!): Int!
   ownersByCount(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!, pagination: PaginationInput!): OwnerCountConnection!
-  salesVolume(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!, timeFilter: TimeFilter = null): Float!
+  salesVolume(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!, timeFilter: TimeFilter = null): SalesVolume!
 }
 
 input AttributeFilter {
@@ -231,13 +231,13 @@ input MarketTypeFilter {
   bidderAddresses: [String!] = null
 }
 
-type MarketWithTokenInfo {
+type MarketWithToken {
   market: Market!
   token: Token
 }
 
-type MarketWithTokenInfoConnection {
-  nodes: [MarketWithTokenInfo!]!
+type MarketWithTokenConnection {
+  nodes: [MarketWithToken!]!
   pageInfo: PageInfo!
   hasNextPage: Boolean!
 }
@@ -370,32 +370,32 @@ input PriceFilter {
 }
 
 type RootQuery {
-  """Calculate aggregate stat"""
+  """Gets counts, sales volume, and other statistics"""
   aggregateStat: AggregateStat!
 
-  """Get aggregate attribute set"""
+  """Gets the total set of NFT attributes"""
   aggregateAttributes(networks: [NetworkInput!]!, where: AggregateAttributesQueryInput!): [AggregateAttribute!]!
 
-  """Get collections"""
+  """NFT collection data"""
   collections(pagination: PaginationInput!, sort: CollectionSortKeySortInput!, networks: [NetworkInput!]!, where: CollectionsQueryInput = null): CollectionConnection!
 
-  """Get events"""
+  """Contract event information, e.g. Sales, Transfers, Mints, etc."""
   events(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null, where: EventsQueryInput = null): EventConnection!
 
-  """Get markets"""
-  markets(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, where: MarketsQueryInput = null): MarketWithTokenInfoConnection!
+  """Data for specific ZORA markets, e.g. Buy Now, Auctions, Offers"""
+  markets(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, where: MarketsQueryInput = null): MarketWithTokenConnection!
 
-  """Get mints"""
+  """Historical minting data"""
   mints(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: MintSortKeySortInput!, filter: MintsQueryFilter = null, where: MintsQueryInput = null): MintWithTokenAndMarketsConnection!
 
-  """Get sales"""
-  sales(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, where: SalesQueryInput = null): SaleWithTokenInfoConnection!
+  """Historical sales data from ZORA, OpenSea, LooksRare, 0x, and more"""
+  sales(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, where: SalesQueryInput = null): SaleWithTokenConnection!
 
-  """Get tokens"""
-  tokens(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenSortInput!, where: TokensQueryInput = null, filter: TokensQueryFilter = null): TokenWithMarketsConnection!
+  """Gets data for multiple tokens"""
+  tokens(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenSortInput!, where: TokensQueryInput = null, filter: TokensQueryFilter = null): TokenWithMarketsSummaryConnection!
 
-  """Get token by collection address and token id"""
-  token(token: TokenInput!, network: NetworkInput!): Token
+  """Gets data on a single token"""
+  token(token: TokenInput!, network: NetworkInput!): TokenWithFullMarketHistory
 }
 
 type Sale {
@@ -441,6 +441,12 @@ input SalesQueryInput {
   tokens: [TokenInput!] = null
 }
 
+type SalesVolume {
+  ethPrice: Float!
+  usdcPrice: Float!
+  totalCount: Int!
+}
+
 enum SaleType {
   FOUNDATION_SALE
   LARVA_LABS_SALE
@@ -454,13 +460,13 @@ enum SaleType {
   ZORA_V3_ASK_SALE
 }
 
-type SaleWithTokenInfo {
+type SaleWithToken {
   sale: Sale!
   token: Token
 }
 
-type SaleWithTokenInfoConnection {
-  nodes: [SaleWithTokenInfo!]!
+type SaleWithTokenConnection {
+  nodes: [SaleWithToken!]!
   pageInfo: PageInfo!
   hasNextPage: Boolean!
 }
@@ -551,15 +557,22 @@ input TokensQueryInput {
   tokens: [TokenInput!] = null
 }
 
-type TokenWithMarkets {
+type TokenWithFullMarketHistory {
   token: Token!
-  markets: [Market!]!
+  markets(pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null): MarketConnection!
   events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): EventConnection!
   sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): SaleConnection!
 }
 
-type TokenWithMarketsConnection {
-  nodes: [TokenWithMarkets!]!
+type TokenWithMarketsSummary {
+  token: Token!
+  marketsSummary: [Market!]!
+  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): EventConnection!
+  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): SaleConnection!
+}
+
+type TokenWithMarketsSummaryConnection {
+  nodes: [TokenWithMarketsSummary!]!
   pageInfo: PageInfo!
   hasNextPage: Boolean!
 }
