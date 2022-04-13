@@ -16,6 +16,10 @@ import {
   AggregateAttributesQueryVariables,
   OwnersByCountQueryVariables,
   SalesVolumeQueryVariables,
+  EventsQueryInput,
+  EventsQueryFilter,
+  EventSortKeySortInput,
+  EventSortKey,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -38,6 +42,14 @@ type TokensQueryArgs = {
 
 type CollectionsQueryArgs = {
   where: CollectionsQueryInput;
+};
+
+type EventsQueryArgs = {
+  sort?: EventSortKeySortInput;
+  where: EventsQueryInput;
+  filter?: EventsQueryFilter;
+  networks?: NetworkInput[];
+  pagination?: OverridePaginationOptions;
 };
 
 export interface ListOptions<SortInput> {
@@ -141,6 +153,24 @@ export class ZDK {
     }
     return tokens.tokens.nodes[0];
   };
+
+  public events = async ({
+    networks,
+    filter,
+    pagination,
+    sort,
+    where,
+  }: Query<EventsQueryArgs, EventSortKeySortInput>) =>
+    this.sdk.events({
+      filter,
+      where,
+      ...this.getPaginationOptions(pagination),
+      ...this.getNetworksOption(networks),
+      sort: {
+        sortDirection: sort?.sortDirection || SortDirection.Desc,
+        sortKey: sort?.sortKey || EventSortKey.Created,
+      },
+    });
 
   public collections = async ({
     where,

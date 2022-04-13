@@ -325,7 +325,7 @@ query mints(
   $networks: [NetworkInput!]!
   $filter: MintsQueryFilter
   $pagination: PaginationInput!
-  $sort: MarketSortKeySortInput!
+  $sort: MintSortKeySortInput!
   $where: MintsQueryInput
 ) {
   mints(
@@ -388,10 +388,11 @@ query tokens(
       offset
     }
     nodes {
-      markets {
-        ...MarketInfo
-        ...MarketDetails @include(if: $includeFullDetails)
-      }
+      # FIXME: Cannot query field "markets" on type "TokenWithMarketsSummary".
+      # markets {
+      #   ...MarketInfo
+      #   ...MarketDetails @include(if: $includeFullDetails)
+      # }
       token {
         ...TokenInfo
         ...TokenDetails @include(if: $includeFullDetails)
