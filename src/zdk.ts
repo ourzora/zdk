@@ -16,6 +16,18 @@ import {
   AggregateAttributesQueryVariables,
   OwnersByCountQueryVariables,
   SalesVolumeQueryVariables,
+  EventsQueryInput,
+  EventsQueryFilter,
+  EventSortKeySortInput,
+  EventSortKey,
+  MarketSortKeySortInput,
+  MarketsQueryFilter,
+  MarketsQueryInput,
+  MarketSortKey,
+  MintsQueryFilter,
+  MintsQueryInput,
+  MintSortKey,
+  MintSortKeySortInput,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -28,17 +40,43 @@ export type OverridePaginationOptions = {
   offset?: number;
 };
 
-type Query<ArgsInput, SortInput> = ArgsInput & SortInput;
-
-type TokensQueryArgs = {
-  where: TokensQueryInput;
-  filter?: TokensQueryFilter;
-  includeSalesHistory?: boolean;
+type SharedQueryParams = {
+  networks?: NetworkInput[];
+  pagination?: OverridePaginationOptions;
 };
 
 type CollectionsQueryArgs = {
   where: CollectionsQueryInput;
-};
+  includeFullDetails?: boolean;
+  sort: CollectionSortKeySortInput;
+} & SharedQueryParams;
+
+type TokensQueryArgs = {
+  where: TokensQueryInput;
+  filter?: TokensQueryFilter;
+  sort?: TokenSortInput;
+  includeFullDetails?: boolean;
+  includeSalesHistory?: boolean;
+} & SharedQueryParams;
+
+type EventsQueryArgs = {
+  where: EventsQueryInput;
+  sort?: EventSortKeySortInput;
+  filter?: EventsQueryFilter;
+} & SharedQueryParams;
+
+type MarketQueryArgs = {
+  where: MarketsQueryInput;
+  sort: MarketSortKeySortInput;
+  filter: MarketsQueryFilter;
+  includeFullDetails: boolean;
+} & SharedQueryParams;
+
+type MintsQueryArgs = {
+  where: MintsQueryInput;
+  sort: MintSortKeySortInput;
+  filter: MintsQueryFilter;
+} & SharedQueryParams;
 
 export interface ListOptions<SortInput> {
   networks?: OverrideNetworksOption;
@@ -100,7 +138,7 @@ export class ZDK {
     sort,
     includeFullDetails = false,
     includeSalesHistory = false,
-  }: Query<TokensQueryArgs, ListOptions<TokenSortInput>>) =>
+  }: TokensQueryArgs) =>
     this.sdk.tokens({
       where,
       filter,
@@ -142,13 +180,70 @@ export class ZDK {
     return tokens.tokens.nodes[0];
   };
 
+  public events = async ({
+    networks,
+    filter,
+    pagination,
+    sort,
+    where,
+  }: EventsQueryArgs) =>
+    this.sdk.events({
+      filter,
+      where,
+      ...this.getPaginationOptions(pagination),
+      ...this.getNetworksOption(networks),
+      sort: {
+        sortDirection: sort?.sortDirection || SortDirection.Desc,
+        sortKey: sort?.sortKey || EventSortKey.Created,
+      },
+    });
+
+  public markets = async ({
+    networks,
+    filter,
+    pagination,
+    sort,
+    where,
+    includeFullDetails = false,
+  }: MarketQueryArgs) =>
+    this.sdk.markets({
+      filter,
+      where,
+      includeFullDetails,
+      ...this.getPaginationOptions(pagination),
+      ...this.getNetworksOption(networks),
+      sort: {
+        sortDirection: sort?.sortDirection || SortDirection.Desc,
+        sortKey: sort?.sortKey || MarketSortKey.None,
+      },
+    });
+
+  public mints = async ({
+    networks,
+    filter,
+    pagination,
+    sort,
+    where,
+  }: MintsQueryArgs) => {
+    this.sdk.mints({
+      filter,
+      where,
+      ...this.getPaginationOptions(pagination),
+      ...this.getNetworksOption(networks),
+      sort: {
+        sortDirection: sort?.sortDirection || SortDirection.Desc,
+        sortKey: sort?.sortKey || MintSortKey.None,
+      },
+    });
+  };
+
   public collections = async ({
     where,
     pagination,
     networks,
     sort,
     includeFullDetails = false,
-  }: Query<CollectionsQueryArgs, ListOptions<CollectionSortKeySortInput>>) =>
+  }: CollectionsQueryArgs) =>
     this.sdk.collections({
       where,
       includeFullDetails,
