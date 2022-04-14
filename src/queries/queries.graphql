@@ -388,11 +388,10 @@ query tokens(
       offset
     }
     nodes {
-      # FIXME: Cannot query field "markets" on type "TokenWithMarketsSummary".
-      # markets {
-      #   ...MarketInfo
-      #   ...MarketDetails @include(if: $includeFullDetails)
-      # }
+      marketsSummary {
+        ...MarketInfo
+        ...MarketDetails @include(if: $includeFullDetails)
+      }
       token {
         ...TokenInfo
         ...TokenDetails @include(if: $includeFullDetails)
