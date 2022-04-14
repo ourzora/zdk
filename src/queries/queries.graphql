@@ -173,6 +173,54 @@ fragment TokenInfo on Token {
   }
 }
 
+fragment EventInfo on Event {
+  transactionInfo {
+    ...TransactionDetails
+  }
+  eventType
+  collectionAddress
+  tokenId
+  properties {
+    ... on MintEvent {
+      tokenId
+      collectionAddress
+      originatorAddress
+      toAddress
+      fee {
+        ...PriceSummary
+      }
+    }
+    ... on TransferEvent {
+      fromAddress
+      toAddress
+      collectionAddress
+      tokenId
+    }
+    ... on V1MarketEvent {
+      marketEventType: eventType
+      address
+      collectionAddress
+      tokenId
+      # todo: properties
+    }
+    ... on V2AuctionEvent {
+      auctionEventType: eventType
+      address
+      auctionId
+      collectionAddress
+      tokenId
+      # todo: properties
+    }
+    ... on V3AskEvent {
+      v3AskEventType: eventType
+      address
+      collectionAddress
+      tokenId
+      # todo: properties
+    }
+  }
+}
+
 fragment TokenDetails on Token {
   metadata
 
@@ -213,6 +261,89 @@ fragment PageInfoDefault on PageInfo {
 fragment OwnerCountInfo on OwnerCount {
   owner
   count
+}
+
+query events(
+  $networks: [NetworkInput!]!
+  $filter: EventsQueryFilter
+  $pagination: PaginationInput!
+  $sort: EventSortKeySortInput!
+  $where: EventsQueryInput
+) {
+  events(
+    networks: $networks
+    filter: $filter
+    pagination: $pagination
+    sort: $sort
+    where: $where
+  ) {
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      ...EventInfo
+    }
+  }
+}
+
+query markets(
+  $networks: [NetworkInput!]!
+  $filter: MarketsQueryFilter
+  $pagination: PaginationInput!
+  $sort: MarketSortKeySortInput!
+  $where: MarketsQueryInput
+  $includeFullDetails: Boolean!
+) {
+  markets(
+    networks: $networks
+    filter: $filter
+    sort: $sort
+    where: $where
+    pagination: $pagination
+  ) {
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      token {
+        ...TokenInfo
+        ...TokenDetails @include(if: $includeFullDetails)
+      }
+      market {
+        ...MarketInfo
+        ...MarketDetails @include(if: $includeFullDetails)
+      }
+    }
+  }
+}
+
+query mints(
+  $networks: [NetworkInput!]!
+  $filter: MintsQueryFilter
+  $pagination: PaginationInput!
+  $sort: MintSortKeySortInput!
+  $where: MintsQueryInput
+) {
+  mints(
+    where: $where
+    networks: $networks
+    filter: $filter
+    pagination: $pagination
+    sort: $sort
+  ) {
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
+    # nodes {
+
+    # }
+  }
 }
 
 query collections(
@@ -257,7 +388,7 @@ query tokens(
       offset
     }
     nodes {
-      markets {
+      marketsSummary {
         ...MarketInfo
         ...MarketDetails @include(if: $includeFullDetails)
       }
@@ -275,13 +406,25 @@ query tokens(
   }
 }
 
-query salesVolume(
-  $networks: [NetworkInput!]!
-  $where: CollectionAddressAndAttributesInput!
-  $timeFilter: TimeFilter
-) {
-  aggregateStat {
-    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter)
+# TODO(steve): Use networks
+query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: Boolean!) {
+  token(network: $network, token: $token) {
+    token {
+      ...TokenInfo
+      ...TokenDetails @include(if: $includeFullDetails)
+    }
+    # sales(
+    #   pagination: { limit: 10, offset: 0 }
+    #   sort: { sortKey: TIME, sortDirection: DESC }
+    # ) {
+    #   ...SaleDetails @include(if: $includeSalesHistory)
+    # }
+    # add events
+    # events()
+    # markets() {
+    #   ...MarketInfo
+    #   ...MarketDetails @include(if: $includeFullDetails)
+    # }
   }
 }
 
@@ -310,7 +453,11 @@ query salesVolume(
   $timeFilter: TimeFilter
 ) {
   aggregateStat {
-    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter)
+    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter) {
+      ethPrice
+      usdcPrice
+      totalCount
+    }
   }
 }
 
@@ -327,3 +474,9 @@ query aggregateAttributes(
     }
   }
 }
+
+# new queries to implement:
+# aggregateStat
+#  nftCount
+#  floorPrice
+#  ownerCount
