@@ -428,6 +428,20 @@ query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: B
   }
 }
 
+query aggregateAttributes(
+  $networks: [NetworkInput!]!
+  $where: AggregateAttributesQueryInput!
+) {
+  aggregateAttributes(networks: $networks, where: $where) {
+    traitType
+    valueMetrics {
+      value
+      count
+      percent
+    }
+  }
+}
+
 query ownersByCount(
   $networks: [NetworkInput!]!
   $pagination: PaginationInput!
@@ -461,22 +475,29 @@ query salesVolume(
   }
 }
 
-query aggregateAttributes(
+query ownerCount(
   $networks: [NetworkInput!]!
-  $where: AggregateAttributesQueryInput!
+  $where: CollectionAddressAndAttributesInput!
 ) {
-  aggregateAttributes(networks: $networks, where: $where) {
-    traitType
-    valueMetrics {
-      value
-      count
-      percent
-    }
+  aggregateStat {
+    ownerCount(where: $where, networks: $networks)
   }
 }
 
-# new queries to implement:
-# aggregateStat
-#  nftCount
-#  floorPrice
-#  ownerCount
+query nftCount(
+  $networks: [NetworkInput!]!
+  $where: CollectionAddressOwnerAddressAttributesInput!
+) {
+  aggregateStat {
+    nftCount(where: $where, networks: $networks)
+  }
+}
+
+query floorPrice(
+  $networks: [NetworkInput!]!
+  $where: CollectionAddressAndAttributesInput!
+) {
+  aggregateStat {
+    floorPrice(where: $where, networks: $networks)
+  }
+}
