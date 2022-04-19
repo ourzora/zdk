@@ -1475,6 +1475,18 @@ export const TokenDocument = gql`
 }
     ${TokenInfoFragmentDoc}
 ${TokenDetailsFragmentDoc}`;
+export const AggregateAttributesDocument = gql`
+    query aggregateAttributes($networks: [NetworkInput!]!, $where: AggregateAttributesQueryInput!) {
+  aggregateAttributes(networks: $networks, where: $where) {
+    traitType
+    valueMetrics {
+      value
+      count
+      percent
+    }
+  }
+}
+    `;
 export const OwnersByCountDocument = gql`
     query ownersByCount($networks: [NetworkInput!]!, $pagination: PaginationInput!, $where: CollectionAddressAndAttributesInput!) {
   aggregateStat {
@@ -1502,15 +1514,24 @@ export const SalesVolumeDocument = gql`
   }
 }
     `;
-export const AggregateAttributesDocument = gql`
-    query aggregateAttributes($networks: [NetworkInput!]!, $where: AggregateAttributesQueryInput!) {
-  aggregateAttributes(networks: $networks, where: $where) {
-    traitType
-    valueMetrics {
-      value
-      count
-      percent
-    }
+export const OwnerCountDocument = gql`
+    query ownerCount($networks: [NetworkInput!]!, $where: CollectionAddressAndAttributesInput!) {
+  aggregateStat {
+    ownerCount(where: $where, networks: $networks)
+  }
+}
+    `;
+export const NftCountDocument = gql`
+    query nftCount($networks: [NetworkInput!]!, $where: CollectionAddressOwnerAddressAttributesInput!) {
+  aggregateStat {
+    nftCount(where: $where, networks: $networks)
+  }
+}
+    `;
+export const FloorPriceDocument = gql`
+    query floorPrice($networks: [NetworkInput!]!, $where: CollectionAddressAndAttributesInput!) {
+  aggregateStat {
+    floorPrice(where: $where, networks: $networks)
   }
 }
     `;
@@ -1540,14 +1561,23 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     token(variables: TokenQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TokenQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TokenQuery>(TokenDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'token');
     },
+    aggregateAttributes(variables: AggregateAttributesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AggregateAttributesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AggregateAttributesQuery>(AggregateAttributesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'aggregateAttributes');
+    },
     ownersByCount(variables: OwnersByCountQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OwnersByCountQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<OwnersByCountQuery>(OwnersByCountDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ownersByCount');
     },
     salesVolume(variables: SalesVolumeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SalesVolumeQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<SalesVolumeQuery>(SalesVolumeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'salesVolume');
     },
-    aggregateAttributes(variables: AggregateAttributesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<AggregateAttributesQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<AggregateAttributesQuery>(AggregateAttributesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'aggregateAttributes');
+    ownerCount(variables: OwnerCountQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<OwnerCountQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<OwnerCountQuery>(OwnerCountDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'ownerCount');
+    },
+    nftCount(variables: NftCountQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<NftCountQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<NftCountQuery>(NftCountDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'nftCount');
+    },
+    floorPrice(variables: FloorPriceQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FloorPriceQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<FloorPriceQuery>(FloorPriceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'floorPrice');
     }
   };
 }
@@ -1667,6 +1697,14 @@ export type TokenQueryVariables = Exact<{
 
 export type TokenQuery = { __typename?: 'RootQuery', token?: { __typename?: 'TokenWithFullMarketHistory', token: { __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: number | null, owner?: string | null, name?: string | null, description?: string | null, metadata?: any | null, tokenUrl?: string | null, tokenUrlMimeType?: string | null, tokenContract?: { __typename?: 'TokenContract', name?: string | null, network: string, description?: string | null, collectionAddress: string, symbol?: string | null, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType: string, value?: string | null, displayType?: string | null }> | null } } | null };
 
+export type AggregateAttributesQueryVariables = Exact<{
+  networks: Array<NetworkInput> | NetworkInput;
+  where: AggregateAttributesQueryInput;
+}>;
+
+
+export type AggregateAttributesQuery = { __typename?: 'RootQuery', aggregateAttributes: Array<{ __typename?: 'AggregateAttribute', traitType: string, valueMetrics: Array<{ __typename?: 'AggregateAttributeValue', value: string, count: number, percent: number }> }> };
+
 export type OwnersByCountQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;
   pagination: PaginationInput;
@@ -1685,10 +1723,26 @@ export type SalesVolumeQueryVariables = Exact<{
 
 export type SalesVolumeQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', salesVolume: { __typename?: 'SalesVolume', ethPrice: number, usdcPrice: number, totalCount: number } } };
 
-export type AggregateAttributesQueryVariables = Exact<{
+export type OwnerCountQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;
-  where: AggregateAttributesQueryInput;
+  where: CollectionAddressAndAttributesInput;
 }>;
 
 
-export type AggregateAttributesQuery = { __typename?: 'RootQuery', aggregateAttributes: Array<{ __typename?: 'AggregateAttribute', traitType: string, valueMetrics: Array<{ __typename?: 'AggregateAttributeValue', value: string, count: number, percent: number }> }> };
+export type OwnerCountQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', ownerCount: number } };
+
+export type NftCountQueryVariables = Exact<{
+  networks: Array<NetworkInput> | NetworkInput;
+  where: CollectionAddressOwnerAddressAttributesInput;
+}>;
+
+
+export type NftCountQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', nftCount: number } };
+
+export type FloorPriceQueryVariables = Exact<{
+  networks: Array<NetworkInput> | NetworkInput;
+  where: CollectionAddressAndAttributesInput;
+}>;
+
+
+export type FloorPriceQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', floorPrice?: number | null } };

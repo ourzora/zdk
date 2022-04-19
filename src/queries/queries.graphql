@@ -486,7 +486,7 @@ query ownerCount(
 
 query nftCount(
   $networks: [NetworkInput!]!
-  $where: CollectionAddressAndAttributesInput!
+  $where: CollectionAddressOwnerAddressAttributesInput!
 ) {
   aggregateStat {
     nftCount(where: $where, networks: $networks)

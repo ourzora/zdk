@@ -28,6 +28,8 @@ import {
   MintsQueryInput,
   MintSortKey,
   MintSortKeySortInput,
+  FloorPriceQueryVariables,
+  NftCountQueryVariables,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -266,6 +268,12 @@ export class ZDK {
       pagination,
     });
 
+  public aggregateAttributes = async ({
+    where,
+    networks,
+  }: AggregateAttributesQueryVariables) =>
+    this.sdk.aggregateAttributes({ where, networks });
+
   public salesVolume = async ({
     where,
     networks,
@@ -277,9 +285,21 @@ export class ZDK {
       timeFilter,
     });
 
-  public aggregateAttributes = async ({
-    where,
-    networks,
-  }: AggregateAttributesQueryVariables) =>
-    this.sdk.aggregateAttributes({ where, networks });
+  public ownerCount = async ({ where, networks }: OwnersByCountQueryVariables) =>
+    this.sdk.ownerCount({
+      where,
+      networks,
+    });
+
+  public floorPrice = async ({ where, networks }: FloorPriceQueryVariables) =>
+    this.sdk.floorPrice({
+      where,
+      networks,
+    });
+
+  public nftCount = async ({ where, networks }: NftCountQueryVariables) =>
+    this.sdk.floorPrice({
+      where,
+      networks,
+    });
 }
