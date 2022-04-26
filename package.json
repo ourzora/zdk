@@ -56,10 +56,13 @@
     }
   },
   "dependencies": {
+    "@changesets/cli": "^2.22.0",
     "big.js": "^6.1.0",
+    "changeset": "^0.2.6",
     "graphql": "16.3.0",
     "graphql-request": "4.0.0",
     "graphql-tag": "^2.12.6",
+    "init": "^0.1.2",
     "sha3": "^2.1.4",
     "tslib": "^2.2.0"
   },

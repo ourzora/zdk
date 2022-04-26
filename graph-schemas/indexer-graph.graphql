@@ -48,6 +48,7 @@ type Collection {
   name: String
   symbol: String
   totalSupply: Int
+  networkInfo: NetworkInfo!
   attributes: [CollectionAttribute!]
 }
 
@@ -63,7 +64,7 @@ input CollectionAddressOwnerAddressAttributesInput {
 }
 
 type CollectionAttribute {
-  traitType: String!
+  traitType: String
   valueMetrics: [CollectionAttributeValue!]!
 }
 
@@ -113,6 +114,7 @@ scalar Date
 scalar DateTime
 
 type Event {
+  networkInfo: NetworkInfo!
   transactionInfo: TransactionInfo!
   eventType: EventType!
   collectionAddress: String!
@@ -179,12 +181,6 @@ enum MarketCategory {
   ASK
   OFFER
   AUCTION
-}
-
-type MarketConnection {
-  nodes: [Market!]!
-  pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 union MarketProperties = V1Ask | V1Offer | V1BidShare | V2Auction | V3Ask
@@ -310,7 +306,7 @@ input MintsQueryInput {
 type MintWithTokenAndMarkets {
   mint: Mint!
   token: Token
-  markets(pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null): MarketConnection!
+  markets(pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null): [Market!]!
 }
 
 type MintWithTokenAndMarketsConnection {
@@ -396,6 +392,9 @@ type RootQuery {
 
   """Gets data on a single token"""
   token(token: TokenInput!, network: NetworkInput!): TokenWithFullMarketHistory
+
+  """Returns search results for a query"""
+  search(query: SearchQuery!, pagination: SearchPaginationInput!): SearchResponse!
 }
 
 type Sale {
@@ -408,12 +407,6 @@ type Sale {
   price: PriceAtTime!
   sellerAddress: String!
   tokenId: String!
-}
-
-type SaleConnection {
-  nodes: [Sale!]!
-  pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 enum SaleSortKey {
@@ -471,6 +464,27 @@ type SaleWithTokenConnection {
   hasNextPage: Boolean!
 }
 
+input SearchPaginationInput {
+  limit: Int! = 10
+  offset: Int! = 0
+}
+
+input SearchQuery {
+  text: String!
+}
+
+type SearchResponse {
+  results: [SearchResult!]!
+}
+
+type SearchResult {
+  name: String
+  description: String
+  entityType: String!
+  address: String!
+  tokenId: String
+}
+
 enum SortDirection {
   ASC
   DESC
@@ -497,11 +511,11 @@ type Token {
   description: String
   metadata: JSONScalar
   attributes: [TokenAttribute!]
-  lastRefreshTime: Int
+  lastRefreshTime: DateTime
 }
 
 type TokenAttribute {
-  traitType: String!
+  traitType: String
   value: String
   displayType: String
 }
@@ -559,16 +573,16 @@ input TokensQueryInput {
 
 type TokenWithFullMarketHistory {
   token: Token!
-  markets(pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null): MarketConnection!
-  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): EventConnection!
-  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): SaleConnection!
+  markets(pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null): [Market!]!
+  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): [Event!]!
+  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): [Sale!]!
 }
 
 type TokenWithMarketsSummary {
   token: Token!
   marketsSummary: [Market!]!
-  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): EventConnection!
-  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): SaleConnection!
+  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): [Event!]!
+  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): [Sale!]!
 }
 
 type TokenWithMarketsSummaryConnection {
