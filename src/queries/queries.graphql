@@ -503,3 +503,20 @@ query floorPrice(
     floorPrice(where: $where, networks: $networks)
   }
 }
+
+query search($pagination: SearchPaginationInput!, $query: SearchQuery!) {
+  search(pagination: $pagination, query: $query) {
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      address
+      description
+      entityType
+      name
+      tokenId
+    }
+  }
+}

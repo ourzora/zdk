@@ -394,7 +394,7 @@ type RootQuery {
   token(token: TokenInput!, network: NetworkInput!): TokenWithFullMarketHistory
 
   """Returns search results for a query"""
-  search(query: SearchQuery!, pagination: SearchPaginationInput!): SearchResponse!
+  search(query: SearchQuery!, pagination: SearchPaginationInput!): SearchResultConnection!
 }
 
 type Sale {
@@ -473,16 +473,18 @@ input SearchQuery {
   text: String!
 }
 
-type SearchResponse {
-  results: [SearchResult!]!
-}
-
 type SearchResult {
   name: String
   description: String
   entityType: String!
   address: String!
   tokenId: String
+}
+
+type SearchResultConnection {
+  nodes: [SearchResult!]!
+  pageInfo: PageInfo!
+  hasNextPage: Boolean!
 }
 
 enum SortDirection {

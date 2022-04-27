@@ -30,6 +30,7 @@ import {
   MintSortKeySortInput,
   FloorPriceQueryVariables,
   NftCountQueryVariables,
+  SearchQueryVariables,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -78,6 +79,7 @@ type MintsQueryArgs = {
   where: MintsQueryInput;
   sort: MintSortKeySortInput;
   filter: MintsQueryFilter;
+  includeFullDetails: boolean;
 } & SharedQueryParams;
 
 export interface ListOptions<SortInput> {
@@ -226,6 +228,7 @@ export class ZDK {
     pagination,
     sort,
     where,
+    includeFullDetails = false,
   }: MintsQueryArgs) => {
     this.sdk.mints({
       filter,
@@ -236,6 +239,7 @@ export class ZDK {
         sortDirection: sort?.sortDirection || SortDirection.Desc,
         sortKey: sort?.sortKey || MintSortKey.None,
       },
+      includeFullDetails,
     });
   };
 
@@ -301,5 +305,11 @@ export class ZDK {
     this.sdk.floorPrice({
       where,
       networks,
+    });
+
+  public search = async ({ pagination, query }: SearchQueryVariables) =>
+    this.sdk.search({
+      pagination,
+      query,
     });
 }

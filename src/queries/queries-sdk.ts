@@ -448,7 +448,7 @@ export type RootQuery = {
   /** Historical sales data from ZORA, OpenSea, LooksRare, 0x, and more */
   sales: SaleWithTokenConnection;
   /** Returns search results for a query */
-  search: SearchResponse;
+  search: SearchResultConnection;
   /** Gets data on a single token */
   token?: Maybe<TokenWithFullMarketHistory>;
   /** Gets data for multiple tokens */
@@ -606,11 +606,6 @@ export type SearchQuery = {
   text: Scalars['String'];
 };
 
-export type SearchResponse = {
-  __typename?: 'SearchResponse';
-  results: Array<SearchResult>;
-};
-
 export type SearchResult = {
   __typename?: 'SearchResult';
   address: Scalars['String'];
@@ -618,6 +613,13 @@ export type SearchResult = {
   entityType: Scalars['String'];
   name?: Maybe<Scalars['String']>;
   tokenId?: Maybe<Scalars['String']>;
+};
+
+export type SearchResultConnection = {
+  __typename?: 'SearchResultConnection';
+  hasNextPage: Scalars['Boolean'];
+  nodes: Array<SearchResult>;
+  pageInfo: PageInfo;
 };
 
 export enum SortDirection {
@@ -1575,6 +1577,24 @@ export const FloorPriceDocument = gql`
   }
 }
     `;
+export const SearchDocument = gql`
+    query search($pagination: SearchPaginationInput!, $query: SearchQuery!) {
+  search(pagination: $pagination, query: $query) {
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      address
+      description
+      entityType
+      name
+      tokenId
+    }
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string) => Promise<T>;
 
@@ -1618,6 +1638,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     floorPrice(variables: FloorPriceQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FloorPriceQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FloorPriceQuery>(FloorPriceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'floorPrice');
+    },
+    search(variables: SearchQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SearchQuery>(SearchDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'search');
     }
   };
 }
@@ -1785,3 +1808,11 @@ export type FloorPriceQueryVariables = Exact<{
 
 
 export type FloorPriceQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', floorPrice?: number | null } };
+
+export type SearchQueryVariables = Exact<{
+  pagination: SearchPaginationInput;
+  query: SearchQuery;
+}>;
+
+
+export type SearchQuery = { __typename?: 'RootQuery', search: { __typename?: 'SearchResultConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'SearchResult', address: string, description?: string | null, entityType: string, name?: string | null, tokenId?: string | null }> } };
