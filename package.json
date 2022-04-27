@@ -13,6 +13,9 @@
     "dist/src",
     "dist/mocks"
   ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
     "@graphql-codegen/cli": "2.5.0",
     "@graphql-codegen/typescript": "2.4.3",
