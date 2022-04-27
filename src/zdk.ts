@@ -30,7 +30,7 @@ import {
   MintSortKeySortInput,
   FloorPriceQueryVariables,
   NftCountQueryVariables,
-  SearchQueryVariables,
+  FullTextSearchQueryVariables,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -307,8 +307,8 @@ export class ZDK {
       networks,
     });
 
-  public search = async ({ pagination, query }: SearchQueryVariables) =>
-    this.sdk.search({
+  public search = async ({ pagination, query }: FullTextSearchQueryVariables) =>
+    this.sdk.fullTextSearch({
       pagination,
       query,
     });

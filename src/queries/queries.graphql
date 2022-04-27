@@ -504,7 +504,7 @@ query floorPrice(
   }
 }
 
-query search($pagination: SearchPaginationInput!, $query: SearchQuery!) {
+query fullTextSearch($pagination: SearchPaginationInput!, $query: SearchQuery!) {
   search(pagination: $pagination, query: $query) {
     hasNextPage
     pageInfo {

@@ -1577,8 +1577,8 @@ export const FloorPriceDocument = gql`
   }
 }
     `;
-export const SearchDocument = gql`
-    query search($pagination: SearchPaginationInput!, $query: SearchQuery!) {
+export const FullTextSearchDocument = gql`
+    query fullTextSearch($pagination: SearchPaginationInput!, $query: SearchQuery!) {
   search(pagination: $pagination, query: $query) {
     hasNextPage
     pageInfo {
@@ -1639,8 +1639,8 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     floorPrice(variables: FloorPriceQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FloorPriceQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FloorPriceQuery>(FloorPriceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'floorPrice');
     },
-    search(variables: SearchQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<SearchQuery>(SearchDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'search');
+    fullTextSearch(variables: FullTextSearchQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FullTextSearchQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<FullTextSearchQuery>(FullTextSearchDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'fullTextSearch');
     }
   };
 }
@@ -1809,10 +1809,10 @@ export type FloorPriceQueryVariables = Exact<{
 
 export type FloorPriceQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', floorPrice?: number | null } };
 
-export type SearchQueryVariables = Exact<{
+export type FullTextSearchQueryVariables = Exact<{
   pagination: SearchPaginationInput;
   query: SearchQuery;
 }>;
 
 
-export type SearchQuery = { __typename?: 'RootQuery', search: { __typename?: 'SearchResultConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'SearchResult', address: string, description?: string | null, entityType: string, name?: string | null, tokenId?: string | null }> } };
+export type FullTextSearchQuery = { __typename?: 'RootQuery', search: { __typename?: 'SearchResultConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'SearchResult', address: string, description?: string | null, entityType: string, name?: string | null, tokenId?: string | null }> } };
