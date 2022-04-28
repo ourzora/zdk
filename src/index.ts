@@ -210,7 +210,7 @@ export class ZDK {
     sort,
     where,
     includeFullDetails = false,
-  }: MintsQueryArgs) => {
+  }: MintsQueryArgs) =>
     this.sdk.mints({
       filter,
       where,
@@ -222,7 +222,6 @@ export class ZDK {
       },
       includeFullDetails,
     });
-  };
 
   public collections = async ({
     where,
@@ -283,7 +282,7 @@ export class ZDK {
     });
 
   public nftCount = async ({ where, networks }: NftCountQueryVariables) =>
-    this.sdk.floorPrice({
+    this.sdk.nftCount({
       where,
       networks,
     });
