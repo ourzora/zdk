@@ -32,6 +32,10 @@ import {
   NftCountQueryVariables,
   FullTextSearchQueryVariables,
   TokenQueryVariables,
+  SaleSortKey,
+  SalesQueryInput,
+  SaleSortKeySortInput,
+  SalesQueryFilter,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -83,6 +87,13 @@ type MintsQueryArgs = {
   includeFullDetails: boolean;
 } & SharedQueryParams;
 
+type SalesQueryArgs = {
+  where: SalesQueryInput;
+  sort: SaleSortKeySortInput;
+  filter: SalesQueryFilter;
+  includeFullDetails: boolean;
+} & SharedQueryParams;
+
 export interface ListOptions<SortInput> {
   networks?: OverrideNetworksOption;
   pagination?: OverridePaginationOptions;
@@ -115,10 +126,6 @@ export class ZDK {
     this.defaultNetworks = networks;
     this.sdk = getSdk(new GraphQLClient(this.endpoint));
   }
-
-  // private fetch(url: string, options: any) {
-  //   return axios({url, ...options});
-  // }
 
   private getNetworksOption = (networks?: OverrideNetworksOption) => {
     return {
@@ -223,6 +230,26 @@ export class ZDK {
       includeFullDetails,
     });
 
+  public sales = async ({
+    where,
+    pagination,
+    networks,
+    sort,
+    filter,
+    includeFullDetails = false,
+  }: SalesQueryArgs) =>
+    this.sdk.sales({
+      where,
+      filter,
+      ...this.getPaginationOptions(pagination),
+      ...this.getNetworksOption(networks),
+      sort: {
+        sortDirection: sort?.sortDirection || SortDirection.Desc,
+        sortKey: sort?.sortKey || SaleSortKey.Time,
+      },
+      includeFullDetails,
+    });
+
   public collections = async ({
     where,
     pagination,
@@ -275,13 +302,19 @@ export class ZDK {
       networks,
     });
 
-  public floorPrice = async ({ where, networks }: FloorPriceQueryVariables) =>
+  public floorPrice = async ({
+    where,
+    networks = this.defaultNetworks,
+  }: FloorPriceQueryVariables) =>
     this.sdk.floorPrice({
       where,
       networks,
     });
 
-  public nftCount = async ({ where, networks }: NftCountQueryVariables) =>
+  public nftCount = async ({
+    where,
+    networks = this.defaultNetworks,
+  }: NftCountQueryVariables) =>
     this.sdk.nftCount({
       where,
       networks,

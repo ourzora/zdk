@@ -1452,6 +1452,34 @@ export const CollectionsDocument = gql`
 }
     ${CollectionInfoFragmentDoc}
 ${CollectionDetailsFragmentDoc}`;
+export const SalesDocument = gql`
+    query sales($networks: [NetworkInput!]!, $where: SalesQueryInput!, $filter: SalesQueryFilter, $sort: SaleSortKeySortInput, $pagination: PaginationInput!, $includeFullDetails: Boolean!) {
+  sales(
+    networks: $networks
+    where: $where
+    filter: $filter
+    sort: $sort
+    pagination: $pagination
+  ) {
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      sale {
+        ...SaleInfo
+      }
+      token {
+        ...TokenInfo
+        ...TokenDetails @include(if: $includeFullDetails)
+      }
+    }
+  }
+}
+    ${SaleInfoFragmentDoc}
+${TokenInfoFragmentDoc}
+${TokenDetailsFragmentDoc}`;
 export const TokensDocument = gql`
     query tokens($networks: [NetworkInput!]!, $where: TokensQueryInput, $filter: TokensQueryFilter, $pagination: PaginationInput!, $sort: TokenSortInput!, $includeFullDetails: Boolean!, $includeSalesHistory: Boolean!) {
   tokens(
@@ -1621,6 +1649,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     collections(variables: CollectionsQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CollectionsQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<CollectionsQuery>(CollectionsDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'collections');
     },
+    sales(variables: SalesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SalesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<SalesQuery>(SalesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'sales');
+    },
     tokens(variables: TokensQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<TokensQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<TokensQuery>(TokensDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'tokens');
     },
@@ -1742,6 +1773,18 @@ export type CollectionsQueryVariables = Exact<{
 
 
 export type CollectionsQuery = { __typename?: 'RootQuery', collections: { __typename?: 'CollectionConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Collection', address: string, description: string, name?: string | null, symbol?: string | null, totalSupply?: number | null, attributes?: Array<{ __typename?: 'CollectionAttribute', traitType?: string | null, valueMetrics: Array<{ __typename?: 'CollectionAttributeValue', count: number, percent: number, value: string }> }> | null }> } };
+
+export type SalesQueryVariables = Exact<{
+  networks: Array<NetworkInput> | NetworkInput;
+  where: SalesQueryInput;
+  filter?: InputMaybe<SalesQueryFilter>;
+  sort?: InputMaybe<SaleSortKeySortInput>;
+  pagination: PaginationInput;
+  includeFullDetails: Scalars['Boolean'];
+}>;
+
+
+export type SalesQuery = { __typename?: 'RootQuery', sales: { __typename?: 'SaleWithTokenConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'SaleWithToken', sale: { __typename?: 'Sale', saleContractAddress?: string | null, buyerAddress: string, collectionAddress: string, sellerAddress: string, tokenId: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } }, token?: { __typename?: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: any | null, owner?: string | null, name?: string | null, description?: string | null, metadata?: any | null, tokenUrl?: string | null, tokenUrlMimeType?: string | null, tokenContract?: { __typename?: 'TokenContract', name?: string | null, network: string, description?: string | null, collectionAddress: string, symbol?: string | null, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'MediaEncoding', large: string, poster: string, preview: string, thumbnail: string } | null } | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType?: string | null, value?: string | null, displayType?: string | null }> | null } | null }> } };
 
 export type TokensQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;

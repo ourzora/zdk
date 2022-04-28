@@ -367,6 +367,38 @@ query collections(
   }
 }
 
+query sales(
+  $networks: [NetworkInput!]!,
+  $where: SalesQueryInput!,
+  $filter: SalesQueryFilter,
+  $sort: SaleSortKeySortInput,
+  $pagination: PaginationInput!,
+  $includeFullDetails: Boolean!
+) {
+  sales(
+    networks: $networks,
+    where: $where,
+    filter: $filter,
+    sort: $sort,
+    pagination: $pagination
+  ) {
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      sale {
+        ...SaleInfo
+      }
+      token {
+        ...TokenInfo
+        ...TokenDetails @include(if: $includeFullDetails)
+      }
+    }
+  }
+}
+
 query tokens(
   $networks: [NetworkInput!]!
   $where: TokensQueryInput
