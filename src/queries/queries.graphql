@@ -261,7 +261,7 @@ query events(
   $filter: EventsQueryFilter
   $pagination: PaginationInput!
   $sort: EventSortKeySortInput!
-  $where: EventsQueryInput
+  $where: EventsQueryInput!
 ) {
   events(
     networks: $networks

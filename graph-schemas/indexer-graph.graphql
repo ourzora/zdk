@@ -26,11 +26,11 @@ type AggregateAttributeValue {
 }
 
 type AggregateStat {
-  floorPrice(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!): Float
-  nftCount(networks: [NetworkInput!]!, where: CollectionAddressOwnerAddressAttributesInput!): Int!
-  ownerCount(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!): Int!
-  ownersByCount(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!, pagination: PaginationInput!): OwnerCountConnection!
-  salesVolume(networks: [NetworkInput!]!, where: CollectionAddressAndAttributesInput!, timeFilter: TimeFilter = null): SalesVolume!
+  floorPrice(where: CollectionAddressAndAttributesInput!, networks: [NetworkInput!] = null): Float
+  nftCount(where: CollectionAddressOwnerAddressAttributesInput!, networks: [NetworkInput!] = null): Int!
+  ownerCount(where: CollectionAddressAndAttributesInput!, networks: [NetworkInput!] = null): Int!
+  ownersByCount(where: CollectionAddressAndAttributesInput!, pagination: PaginationInput = null, networks: [NetworkInput!] = null): OwnerCountConnection!
+  salesVolume(where: CollectionAddressAndAttributesInput!, timeFilter: TimeFilter = null, networks: [NetworkInput!] = null): SalesVolume!
 }
 
 input AttributeFilter {
@@ -306,7 +306,7 @@ input MintsQueryInput {
 type MintWithTokenAndMarkets {
   mint: Mint!
   token: Token
-  markets(pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null): [Market!]!
+  markets(pagination: PaginationInput = null, sort: MarketSortKeySortInput = null, filter: MarketsQueryFilter = null): [Market!]!
 }
 
 type MintWithTokenAndMarketsConnection {
@@ -370,28 +370,28 @@ type RootQuery {
   aggregateStat: AggregateStat!
 
   """Gets the total set of NFT attributes"""
-  aggregateAttributes(networks: [NetworkInput!]!, where: AggregateAttributesQueryInput!): [AggregateAttribute!]!
+  aggregateAttributes(where: AggregateAttributesQueryInput!, networks: [NetworkInput!] = null): [AggregateAttribute!]!
 
   """NFT collection data"""
-  collections(pagination: PaginationInput!, sort: CollectionSortKeySortInput!, networks: [NetworkInput!]!, where: CollectionsQueryInput = null): CollectionConnection!
+  collections(where: CollectionsQueryInput = null, sort: CollectionSortKeySortInput = null, pagination: PaginationInput = null, networks: [NetworkInput!] = null): CollectionConnection!
 
   """Contract event information, e.g. Sales, Transfers, Mints, etc."""
-  events(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null, where: EventsQueryInput = null): EventConnection!
+  events(where: EventsQueryInput!, pagination: PaginationInput = null, sort: EventSortKeySortInput = null, networks: [NetworkInput!] = null, filter: EventsQueryFilter = null): EventConnection!
 
   """Data for specific ZORA markets, e.g. Buy Now, Auctions, Offers"""
-  markets(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null, where: MarketsQueryInput = null): MarketWithTokenConnection!
+  markets(networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: MarketSortKeySortInput = null, filter: MarketsQueryFilter = null, where: MarketsQueryInput = null): MarketWithTokenConnection!
 
   """Historical minting data"""
-  mints(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: MintSortKeySortInput!, filter: MintsQueryFilter = null, where: MintsQueryInput = null): MintWithTokenAndMarketsConnection!
+  mints(networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: MintSortKeySortInput = null, filter: MintsQueryFilter = null, where: MintsQueryInput = null): MintWithTokenAndMarketsConnection!
 
   """Historical sales data from ZORA, OpenSea, LooksRare, 0x, and more"""
-  sales(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null, where: SalesQueryInput = null): SaleWithTokenConnection!
+  sales(where: SalesQueryInput!, networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: SaleSortKeySortInput = null, filter: SalesQueryFilter = null): SaleWithTokenConnection!
 
   """Gets data for multiple tokens"""
-  tokens(networks: [NetworkInput!]!, pagination: PaginationInput!, sort: TokenSortInput!, where: TokensQueryInput = null, filter: TokensQueryFilter = null): TokenWithMarketsSummaryConnection!
+  tokens(networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: TokenSortInput = null, where: TokensQueryInput = null, filter: TokensQueryFilter = null): TokenWithMarketsSummaryConnection!
 
   """Gets data on a single token"""
-  token(token: TokenInput!, network: NetworkInput!): TokenWithFullMarketHistory
+  token(token: TokenInput!, network: NetworkInput = null): TokenWithFullMarketHistory
 
   """Returns search results for a query"""
   search(query: SearchQuery!, pagination: SearchPaginationInput!): SearchResultConnection!
@@ -575,16 +575,16 @@ input TokensQueryInput {
 
 type TokenWithFullMarketHistory {
   token: Token!
-  markets(pagination: PaginationInput!, sort: MarketSortKeySortInput!, filter: MarketsQueryFilter = null): [Market!]!
-  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): [Event!]!
-  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): [Sale!]!
+  markets(pagination: PaginationInput = null, sort: MarketSortKeySortInput = null, filter: MarketsQueryFilter = null): [Market!]!
+  events(pagination: PaginationInput = null, sort: EventSortKeySortInput = null, filter: EventsQueryFilter = null): [Event!]!
+  sales(pagination: PaginationInput = null, sort: SaleSortKeySortInput = null, filter: SalesQueryFilter = null): [Sale!]!
 }
 
 type TokenWithMarketsSummary {
   token: Token!
   marketsSummary: [Market!]!
-  events(pagination: PaginationInput!, sort: EventSortKeySortInput!, filter: EventsQueryFilter = null): [Event!]!
-  sales(pagination: PaginationInput!, sort: SaleSortKeySortInput!, filter: SalesQueryFilter = null): [Sale!]!
+  events(pagination: PaginationInput = null, sort: EventSortKeySortInput = null, filter: EventsQueryFilter = null): [Event!]!
+  sales(pagination: PaginationInput = null, sort: SaleSortKeySortInput = null, filter: SalesQueryFilter = null): [Sale!]!
 }
 
 type TokenWithMarketsSummaryConnection {

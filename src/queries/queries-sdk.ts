@@ -51,32 +51,32 @@ export type AggregateStat = {
 
 
 export type AggregateStatFloorPriceArgs = {
-  networks: Array<NetworkInput>;
+  networks?: InputMaybe<Array<NetworkInput>>;
   where: CollectionAddressAndAttributesInput;
 };
 
 
 export type AggregateStatNftCountArgs = {
-  networks: Array<NetworkInput>;
+  networks?: InputMaybe<Array<NetworkInput>>;
   where: CollectionAddressOwnerAddressAttributesInput;
 };
 
 
 export type AggregateStatOwnerCountArgs = {
-  networks: Array<NetworkInput>;
+  networks?: InputMaybe<Array<NetworkInput>>;
   where: CollectionAddressAndAttributesInput;
 };
 
 
 export type AggregateStatOwnersByCountArgs = {
-  networks: Array<NetworkInput>;
-  pagination: PaginationInput;
+  networks?: InputMaybe<Array<NetworkInput>>;
+  pagination?: InputMaybe<PaginationInput>;
   where: CollectionAddressAndAttributesInput;
 };
 
 
 export type AggregateStatSalesVolumeArgs = {
-  networks: Array<NetworkInput>;
+  networks?: InputMaybe<Array<NetworkInput>>;
   timeFilter?: InputMaybe<TimeFilter>;
   where: CollectionAddressAndAttributesInput;
 };
@@ -353,8 +353,8 @@ export type MintWithTokenAndMarkets = {
 
 export type MintWithTokenAndMarketsMarketsArgs = {
   filter?: InputMaybe<MarketsQueryFilter>;
-  pagination: PaginationInput;
-  sort: MarketSortKeySortInput;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<MarketSortKeySortInput>;
 };
 
 export type MintWithTokenAndMarketsConnection = {
@@ -457,52 +457,52 @@ export type RootQuery = {
 
 
 export type RootQueryAggregateAttributesArgs = {
-  networks: Array<NetworkInput>;
+  networks?: InputMaybe<Array<NetworkInput>>;
   where: AggregateAttributesQueryInput;
 };
 
 
 export type RootQueryCollectionsArgs = {
-  networks: Array<NetworkInput>;
-  pagination: PaginationInput;
-  sort: CollectionSortKeySortInput;
+  networks?: InputMaybe<Array<NetworkInput>>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<CollectionSortKeySortInput>;
   where?: InputMaybe<CollectionsQueryInput>;
 };
 
 
 export type RootQueryEventsArgs = {
   filter?: InputMaybe<EventsQueryFilter>;
-  networks: Array<NetworkInput>;
-  pagination: PaginationInput;
-  sort: EventSortKeySortInput;
-  where?: InputMaybe<EventsQueryInput>;
+  networks?: InputMaybe<Array<NetworkInput>>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<EventSortKeySortInput>;
+  where: EventsQueryInput;
 };
 
 
 export type RootQueryMarketsArgs = {
   filter?: InputMaybe<MarketsQueryFilter>;
-  networks: Array<NetworkInput>;
-  pagination: PaginationInput;
-  sort: MarketSortKeySortInput;
+  networks?: InputMaybe<Array<NetworkInput>>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<MarketSortKeySortInput>;
   where?: InputMaybe<MarketsQueryInput>;
 };
 
 
 export type RootQueryMintsArgs = {
   filter?: InputMaybe<MintsQueryFilter>;
-  networks: Array<NetworkInput>;
-  pagination: PaginationInput;
-  sort: MintSortKeySortInput;
+  networks?: InputMaybe<Array<NetworkInput>>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<MintSortKeySortInput>;
   where?: InputMaybe<MintsQueryInput>;
 };
 
 
 export type RootQuerySalesArgs = {
   filter?: InputMaybe<SalesQueryFilter>;
-  networks: Array<NetworkInput>;
-  pagination: PaginationInput;
-  sort: SaleSortKeySortInput;
-  where?: InputMaybe<SalesQueryInput>;
+  networks?: InputMaybe<Array<NetworkInput>>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<SaleSortKeySortInput>;
+  where: SalesQueryInput;
 };
 
 
@@ -513,16 +513,16 @@ export type RootQuerySearchArgs = {
 
 
 export type RootQueryTokenArgs = {
-  network: NetworkInput;
+  network?: InputMaybe<NetworkInput>;
   token: TokenInput;
 };
 
 
 export type RootQueryTokensArgs = {
   filter?: InputMaybe<TokensQueryFilter>;
-  networks: Array<NetworkInput>;
-  pagination: PaginationInput;
-  sort: TokenSortInput;
+  networks?: InputMaybe<Array<NetworkInput>>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<TokenSortInput>;
   where?: InputMaybe<TokensQueryInput>;
 };
 
@@ -710,22 +710,22 @@ export type TokenWithFullMarketHistory = {
 
 export type TokenWithFullMarketHistoryEventsArgs = {
   filter?: InputMaybe<EventsQueryFilter>;
-  pagination: PaginationInput;
-  sort: EventSortKeySortInput;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<EventSortKeySortInput>;
 };
 
 
 export type TokenWithFullMarketHistoryMarketsArgs = {
   filter?: InputMaybe<MarketsQueryFilter>;
-  pagination: PaginationInput;
-  sort: MarketSortKeySortInput;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<MarketSortKeySortInput>;
 };
 
 
 export type TokenWithFullMarketHistorySalesArgs = {
   filter?: InputMaybe<SalesQueryFilter>;
-  pagination: PaginationInput;
-  sort: SaleSortKeySortInput;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<SaleSortKeySortInput>;
 };
 
 export type TokenWithMarketsSummary = {
@@ -739,15 +739,15 @@ export type TokenWithMarketsSummary = {
 
 export type TokenWithMarketsSummaryEventsArgs = {
   filter?: InputMaybe<EventsQueryFilter>;
-  pagination: PaginationInput;
-  sort: EventSortKeySortInput;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<EventSortKeySortInput>;
 };
 
 
 export type TokenWithMarketsSummarySalesArgs = {
   filter?: InputMaybe<SalesQueryFilter>;
-  pagination: PaginationInput;
-  sort: SaleSortKeySortInput;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<SaleSortKeySortInput>;
 };
 
 export type TokenWithMarketsSummaryConnection = {
@@ -1353,7 +1353,7 @@ export const OwnerCountInfoFragmentDoc = gql`
 }
     `;
 export const EventsDocument = gql`
-    query events($networks: [NetworkInput!]!, $filter: EventsQueryFilter, $pagination: PaginationInput!, $sort: EventSortKeySortInput!, $where: EventsQueryInput) {
+    query events($networks: [NetworkInput!]!, $filter: EventsQueryFilter, $pagination: PaginationInput!, $sort: EventSortKeySortInput!, $where: EventsQueryInput!) {
   events(
     networks: $networks
     filter: $filter
@@ -1702,7 +1702,7 @@ export type EventsQueryVariables = Exact<{
   filter?: InputMaybe<EventsQueryFilter>;
   pagination: PaginationInput;
   sort: EventSortKeySortInput;
-  where?: InputMaybe<EventsQueryInput>;
+  where: EventsQueryInput;
 }>;
 
 
