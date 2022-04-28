@@ -21,6 +21,104 @@ Object {
 }
 `;
 
+exports[`zdk queries long token information 2`] = `
+Object {
+  "marketsSummary": Array [],
+  "sales": Array [],
+  "token": Object {
+    "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+    "content": Object {
+      "mediaEncoding": Object {
+        "large": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/large",
+        "poster": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/poster",
+        "preview": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/preview",
+        "thumbnail": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/thumbnail",
+      },
+      "mimeType": null,
+      "size": null,
+      "url": null,
+    },
+    "description": "Zorbs were distributed for free by ZORA on New Year’s 2022. Each NFT imbues the properties of its wallet holder, and when sent to someone else, will transform.
+
+View this NFT at [zorb.dev/nft/4](https://zorb.dev/nft/4)",
+    "image": Object {
+      "mediaEncoding": Object {
+        "large": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/large",
+        "poster": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/poster",
+        "preview": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/preview",
+        "thumbnail": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/thumbnail",
+      },
+      "mimeType": "image/svg+xml",
+      "size": "860",
+      "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTAgMTEwIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9Imd6ciIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSg2Ni40NTc4IDI0LjM1NzUpIHNjYWxlKDc1LjI5MDgpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcj0iMSIgY3g9IjAiIGN5PSIwJSI+PHN0b3Agb2Zmc2V0PSIxNS42MiUiIHN0b3AtY29sb3I9ImhzbCgyODgsIDcyJSwgODQlKSIgLz48c3RvcCBvZmZzZXQ9IjM5LjU4JSIgc3RvcC1jb2xvcj0iaHNsKDI4OCwgNzglLCA3NCUpIiAvPjxzdG9wIG9mZnNldD0iNzIuOTIlIiBzdG9wLWNvbG9yPSJoc2woMjQzLCA4NSUsIDU1JSkiIC8+PHN0b3Agb2Zmc2V0PSI5MC42MyUiIHN0b3AtY29sb3I9ImhzbCgyMzgsIDg4JSwgMzklKSIgLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9ImhzbCgyMzgsIDg4JSwgMzglKSIgLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1LDUpIj48cGF0aCBkPSJNMTAwIDUwQzEwMCAyMi4zODU4IDc3LjYxNDIgMCA1MCAwQzIyLjM4NTggMCAwIDIyLjM4NTggMCA1MEMwIDc3LjYxNDIgMjIuMzg1OCAxMDAgNTAgMTAwQzc3LjYxNDIgMTAwIDEwMCA3Ny42MTQyIDEwMCA1MFoiIGZpbGw9InVybCgjZ3pyKSIgLz48cGF0aCBzdHJva2U9InJnYmEoMCwwLDAsMC4wNzUpIiBmaWxsPSJ0cmFuc3BhcmVudCIgc3Ryb2tlLXdpZHRoPSIxIiBkPSJNNTAsMC41YzI3LjMsMCw0OS41LDIyLjIsNDkuNSw0OS41Uzc3LjMsOTkuNSw1MCw5OS41UzAuNSw3Ny4zLDAuNSw1MFMyMi43LDAuNSw1MCwwLjV6IiAvPjwvZz48L3N2Zz4=",
+    },
+    "lastRefreshTime": "2022-04-23T20:50:34.829000",
+    "mintInfo": Object {
+      "mintContext": Object {
+        "blockNumber": 13917533,
+        "blockTimestamp": "2022-01-01T05:01:01",
+        "logIndex": 626,
+        "transactionHash": "0x3abfdfdc7c1f2841ae7771c0522eaf1babaea28e1446345bef1db74b0c4d83c6",
+      },
+      "originatorAddress": "0x72c7f49ae7b664cc09f6891b68eedb08aa2fc15b",
+      "price": Object {
+        "blockNumber": 13917533,
+        "ethPrice": Object {
+          "decimal": 0,
+          "raw": "0",
+        },
+        "nativePrice": Object {
+          "currency": Object {
+            "address": "0x0000000000000000000000000000000000000000",
+            "decimals": 18,
+            "name": "ETH",
+          },
+          "decimal": 0,
+          "raw": "0",
+        },
+        "usdcPrice": Object {
+          "decimal": 0,
+          "raw": "0",
+        },
+      },
+      "toAddress": "0x72c7f49ae7b664cc09f6891b68eedb08aa2fc15b",
+    },
+    "name": "Zorb #4",
+    "owner": "0x72c7f49ae7b664cc09f6891b68eedb08aa2fc15b",
+    "tokenContract": Object {
+      "chain": 1,
+      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+      "description": null,
+      "name": "Zorbs",
+      "network": "ETHEREUM",
+      "symbol": "ZORB",
+    },
+    "tokenId": "4",
+  },
+}
+`;
+
+exports[`zdk queries long token information 3`] = `
+Object {
+  "collections": Object {
+    "hasNextPage": false,
+    "nodes": Array [
+      Object {
+        "address": "0x5180db8f5c931aae63c74266b211f580155ecac8",
+        "description": "",
+        "name": "Crypto Coven",
+        "symbol": "WITCH",
+        "totalSupply": null,
+      },
+    ],
+    "pageInfo": Object {
+      "limit": 200,
+      "offset": 0,
+    },
+  },
+}
+`;
+
 exports[`zdk queries sort collection information 1`] = `
 Object {
   "collections": Object {

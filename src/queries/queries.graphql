@@ -75,13 +75,6 @@ fragment SaleInfo on Sale {
   tokenId
 }
 
-fragment SaleDetails on SaleConnection {
-  hasNextPage
-  nodes {
-    ...SaleInfo
-  }
-}
-
 fragment V2AuctionMarketProperties on V2Auction {
   __typename
   firstBidTime
@@ -268,7 +261,7 @@ query events(
   $filter: EventsQueryFilter
   $pagination: PaginationInput!
   $sort: EventSortKeySortInput!
-  $where: EventsQueryInput
+  $where: EventsQueryInput!
 ) {
   events(
     networks: $networks
@@ -327,6 +320,7 @@ query mints(
   $pagination: PaginationInput!
   $sort: MintSortKeySortInput!
   $where: MintsQueryInput
+  $includeFullDetails: Boolean!
 ) {
   mints(
     where: $where
@@ -335,14 +329,21 @@ query mints(
     pagination: $pagination
     sort: $sort
   ) {
-    hasNextPage
-    pageInfo {
-      limit
-      offset
+    nodes {
+      mint {
+        collectionAddress
+        tokenId
+        originatorAddress
+        toAddress
+        transactionInfo {
+          ...TransactionDetails
+        }
+      }
+      markets(pagination: $pagination, sort: { sortKey: NONE, sortDirection: DESC }) {
+        ...MarketInfo
+        ...MarketDetails @include(if: $includeFullDetails)
+      }
     }
-    # nodes {
-
-    # }
   }
 }
 
@@ -400,31 +401,37 @@ query tokens(
         pagination: { limit: 10, offset: 0 }
         sort: { sortKey: TIME, sortDirection: DESC }
       ) {
-        ...SaleDetails @include(if: $includeSalesHistory)
+        ...SaleInfo @include(if: $includeSalesHistory)
       }
     }
   }
 }
 
-# TODO(steve): Use networks
 query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: Boolean!) {
   token(network: $network, token: $token) {
     token {
       ...TokenInfo
       ...TokenDetails @include(if: $includeFullDetails)
     }
-    # sales(
-    #   pagination: { limit: 10, offset: 0 }
-    #   sort: { sortKey: TIME, sortDirection: DESC }
-    # ) {
-    #   ...SaleDetails @include(if: $includeSalesHistory)
-    # }
-    # add events
-    # events()
-    # markets() {
-    #   ...MarketInfo
-    #   ...MarketDetails @include(if: $includeFullDetails)
-    # }
+    sales(
+      pagination: { limit: 10, offset: 0 }
+      sort: { sortKey: TIME, sortDirection: DESC }
+    ) {
+      ...SaleInfo @include(if: $includeFullDetails)
+    }
+    events(
+      pagination: { limit: 10, offset: 0 }
+      sort: { sortKey: NONE, sortDirection: DESC }
+    ) {
+      ...EventInfo
+    }
+    markets(
+      pagination: { limit: 10, offset: 0 }
+      sort: { sortKey: NONE, sortDirection: DESC }
+    ) {
+      ...MarketInfo
+      ...MarketDetails @include(if: $includeFullDetails)
+    }
   }
 }
 
@@ -499,5 +506,22 @@ query floorPrice(
 ) {
   aggregateStat {
     floorPrice(where: $where, networks: $networks)
+  }
+}
+
+query fullTextSearch($pagination: SearchPaginationInput!, $query: SearchQuery!) {
+  search(pagination: $pagination, query: $query) {
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      address
+      description
+      entityType
+      name
+      tokenId
+    }
   }
 }
