@@ -333,6 +333,11 @@ query mints(
       mint {
         collectionAddress
         tokenId
+        originatorAddress
+        toAddress
+        transactionInfo {
+          ...TransactionDetails
+        }
       }
       markets(pagination: $pagination, sort: { sortKey: NONE, sortDirection: DESC }) {
         ...MarketInfo
