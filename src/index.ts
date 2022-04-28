@@ -31,6 +31,7 @@ import {
   FloorPriceQueryVariables,
   NftCountQueryVariables,
   FullTextSearchQueryVariables,
+  TokenQueryVariables,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -157,32 +158,12 @@ export class ZDK {
       ...this.getNetworksOption(networks),
     });
 
-  public token = async ({
-    address,
-    tokenId,
-    networks,
-  }: {
-    address: string;
-    tokenId: string;
-    networks: OverrideNetworksOption;
-  }) => {
-    const tokens = await this.tokens({
-      where: {
-        tokens: [
-          {
-            address,
-            tokenId,
-          },
-        ],
-      },
-      pagination: { limit: 1, offset: 0 },
-      networks,
+  public token = async ({ token, network, includeFullDetails }: TokenQueryVariables) =>
+    await this.sdk.token({
+      token,
+      network,
+      includeFullDetails,
     });
-    if (!tokens?.tokens.nodes[0]) {
-      throw new Error('Could not find token');
-    }
-    return tokens.tokens.nodes[0];
-  };
 
   public events = async ({
     networks,

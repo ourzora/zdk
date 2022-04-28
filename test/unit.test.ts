@@ -1,5 +1,5 @@
 import { registry } from '../mocks/handlers';
-import { ZDK } from '../src/zdk';
+import { ZDK } from '../src';
 import './setup-mocks';
 
 const ZORA_TESTING_PATH = 'http://example.com/graphql';
