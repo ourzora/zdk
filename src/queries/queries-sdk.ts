@@ -507,8 +507,9 @@ export type RootQuerySalesArgs = {
 
 
 export type RootQuerySearchArgs = {
+  filter?: InputMaybe<SearchFilter>;
   pagination: SearchPaginationInput;
-  query: SearchQuery;
+  query: SearchQueryInput;
 };
 
 
@@ -597,12 +598,17 @@ export type SalesVolume = {
   usdcPrice: Scalars['Float'];
 };
 
+export type SearchFilter = {
+  collectionAddresses?: InputMaybe<Array<Scalars['String']>>;
+  entityType?: InputMaybe<SearchableEntity>;
+};
+
 export type SearchPaginationInput = {
   limit?: Scalars['Int'];
   offset?: Scalars['Int'];
 };
 
-export type SearchQuery = {
+export type SearchQueryInput = {
   text: Scalars['String'];
 };
 
@@ -621,6 +627,11 @@ export type SearchResultConnection = {
   nodes: Array<SearchResult>;
   pageInfo: PageInfo;
 };
+
+export enum SearchableEntity {
+  Collection = 'COLLECTION',
+  Token = 'TOKEN'
+}
 
 export enum SortDirection {
   Asc = 'ASC',
@@ -1453,7 +1464,7 @@ export const CollectionsDocument = gql`
     ${CollectionInfoFragmentDoc}
 ${CollectionDetailsFragmentDoc}`;
 export const SalesDocument = gql`
-    query sales($networks: [NetworkInput!]!, $where: SalesQueryInput!, $filter: SalesQueryFilter, $sort: SaleSortKeySortInput, $pagination: PaginationInput!, $includeFullDetails: Boolean!) {
+    query sales($networks: [NetworkInput!]!, $where: SalesQueryInput!, $filter: SalesQueryFilter, $sort: SaleSortKeySortInput!, $pagination: PaginationInput!, $includeFullDetails: Boolean!) {
   sales(
     networks: $networks
     where: $where
@@ -1612,8 +1623,8 @@ export const FloorPriceDocument = gql`
 }
     `;
 export const FullTextSearchDocument = gql`
-    query fullTextSearch($pagination: SearchPaginationInput!, $query: SearchQuery!) {
-  search(pagination: $pagination, query: $query) {
+    query fullTextSearch($pagination: SearchPaginationInput!, $query: SearchQueryInput!, $filter: SearchFilter) {
+  search(pagination: $pagination, query: $query, filter: $filter) {
     hasNextPage
     pageInfo {
       limit
@@ -1778,7 +1789,7 @@ export type SalesQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;
   where: SalesQueryInput;
   filter?: InputMaybe<SalesQueryFilter>;
-  sort?: InputMaybe<SaleSortKeySortInput>;
+  sort: SaleSortKeySortInput;
   pagination: PaginationInput;
   includeFullDetails: Scalars['Boolean'];
 }>;
@@ -1860,7 +1871,8 @@ export type FloorPriceQuery = { __typename?: 'RootQuery', aggregateStat: { __typ
 
 export type FullTextSearchQueryVariables = Exact<{
   pagination: SearchPaginationInput;
-  query: SearchQuery;
+  query: SearchQueryInput;
+  filter?: InputMaybe<SearchFilter>;
 }>;
 
 
