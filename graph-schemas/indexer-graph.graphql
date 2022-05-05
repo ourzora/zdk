@@ -394,7 +394,7 @@ type RootQuery {
   token(token: TokenInput!, network: NetworkInput = null): TokenWithFullMarketHistory
 
   """Returns search results for a query"""
-  search(query: SearchQuery!, pagination: SearchPaginationInput!): SearchResultConnection!
+  search(query: SearchQueryInput!, pagination: SearchPaginationInput!, filter: SearchFilter = null): SearchResultConnection!
 }
 
 type Sale {
@@ -464,12 +464,22 @@ type SaleWithTokenConnection {
   hasNextPage: Boolean!
 }
 
+enum SearchableEntity {
+  TOKEN
+  COLLECTION
+}
+
+input SearchFilter {
+  collectionAddresses: [String!] = null
+  entityType: SearchableEntity = null
+}
+
 input SearchPaginationInput {
   limit: Int! = 10
   offset: Int! = 0
 }
 
-input SearchQuery {
+input SearchQueryInput {
   text: String!
 }
 

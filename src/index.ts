@@ -107,6 +107,10 @@ export interface AggregateOptions {
 
 export type TokenQueryList = TokenInput;
 
+type OptionalNetwork<K> = Omit<K, 'networks'> & {
+  networks?: OverrideNetworksOption;
+};
+
 const DEFAULT_PROD_ENDPOINT = 'https://api.zora.co/graphql';
 
 export class ZDK {
@@ -165,7 +169,11 @@ export class ZDK {
       ...this.getNetworksOption(networks),
     });
 
-  public token = async ({ token, network, includeFullDetails }: TokenQueryVariables) =>
+  public token = async ({
+    token,
+    network = this.defaultNetworks[0],
+    includeFullDetails,
+  }: OptionalNetwork<TokenQueryVariables>) =>
     await this.sdk.token({
       token,
       network,
@@ -270,9 +278,9 @@ export class ZDK {
 
   public ownersByCount = async ({
     where,
-    networks,
     pagination,
-  }: OwnersByCountQueryVariables) =>
+    networks = this.defaultNetworks,
+  }: OptionalNetwork<OwnersByCountQueryVariables>) =>
     this.sdk.ownersByCount({
       where,
       networks,
@@ -281,22 +289,25 @@ export class ZDK {
 
   public aggregateAttributes = async ({
     where,
-    networks,
-  }: AggregateAttributesQueryVariables) =>
+    networks = this.defaultNetworks,
+  }: OptionalNetwork<AggregateAttributesQueryVariables>) =>
     this.sdk.aggregateAttributes({ where, networks });
 
   public salesVolume = async ({
     where,
-    networks,
+    networks = this.defaultNetworks,
     timeFilter,
-  }: SalesVolumeQueryVariables) =>
+  }: OptionalNetwork<SalesVolumeQueryVariables>) =>
     this.sdk.salesVolume({
       where,
       networks,
       timeFilter,
     });
 
-  public ownerCount = async ({ where, networks }: OwnersByCountQueryVariables) =>
+  public ownerCount = async ({
+    where,
+    networks = this.defaultNetworks,
+  }: OptionalNetwork<OwnersByCountQueryVariables>) =>
     this.sdk.ownerCount({
       where,
       networks,
@@ -305,7 +316,7 @@ export class ZDK {
   public floorPrice = async ({
     where,
     networks = this.defaultNetworks,
-  }: FloorPriceQueryVariables) =>
+  }: OptionalNetwork<FloorPriceQueryVariables>) =>
     this.sdk.floorPrice({
       where,
       networks,
@@ -314,15 +325,16 @@ export class ZDK {
   public nftCount = async ({
     where,
     networks = this.defaultNetworks,
-  }: NftCountQueryVariables) =>
+  }: OptionalNetwork<NftCountQueryVariables>) =>
     this.sdk.nftCount({
       where,
       networks,
     });
 
-  public search = async ({ pagination, query }: FullTextSearchQueryVariables) =>
+  public search = async ({ pagination, query, filter }: FullTextSearchQueryVariables) =>
     this.sdk.fullTextSearch({
       pagination,
+      filter,
       query,
     });
 }
