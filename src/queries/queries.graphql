@@ -403,6 +403,12 @@ query tokens(
       ) {
         ...SaleInfo @include(if: $includeSalesHistory)
       }
+      events(
+        pagination: { limit: 10, offset: 0 }
+        sort: { sortKey: CREATED, sortDirection: DESC }
+      ) {
+        ...EventInfo
+      }
     }
   }
 }

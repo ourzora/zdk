@@ -1,6 +1,6 @@
 {
   "name": "@zoralabs/zdk-alpha",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "ZDK alpha for fetching data from graphql api",
   "repository": "https://github.com/ourzora/zdk-alpha",
   "author": "Zora",
@@ -42,7 +42,7 @@
   "scripts": {
     "publish": "npm publish",
     "publish-prerelease": "npm publish --access public --tag=pre-release",
-    "gen-graphql-types": "graphql-code-generator",
+    "typegen": "graphql-code-generator",
     "test": "jest",
     "download-schemas": "npx get-graphql-schema $ZDK_ENDPOINT > graph-schemas/indexer-graph.graphql",
     "clean": "rm -rf ./dist",
