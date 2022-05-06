@@ -1,6 +1,6 @@
 {
   "name": "@zoralabs/zdk-alpha",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "ZDK alpha for fetching data from graphql api",
   "repository": "https://github.com/ourzora/zdk-alpha",
   "author": "Zora",
@@ -17,8 +17,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "2.5.0",
     "@changesets/cli": "^2.22.0",
+    "@graphql-codegen/cli": "2.5.0",
     "@graphql-codegen/typescript": "2.4.3",
     "@graphql-codegen/typescript-graphql-request": "4.3.4",
     "@graphql-codegen/typescript-operations": "2.2.4",
@@ -61,12 +61,9 @@
   },
   "dependencies": {
     "big.js": "^6.1.0",
-    "changeset": "^0.2.6",
-    "graphql": "16.3.0",
-    "graphql-request": "4.0.0",
+    "graphql": "^16.4.0",
+    "graphql-request": "^4.2.0",
     "graphql-tag": "^2.12.6",
-    "init": "^0.1.2",
-    "sha3": "^2.1.4",
     "tslib": "^2.2.0"
   },
   "prettier": {
