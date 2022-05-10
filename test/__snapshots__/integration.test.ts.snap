@@ -1,27 +1,61 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`zdk queries long token information 1`] = `
+exports[`zdk should fetch localhost collections empty object 1`] = `
 Object {
-  "collections": Object {
-    "hasNextPage": false,
-    "nodes": Array [
-      Object {
-        "address": "0x5180db8f5c931aae63c74266b211f580155ecac8",
-        "description": "",
-        "name": "Crypto Coven",
-        "symbol": "WITCH",
-        "totalSupply": null,
+  "marketsSummary": Array [],
+  "sales": Array [],
+  "token": Object {
+    "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+    "content": null,
+    "description": null,
+    "image": null,
+    "lastRefreshTime": null,
+    "mintInfo": Object {
+      "mintContext": Object {
+        "blockNumber": 13917526,
+        "blockTimestamp": "2022-01-01T05:00:10",
+        "logIndex": 57,
+        "transactionHash": "0xf46f3540ebfca6fd50eac66c8e600f33e53ad891cd47032e23ef488e62b5f72e",
       },
-    ],
-    "pageInfo": Object {
-      "limit": 200,
-      "offset": 0,
+      "originatorAddress": "0x436a257ab8f9d8579594f493ffb81fa5245ada26",
+      "price": Object {
+        "blockNumber": 13917526,
+        "ethPrice": Object {
+          "decimal": 0,
+          "raw": "0",
+        },
+        "nativePrice": Object {
+          "currency": Object {
+            "address": "0x0000000000000000000000000000000000000000",
+            "decimals": 18,
+            "name": "ETH",
+          },
+          "decimal": 0,
+          "raw": "0",
+        },
+        "usdcPrice": Object {
+          "decimal": 0,
+          "raw": "0",
+        },
+      },
+      "toAddress": "0x436a257ab8f9d8579594f493ffb81fa5245ada26",
     },
+    "name": null,
+    "owner": "0x436a257ab8f9d8579594f493ffb81fa5245ada26",
+    "tokenContract": Object {
+      "chain": 1,
+      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+      "description": null,
+      "name": "Zorbs",
+      "network": "ETHEREUM",
+      "symbol": "ZORB",
+    },
+    "tokenId": "1",
   },
 }
 `;
 
-exports[`zdk queries long token information 2`] = `
+exports[`zdk should fetch localhost collections empty object 2`] = `
 Object {
   "marketsSummary": Array [],
   "sales": Array [],
@@ -98,222 +132,14 @@ View this NFT at [zorb.dev/nft/4](https://zorb.dev/nft/4)",
 }
 `;
 
-exports[`zdk queries long token information 3`] = `
-Object {
-  "collections": Object {
-    "hasNextPage": false,
-    "nodes": Array [
-      Object {
-        "address": "0x5180db8f5c931aae63c74266b211f580155ecac8",
-        "description": "",
-        "name": "Crypto Coven",
-        "symbol": "WITCH",
-        "totalSupply": null,
-      },
-    ],
-    "pageInfo": Object {
-      "limit": 200,
-      "offset": 0,
-    },
-  },
-}
-`;
-
-exports[`zdk queries sort collection information 1`] = `
-Object {
-  "collections": Object {
-    "hasNextPage": false,
-    "nodes": Array [
-      Object {
-        "address": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "description": "",
-        "name": "Zorbs",
-        "symbol": "ZORB",
-        "totalSupply": 56741,
-      },
-    ],
-    "pageInfo": Object {
-      "limit": 200,
-      "offset": 0,
-    },
-  },
-}
-`;
-
-exports[`zdk should fetch localhost collections empty object 1`] = `
-Object {
-  "markets": Array [
-    Object {
-      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "marketAddress": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
-      "marketType": "V3_ASK",
-      "networkInfo": Object {
-        "chain": "MAINNET",
-        "network": "ETHEREUM",
-      },
-      "price": Object {
-        "blockNumber": 14036921,
-        "ethPrice": Object {
-          "decimal": 0.05,
-          "raw": "50000000000000000",
-        },
-        "nativePrice": Object {
-          "currency": Object {
-            "address": "0x0000000000000000000000000000000000000000",
-            "decimals": 18,
-            "name": "ETH",
-          },
-          "decimal": 0.05,
-        },
-        "usdcPrice": Object {
-          "decimal": 156.40084904014552,
-          "raw": "156400849040145514496",
-        },
-      },
-      "status": "ACTIVE",
-    },
-  ],
-  "sales": Object {},
-  "token": Object {
-    "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-    "content": null,
-    "description": null,
-    "image": null,
-    "lastRefreshTime": null,
-    "mintInfo": Object {
-      "mintContext": Object {
-        "blockNumber": 13927877,
-        "blockTimestamp": "2022-01-02T19:17:42",
-        "logIndex": 318,
-        "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
-      },
-      "originatorAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-      "price": Object {
-        "blockNumber": 13927877,
-        "ethPrice": Object {
-          "decimal": 0,
-          "raw": "0",
-        },
-        "nativePrice": Object {
-          "currency": Object {
-            "address": "0x0000000000000000000000000000000000000000",
-            "decimals": 18,
-            "name": "ETH",
-          },
-          "decimal": 0,
-        },
-        "usdcPrice": Object {
-          "decimal": 0,
-          "raw": "0",
-        },
-      },
-      "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-    },
-    "name": "Zorbs",
-    "owner": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-    "tokenContract": Object {
-      "chain": 1,
-      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "description": "",
-      "name": "Zorbs",
-      "network": "ETHEREUM",
-      "symbol": "ZORB",
-    },
-    "tokenId": "48057",
-  },
-}
-`;
-
-exports[`zdk should fetch localhost collections empty object 2`] = `
-Object {
-  "markets": Array [
-    Object {
-      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "marketAddress": "0x6170b3c3a54c3d8c854934cbc314ed479b2b29a3",
-      "marketType": "V3_ASK",
-      "networkInfo": Object {
-        "chain": "MAINNET",
-        "network": "ETHEREUM",
-      },
-      "price": Object {
-        "blockNumber": 14071638,
-        "ethPrice": Object {
-          "decimal": 0.5,
-          "raw": "500000000000000000",
-        },
-        "nativePrice": Object {
-          "currency": Object {
-            "address": "0x0000000000000000000000000000000000000000",
-            "decimals": 18,
-            "name": "ETH",
-          },
-          "decimal": 0.5,
-        },
-        "usdcPrice": Object {
-          "decimal": 1213.445087470087,
-          "raw": "1213445087470087045120",
-        },
-      },
-      "status": "ACTIVE",
-    },
-  ],
-  "sales": Object {},
-  "token": Object {
-    "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-    "content": null,
-    "description": null,
-    "image": null,
-    "lastRefreshTime": null,
-    "mintInfo": Object {
-      "mintContext": Object {
-        "blockNumber": 13927877,
-        "blockTimestamp": "2022-01-02T19:17:42",
-        "logIndex": 317,
-        "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
-      },
-      "originatorAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-      "price": Object {
-        "blockNumber": 13927877,
-        "ethPrice": Object {
-          "decimal": 0,
-          "raw": "0",
-        },
-        "nativePrice": Object {
-          "currency": Object {
-            "address": "0x0000000000000000000000000000000000000000",
-            "decimals": 18,
-            "name": "ETH",
-          },
-          "decimal": 0,
-        },
-        "usdcPrice": Object {
-          "decimal": 0,
-          "raw": "0",
-        },
-      },
-      "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-    },
-    "name": "Zorbs",
-    "owner": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-    "tokenContract": Object {
-      "chain": 1,
-      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "description": "",
-      "name": "Zorbs",
-      "network": "ETHEREUM",
-      "symbol": "ZORB",
-    },
-    "tokenId": "48056",
-  },
-}
-`;
-
 exports[`zdk should fetch localhost token full object 1`] = `
 Object {
-  "tokenMarkets": Object {
+  "tokens": Object {
+    "__typename": "TokenWithMarketsSummaryConnection",
+    "hasNextPage": false,
     "nodes": Array [
       Object {
-        "markets": Array [
+        "marketsSummary": Array [
           Object {
             "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
             "marketAddress": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
@@ -335,6 +161,7 @@ Object {
                   "name": "ETH",
                 },
                 "decimal": 0.05,
+                "raw": "50000000000000000",
               },
               "usdcPrice": Object {
                 "decimal": 156.40084904014552,
@@ -343,6 +170,8 @@ Object {
             },
             "properties": Object {
               "__typename": "V3Ask",
+              "address": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
+              "askCurrency": "0x0000000000000000000000000000000000000000",
               "askPrice": Object {
                 "blockNumber": 14036921,
                 "ethPrice": Object {
@@ -356,6 +185,7 @@ Object {
                     "name": "ETH",
                   },
                   "decimal": 0.05,
+                  "raw": "50000000000000000",
                 },
                 "usdcPrice": Object {
                   "decimal": 156.40084904014552,
@@ -364,23 +194,58 @@ Object {
               },
               "askStatus": "ACTIVE",
               "buyer": null,
+              "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
               "finder": null,
               "findersFeeBps": 100,
               "seller": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
               "sellerFundsRecipient": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
             },
             "status": "ACTIVE",
+            "transactionInfo": Object {
+              "blockNumber": 14036921,
+              "blockTimestamp": "2022-01-19T16:04:04",
+              "logIndex": 438,
+              "transactionHash": "0x7d6e8224e9a85549384a96618c7ffa7dd5c0d14e73e35c2702a45f5159fc717e",
+            },
           },
         ],
-        "sales": Object {},
+        "sales": Array [],
         "token": Object {
-          "attributes": null,
+          "attributes": Array [],
           "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-          "content": null,
-          "description": null,
-          "image": null,
-          "lastRefreshTime": null,
-          "metadata": null,
+          "content": Object {
+            "mediaEncoding": Object {
+              "large": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/large",
+              "poster": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/poster",
+              "preview": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/preview",
+              "thumbnail": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/thumbnail",
+            },
+            "mimeType": null,
+            "size": null,
+            "url": null,
+          },
+          "description": "Zorbs were distributed for free by ZORA on New Year’s 2022. Each NFT imbues the properties of its wallet holder, and when sent to someone else, will transform.
+
+View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
+          "image": Object {
+            "mediaEncoding": Object {
+              "large": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/large",
+              "poster": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/poster",
+              "preview": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/preview",
+              "thumbnail": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/thumbnail",
+            },
+            "mimeType": "image/svg+xml",
+            "size": "860",
+            "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTAgMTEwIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9Imd6ciIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSg2Ni40NTc4IDI0LjM1NzUpIHNjYWxlKDc1LjI5MDgpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcj0iMSIgY3g9IjAiIGN5PSIwJSI+PHN0b3Agb2Zmc2V0PSIxNS42MiUiIHN0b3AtY29sb3I9ImhzbCgxNjMsIDcxJSwgODclKSIgLz48c3RvcCBvZmZzZXQ9IjM5LjU4JSIgc3RvcC1jb2xvcj0iaHNsKDE2MywgNzMlLCA3MSUpIiAvPjxzdG9wIG9mZnNldD0iNzIuOTIlIiBzdG9wLWNvbG9yPSJoc2woMTkwLCA3NyUsIDQ5JSkiIC8+PHN0b3Agb2Zmc2V0PSI5MC42MyUiIHN0b3AtY29sb3I9ImhzbCgxOTIsIDg3JSwgNDElKSIgLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9ImhzbCgxOTIsIDkxJSwgNDAlKSIgLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1LDUpIj48cGF0aCBkPSJNMTAwIDUwQzEwMCAyMi4zODU4IDc3LjYxNDIgMCA1MCAwQzIyLjM4NTggMCAwIDIyLjM4NTggMCA1MEMwIDc3LjYxNDIgMjIuMzg1OCAxMDAgNTAgMTAwQzc3LjYxNDIgMTAwIDEwMCA3Ny42MTQyIDEwMCA1MFoiIGZpbGw9InVybCgjZ3pyKSIgLz48cGF0aCBzdHJva2U9InJnYmEoMCwwLDAsMC4wNzUpIiBmaWxsPSJ0cmFuc3BhcmVudCIgc3Ryb2tlLXdpZHRoPSIxIiBkPSJNNTAsMC41YzI3LjMsMCw0OS41LDIyLjIsNDkuNSw0OS41Uzc3LjMsOTkuNSw1MCw5OS41UzAuNSw3Ny4zLDAuNSw1MFMyMi43LDAuNSw1MCwwLjV6IiAvPjwvZz48L3N2Zz4=",
+          },
+          "lastRefreshTime": "2022-04-23T20:51:10.775000",
+          "metadata": Object {
+            "description": "Zorbs were distributed for free by ZORA on New Year’s 2022. Each NFT imbues the properties of its wallet holder, and when sent to someone else, will transform.
+
+View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
+            "image": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTAgMTEwIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9Imd6ciIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSg2Ni40NTc4IDI0LjM1NzUpIHNjYWxlKDc1LjI5MDgpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcj0iMSIgY3g9IjAiIGN5PSIwJSI+PHN0b3Agb2Zmc2V0PSIxNS42MiUiIHN0b3AtY29sb3I9ImhzbCgxNjMsIDcxJSwgODclKSIgLz48c3RvcCBvZmZzZXQ9IjM5LjU4JSIgc3RvcC1jb2xvcj0iaHNsKDE2MywgNzMlLCA3MSUpIiAvPjxzdG9wIG9mZnNldD0iNzIuOTIlIiBzdG9wLWNvbG9yPSJoc2woMTkwLCA3NyUsIDQ5JSkiIC8+PHN0b3Agb2Zmc2V0PSI5MC42MyUiIHN0b3AtY29sb3I9ImhzbCgxOTIsIDg3JSwgNDElKSIgLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9ImhzbCgxOTIsIDkxJSwgNDAlKSIgLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1LDUpIj48cGF0aCBkPSJNMTAwIDUwQzEwMCAyMi4zODU4IDc3LjYxNDIgMCA1MCAwQzIyLjM4NTggMCAwIDIyLjM4NTggMCA1MEMwIDc3LjYxNDIgMjIuMzg1OCAxMDAgNTAgMTAwQzc3LjYxNDIgMTAwIDEwMCA3Ny42MTQyIDEwMCA1MFoiIGZpbGw9InVybCgjZ3pyKSIgLz48cGF0aCBzdHJva2U9InJnYmEoMCwwLDAsMC4wNzUpIiBmaWxsPSJ0cmFuc3BhcmVudCIgc3Ryb2tlLXdpZHRoPSIxIiBkPSJNNTAsMC41YzI3LjMsMCw0OS41LDIyLjIsNDkuNSw0OS41Uzc3LjMsOTkuNSw1MCw5OS41UzAuNSw3Ny4zLDAuNSw1MFMyMi43LDAuNSw1MCwwLjV6IiAvPjwvZz48L3N2Zz4=",
+            "name": "Zorb #48057",
+          },
           "mintInfo": Object {
             "mintContext": Object {
               "blockNumber": 13927877,
@@ -402,6 +267,7 @@ Object {
                   "name": "ETH",
                 },
                 "decimal": 0,
+                "raw": "0",
               },
               "usdcPrice": Object {
                 "decimal": 0,
@@ -410,19 +276,19 @@ Object {
             },
             "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
           },
-          "name": "Zorbs",
+          "name": "Zorb #48057",
           "owner": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
           "tokenContract": Object {
             "chain": 1,
             "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-            "description": "",
+            "description": null,
             "name": "Zorbs",
             "network": "ETHEREUM",
             "symbol": "ZORB",
           },
           "tokenId": "48057",
           "tokenUrl": "data:application/json;base64,eyJuYW1lIjogIlpvcmIgIzQ4MDU3IiwgImRlc2NyaXB0aW9uIjogIlpvcmJzIHdlcmUgZGlzdHJpYnV0ZWQgZm9yIGZyZWUgYnkgWk9SQSBvbiBOZXcgWWVhcuKAmXMgMjAyMi4gRWFjaCBORlQgaW1idWVzIHRoZSBwcm9wZXJ0aWVzIG9mIGl0cyB3YWxsZXQgaG9sZGVyLCBhbmQgd2hlbiBzZW50IHRvIHNvbWVvbmUgZWxzZSwgd2lsbCB0cmFuc2Zvcm0uXG5cblZpZXcgdGhpcyBORlQgYXQgW3pvcmIuZGV2L25mdC80ODA1N10oaHR0cHM6Ly96b3JiLmRldi9uZnQvNDgwNTcpIiwgImltYWdlIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjRiV3h1Y3owaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNQzl6ZG1jaUlIWnBaWGRDYjNnOUlqQWdNQ0F4TVRBZ01URXdJajQ4WkdWbWN6NDhjbUZrYVdGc1IzSmhaR2xsYm5RZ2FXUTlJbWQ2Y2lJZ1ozSmhaR2xsYm5SVWNtRnVjMlp2Y20wOUluUnlZVzV6YkdGMFpTZzJOaTQwTlRjNElESTBMak0xTnpVcElITmpZV3hsS0RjMUxqSTVNRGdwSWlCbmNtRmthV1Z1ZEZWdWFYUnpQU0oxYzJWeVUzQmhZMlZQYmxWelpTSWdjajBpTVNJZ1kzZzlJakFpSUdONVBTSXdKU0krUEhOMGIzQWdiMlptYzJWMFBTSXhOUzQyTWlVaUlITjBiM0F0WTI5c2IzSTlJbWh6YkNneE5qTXNJRGN4SlN3Z09EY2xLU0lnTHo0OGMzUnZjQ0J2Wm1aelpYUTlJak01TGpVNEpTSWdjM1J2Y0MxamIyeHZjajBpYUhOc0tERTJNeXdnTnpNbExDQTNNU1VwSWlBdlBqeHpkRzl3SUc5bVpuTmxkRDBpTnpJdU9USWxJaUJ6ZEc5d0xXTnZiRzl5UFNKb2Myd29NVGt3TENBM055VXNJRFE1SlNraUlDOCtQSE4wYjNBZ2IyWm1jMlYwUFNJNU1DNDJNeVVpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4T1RJc0lEZzNKU3dnTkRFbEtTSWdMejQ4YzNSdmNDQnZabVp6WlhROUlqRXdNQ1VpSUhOMGIzQXRZMjlzYjNJOUltaHpiQ2d4T1RJc0lEa3hKU3dnTkRBbEtTSWdMejQ4TDNKaFpHbGhiRWR5WVdScFpXNTBQand2WkdWbWN6NDhaeUIwY21GdWMyWnZjbTA5SW5SeVlXNXpiR0YwWlNnMUxEVXBJajQ4Y0dGMGFDQmtQU0pOTVRBd0lEVXdRekV3TUNBeU1pNHpPRFU0SURjM0xqWXhORElnTUNBMU1DQXdRekl5TGpNNE5UZ2dNQ0F3SURJeUxqTTROVGdnTUNBMU1FTXdJRGMzTGpZeE5ESWdNakl1TXpnMU9DQXhNREFnTlRBZ01UQXdRemMzTGpZeE5ESWdNVEF3SURFd01DQTNOeTQyTVRReUlERXdNQ0ExTUZvaUlHWnBiR3c5SW5WeWJDZ2paM3B5S1NJZ0x6NDhjR0YwYUNCemRISnZhMlU5SW5KblltRW9NQ3d3TERBc01DNHdOelVwSWlCbWFXeHNQU0owY21GdWMzQmhjbVZ1ZENJZ2MzUnliMnRsTFhkcFpIUm9QU0l4SWlCa1BTSk5OVEFzTUM0MVl6STNMak1zTUN3ME9TNDFMREl5TGpJc05Ea3VOU3cwT1M0MVV6YzNMak1zT1RrdU5TdzFNQ3c1T1M0MVV6QXVOU3czTnk0ekxEQXVOU3cxTUZNeU1pNDNMREF1TlN3MU1Dd3dMalY2SWlBdlBqd3ZaejQ4TDNOMlp6ND0ifQ==",
-          "tokenUrlMimeType": null,
+          "tokenUrlMimeType": "application/json",
         },
       },
     ],

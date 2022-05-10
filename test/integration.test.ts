@@ -4,7 +4,7 @@ import {
   // CollectionSortKey,
   // SortDirection,
 } from '../src/queries/queries-sdk';
-import { ZDK } from '../src/zdk';
+import { ZDK } from '../src/index';
 
 describe('zdk', () => {
   let zdk: ZDK;
