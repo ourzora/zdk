@@ -270,6 +270,7 @@ query events(
     sort: $sort
     where: $where
   ) {
+    __typename
     hasNextPage
     pageInfo {
       limit
@@ -296,6 +297,7 @@ query markets(
     where: $where
     pagination: $pagination
   ) {
+    __typename
     hasNextPage
     pageInfo {
       limit
@@ -329,6 +331,12 @@ query mints(
     pagination: $pagination
     sort: $sort
   ) {
+    __typename
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
     nodes {
       mint {
         collectionAddress
@@ -355,6 +363,7 @@ query collections(
   $includeFullDetails: Boolean!
 ) {
   collections(where: $where, networks: $networks, pagination: $pagination, sort: $sort) {
+    __typename
     hasNextPage
     pageInfo {
       limit
@@ -382,6 +391,7 @@ query sales(
     sort: $sort
     pagination: $pagination
   ) {
+    __typename
     hasNextPage
     pageInfo {
       limit
@@ -415,6 +425,7 @@ query tokens(
     sort: $sort
     filter: $filter
   ) {
+    __typename
     hasNextPage
     pageInfo {
       limit
@@ -441,6 +452,7 @@ query tokens(
 
 query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: Boolean!) {
   token(network: $network, token: $token) {
+    __typename
     token {
       ...TokenInfo
       ...TokenDetails @include(if: $includeFullDetails)
@@ -547,6 +559,7 @@ query fullTextSearch(
   $filter: SearchFilter
 ) {
   search(pagination: $pagination, query: $query, filter: $filter) {
+    __typename
     hasNextPage
     pageInfo {
       limit
