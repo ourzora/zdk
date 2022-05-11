@@ -189,6 +189,7 @@ fragment EventInfo on Event {
   collectionAddress
   tokenId
   properties {
+    __typename
     ... on MintEvent {
       tokenId
       collectionAddress
@@ -285,6 +286,7 @@ query events(
     sort: $sort
     where: $where
   ) {
+    __typename
     hasNextPage
     pageInfo {
       limit
@@ -311,6 +313,7 @@ query markets(
     where: $where
     pagination: $pagination
   ) {
+    __typename
     hasNextPage
     pageInfo {
       limit
@@ -344,6 +347,12 @@ query mints(
     pagination: $pagination
     sort: $sort
   ) {
+    __typename
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
     nodes {
       mint {
         collectionAddress
@@ -370,6 +379,7 @@ query collections(
   $includeFullDetails: Boolean!
 ) {
   collections(where: $where, networks: $networks, pagination: $pagination, sort: $sort) {
+    __typename
     hasNextPage
     pageInfo {
       limit
@@ -378,6 +388,39 @@ query collections(
     nodes {
       ...CollectionInfo
       ...CollectionDetails @include(if: $includeFullDetails)
+    }
+  }
+}
+
+query sales(
+  $networks: [NetworkInput!]!
+  $where: SalesQueryInput!
+  $filter: SalesQueryFilter
+  $sort: SaleSortKeySortInput!
+  $pagination: PaginationInput!
+  $includeFullDetails: Boolean!
+) {
+  sales(
+    networks: $networks
+    where: $where
+    filter: $filter
+    sort: $sort
+    pagination: $pagination
+  ) {
+    __typename
+    hasNextPage
+    pageInfo {
+      limit
+      offset
+    }
+    nodes {
+      sale {
+        ...SaleInfo
+      }
+      token {
+        ...TokenInfo
+        ...TokenDetails @include(if: $includeFullDetails)
+      }
     }
   }
 }
@@ -398,6 +441,7 @@ query tokens(
     sort: $sort
     filter: $filter
   ) {
+    __typename
     hasNextPage
     pageInfo {
       limit
@@ -430,6 +474,7 @@ query tokens(
 
 query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: Boolean!) {
   token(network: $network, token: $token) {
+    __typename
     token {
       ...TokenInfo
       ...TokenDetails @include(if: $includeFullDetails)
@@ -530,8 +575,13 @@ query floorPrice(
   }
 }
 
-query fullTextSearch($pagination: SearchPaginationInput!, $query: SearchQueryInput!) {
-  search(pagination: $pagination, query: $query) {
+query fullTextSearch(
+  $pagination: SearchPaginationInput!
+  $query: SearchQueryInput!
+  $filter: SearchFilter
+) {
+  search(pagination: $pagination, query: $query, filter: $filter) {
+    __typename
     hasNextPage
     pageInfo {
       limit
