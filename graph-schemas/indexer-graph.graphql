@@ -38,6 +38,11 @@ input AttributeFilter {
   value: String = null
 }
 
+type AudioEncodingTypes {
+  original: String!
+  mp3: String
+}
+
 enum Chain {
   MAINNET
 }
@@ -160,6 +165,15 @@ enum EventType {
   V3_ASK_EVENT
 }
 
+type ImageEncodingTypes {
+  original: String!
+  large: String
+  poster: String
+  thumbnail: String
+}
+
+union ImageEncodingTypesVideoEncodingTypesAudioEncodingTypesUnsupportedEncodingTypes = ImageEncodingTypes | VideoEncodingTypes | AudioEncodingTypes | UnsupportedEncodingTypes
+
 """
 The GenericScalar scalar type represents a generic GraphQL scalar value that could be: List or Object.
 """
@@ -236,13 +250,6 @@ type MarketWithTokenConnection {
   nodes: [MarketWithToken!]!
   pageInfo: PageInfo!
   hasNextPage: Boolean!
-}
-
-type MediaEncoding {
-  large: String!
-  poster: String!
-  preview: String!
-  thumbnail: String!
 }
 
 enum MediaType {
@@ -536,7 +543,7 @@ type TokenContentMedia {
   url: String
   mimeType: String
   size: String
-  mediaEncoding: MediaEncoding
+  mediaEncoding: ImageEncodingTypesVideoEncodingTypesAudioEncodingTypesUnsupportedEncodingTypes
 }
 
 type TokenContract {
@@ -615,6 +622,10 @@ type TransferEvent {
   toAddress: String!
   collectionAddress: String!
   tokenId: String!
+}
+
+type UnsupportedEncodingTypes {
+  original: String!
 }
 
 type V1Ask {
@@ -880,5 +891,13 @@ enum V3AskStatus {
   ACTIVE
   CANCELED
   COMPLETED
+}
+
+type VideoEncodingTypes {
+  original: String!
+  large: String
+  poster: String
+  preview: String
+  thumbnail: String
 }
 

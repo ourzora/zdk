@@ -12,12 +12,27 @@ fragment FullMedia on TokenContentMedia {
   url
   size
   mimeType
-  mimeType
   mediaEncoding {
-    large
-    poster
-    preview
-    thumbnail
+    ... on ImageEncodingTypes {
+      original
+      large
+      poster
+      thumbnail
+    }
+    ... on VideoEncodingTypes {
+      original
+      large
+      poster
+      preview
+      thumbnail
+    }
+    ... on AudioEncodingTypes {
+      original
+      mp3
+    }
+    ... on UnsupportedEncodingTypes {
+      original
+    }
   }
 }
 
@@ -626,6 +641,12 @@ query tokens(
         sort: { sortKey: TIME, sortDirection: DESC }
       ) {
         ...SaleInfo @include(if: $includeSalesHistory)
+      }
+      events(
+        pagination: { limit: 10, offset: 0 }
+        sort: { sortKey: CREATED, sortDirection: DESC }
+      ) {
+        ...EventInfo
       }
     }
   }
