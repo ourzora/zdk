@@ -82,7 +82,6 @@ fragment V2AuctionMarketProperties on V2Auction {
   curator
   collectionAddress
   curatorFeePercentage
-  status
   tokenId
   auctionCurrency
   duration
@@ -116,10 +115,30 @@ fragment V3AskProperties on V3Ask {
   }
 }
 
+fragment V1OfferProperties on V1Offer {
+  offerStatus: status
+  sellOnShare
+  bidder
+  currency
+  amount {
+    ...PriceSummary
+  }
+}
+
+fragment V1AskProperties on V1Ask {
+  offerStatus: status
+  currency
+  amount {
+    ...PriceSummary
+  }
+}
+
 fragment MarketPropertiesFull on MarketProperties {
-  # TODO: iain support v1 liquidity?
+  __typename
   ...V2AuctionMarketProperties
   ...V3AskProperties
+  ...V1OfferProperties
+  ...V1AskProperties
 }
 
 fragment MarketInfo on Market {
@@ -166,6 +185,158 @@ fragment TokenInfo on Token {
   }
 }
 
+fragment V1MarketEventPropertiesInfo on V1MarketEventProperties {
+  __typename
+  ... on V1MarketAskCreatedEventProperties {
+    amount
+    price {
+      ...PriceSummary
+    }
+    currency
+  }
+  ... on V1MarketAskRemovedEventProperties {
+    amount
+    price {
+      ...PriceSummary
+    }
+    currency
+  }
+  ... on V1MarketOfferCreatedEventProperties {
+    amount
+    price {
+      ...PriceSummary
+    }
+    currency
+    bidder
+  }
+  ... on V1MarketOfferFinalizedEventProperties {
+    amount
+    price {
+      ...PriceSummary
+    }
+    currency
+    bidder
+  }
+  ... on V1MarketOfferRemovedEventProperties {
+    amount
+    price {
+      ...PriceSummary
+    }
+    currency
+    bidder
+  }
+}
+
+fragment V2AuctionEventPropertiesInfo on V2AuctionEventProperties {
+  __typename
+  ... on V2AuctionBidEventProperties {
+    sender
+    firstBid
+    extended
+    value
+    price {
+      ...PriceSummary
+    }
+  }
+  ... on V2AuctionCreatedEventProperties {
+    auctionCurrency
+    tokenOwner
+    curator
+    curatorFeePercentage
+    duration
+    reservePrice
+    price {
+      ...PriceSummary
+    }
+  }
+  ... on V2AuctionCanceledEventProperties {
+    tokenOwner
+  }
+  ... on V2AuctionDurationExtendedEventProperties {
+    duration
+  }
+  ... on V2AuctionBidEventProperties {
+    sender
+    firstBid
+    extended
+    value
+    price {
+      ...PriceSummary
+    }
+  }
+  ... on V2AuctionEndedEventProperties {
+    tokenOwner
+    curator
+    winner
+    auctionCurrency
+    amount
+    curatorFee
+  }
+  ... on V2AuctionReservePriceUpdatedEventProperties {
+    reservePrice
+    price {
+      ...PriceSummary
+    }
+  }
+  ... on V2AuctionEndedEventProperties {
+    tokenOwner
+    curator
+    winner
+    auctionCurrency
+    amount
+    curatorFee
+  }
+  ... on V2AuctionApprovalUpdatedEventProperties {
+    approved
+  }
+}
+
+fragment V3AskEventPropertiesInfo on V3AskEventProperties {
+  __typename
+  ... on V3AskCreatedEventProperties {
+    seller
+    sellerFundsRecipient
+    askCurrency
+    askPrice
+    findersFeeBps
+    price {
+      ...PriceSummary
+    }
+  }
+  ... on V3AskCanceledEventProperties {
+    seller
+    sellerFundsRecipient
+    askCurrency
+    askPrice
+    findersFeeBps
+    price {
+      ...PriceSummary
+    }
+  }
+  ... on V3AskPriceUpdatedEventProperties {
+    seller
+    sellerFundsRecipient
+    askCurrency
+    askPrice
+    findersFeeBps
+    price {
+      ...PriceSummary
+    }
+  }
+  ... on V3AskFilledEventProperties {
+    seller
+    sellerFundsRecipient
+    askCurrency
+    askPrice
+    findersFeeBps
+    price {
+      ...PriceSummary
+    }
+    finder
+    buyer
+  }
+}
+
 fragment EventInfo on Event {
   transactionInfo {
     ...TransactionDetails
@@ -195,7 +366,10 @@ fragment EventInfo on Event {
       address
       collectionAddress
       tokenId
-      # todo: properties
+
+      properties {
+        ...V1MarketEventPropertiesInfo
+      }
     }
     ... on V2AuctionEvent {
       auctionEventType: eventType
@@ -203,14 +377,20 @@ fragment EventInfo on Event {
       auctionId
       collectionAddress
       tokenId
-      # todo: properties
+
+      properties {
+        ...V2AuctionEventPropertiesInfo
+      }
     }
     ... on V3AskEvent {
       v3AskEventType: eventType
       address
       collectionAddress
       tokenId
-      # todo: properties
+
+      properties {
+        ...V3AskEventPropertiesInfo
+      }
     }
   }
 }
