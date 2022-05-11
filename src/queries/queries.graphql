@@ -12,12 +12,27 @@ fragment FullMedia on TokenContentMedia {
   url
   size
   mimeType
-  mimeType
   mediaEncoding {
-    large
-    poster
-    preview
-    thumbnail
+    ... on ImageEncodingTypes {
+      original
+      large
+      poster
+      thumbnail
+    }
+    ... on VideoEncodingTypes {
+      original
+      large
+      poster
+      preview
+      thumbnail
+    }
+    ... on AudioEncodingTypes {
+      original
+      mp3
+    }
+    ... on UnsupportedEncodingTypes {
+      original
+    }
   }
 }
 
@@ -515,7 +530,7 @@ query floorPrice(
   }
 }
 
-query fullTextSearch($pagination: SearchPaginationInput!, $query: SearchQuery!) {
+query fullTextSearch($pagination: SearchPaginationInput!, $query: SearchQueryInput!) {
   search(pagination: $pagination, query: $query) {
     hasNextPage
     pageInfo {
