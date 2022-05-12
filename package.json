@@ -8,10 +8,9 @@
   "private": false,
   "typings": "dist/index.d.ts",
   "source": "src/index.ts",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "files": [
-    "dist/src",
-    "dist/mocks"
+    "dist"
   ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
