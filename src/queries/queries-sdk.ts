@@ -1870,6 +1870,32 @@ export const FloorPriceDocument = gql`
   }
 }
     `;
+export const CollectionStatsAggregateDocument = gql`
+    query collectionStatsAggregate($collectionAddress: String!, $networks: [NetworkInput!]!) {
+  aggregateStat {
+    floorPrice(
+      where: {collectionAddresses: [$collectionAddress]}
+      networks: $networks
+    )
+    ownerCount(
+      where: {collectionAddresses: [$collectionAddress]}
+      networks: $networks
+    )
+    nftCount(
+      where: {collectionAddresses: [$collectionAddress]}
+      networks: $networks
+    )
+    salesVolume(
+      where: {collectionAddresses: [$collectionAddress]}
+      networks: $networks
+    ) {
+      ethPrice
+      usdcPrice
+      totalCount
+    }
+  }
+}
+    `;
 export const FullTextSearchDocument = gql`
     query fullTextSearch($pagination: SearchPaginationInput!, $query: SearchQueryInput!, $filter: SearchFilter) {
   search(pagination: $pagination, query: $query, filter: $filter) {
@@ -1935,6 +1961,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     floorPrice(variables: FloorPriceQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FloorPriceQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FloorPriceQuery>(FloorPriceDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'floorPrice');
+    },
+    collectionStatsAggregate(variables: CollectionStatsAggregateQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CollectionStatsAggregateQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CollectionStatsAggregateQuery>(CollectionStatsAggregateDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'collectionStatsAggregate');
     },
     fullTextSearch(variables: FullTextSearchQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<FullTextSearchQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<FullTextSearchQuery>(FullTextSearchDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'fullTextSearch');
@@ -2161,6 +2190,14 @@ export type FloorPriceQueryVariables = Exact<{
 
 
 export type FloorPriceQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', floorPrice?: number | null } };
+
+export type CollectionStatsAggregateQueryVariables = Exact<{
+  collectionAddress: Scalars['String'];
+  networks: Array<NetworkInput> | NetworkInput;
+}>;
+
+
+export type CollectionStatsAggregateQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', floorPrice?: number | null, ownerCount: number, nftCount: number, salesVolume: { __typename?: 'SalesVolume', ethPrice: number, usdcPrice: number, totalCount: number } } };
 
 export type FullTextSearchQueryVariables = Exact<{
   pagination: SearchPaginationInput;

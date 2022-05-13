@@ -755,6 +755,29 @@ query floorPrice(
   }
 }
 
+query collectionStatsAggregate(
+  $collectionAddress: String!
+  # should only be one network passed in given it's a single collection
+  $networks: [NetworkInput!]!
+) {
+  aggregateStat {
+    floorPrice(where: { collectionAddresses: [$collectionAddress] }, networks: $networks)
+
+    ownerCount(where: { collectionAddresses: [$collectionAddress] }, networks: $networks)
+
+    nftCount(where: { collectionAddresses: [$collectionAddress] }, networks: $networks)
+
+    salesVolume(
+      where: { collectionAddresses: [$collectionAddress] }
+      networks: $networks
+    ) {
+      ethPrice
+      usdcPrice
+      totalCount
+    }
+  }
+}
+
 query fullTextSearch(
   $pagination: SearchPaginationInput!
   $query: SearchQueryInput!

@@ -94,6 +94,11 @@ type SalesQueryArgs = {
   includeFullDetails: boolean;
 } & SharedQueryParams;
 
+type CollectionStatsAggregateQuery = {
+  collectionAddress: !string;
+  network: !NetworkInput;
+};
+
 export interface ListOptions<SortInput> {
   networks?: OverrideNetworksOption;
   pagination?: OverridePaginationOptions;
@@ -274,6 +279,15 @@ export class ZDK {
         sortDirection: sort?.sortDirection || SortDirection.Desc,
         sortKey: sort?.sortKey || CollectionSortKey.Created,
       },
+    });
+
+  public collectionStatsAggregate = async ({
+    collectionAddress,
+    network,
+  }: CollectionStatsAggregateQuery) =>
+    this.sdk.collectionStatsAggregate({
+      collectionAddress,
+      ...this.getNetworksOption(network ? [network] : undefined),
     });
 
   public ownersByCount = async ({
