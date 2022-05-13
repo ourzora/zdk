@@ -431,6 +431,15 @@ fragment CollectionInfo on Collection {
   totalSupply
 }
 
+# todo: overlapping types with union require a rename of description
+fragment CollectionInfoSearchResult on Collection {
+  address
+  collectionDescription: description
+  name
+  symbol
+  totalSupply
+}
+
 fragment CollectionDetails on Collection {
   attributes {
     traitType
@@ -768,11 +777,25 @@ query fullTextSearch(
       offset
     }
     nodes {
-      address
+      name
       description
       entityType
-      name
+      collectionAddress
+      networkInfo {
+        chain
+        network
+      }
       tokenId
+
+      entity {
+        __typename
+        ... on Token {
+          ...TokenInfo
+        }
+        ... on Collection {
+          ...CollectionInfoSearchResult
+        }
+      }
     }
   }
 }
