@@ -156,6 +156,11 @@ fragment MarketPropertiesFull on MarketProperties {
   ...V1AskProperties
 }
 
+fragment NetworkInfoDetails on NetworkInfo {
+  chain
+  network
+}
+
 fragment MarketInfo on Market {
   collectionAddress
   marketAddress
@@ -168,8 +173,7 @@ fragment MarketInfo on Market {
   }
   status
   networkInfo {
-    chain
-    network
+    ...NetworkInfoDetails
   }
 }
 
@@ -429,9 +433,15 @@ fragment CollectionInfo on Collection {
   name
   symbol
   totalSupply
+  networkInfo {
+    ...NetworkInfoDetails
+  }
 }
 
 fragment CollectionDetails on Collection {
+  networkInfo {
+    ...NetworkInfoDetails
+  }
   attributes {
     traitType
     valueMetrics {
