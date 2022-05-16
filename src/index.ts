@@ -36,6 +36,7 @@ import {
   SalesQueryInput,
   SaleSortKeySortInput,
   SalesQueryFilter,
+  OwnerCountQueryVariables,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -358,7 +359,7 @@ export class ZDK {
   public ownerCount = async ({
     where,
     networks = this.defaultNetworks,
-  }: OptionalNetwork<OwnersByCountQueryVariables>) =>
+  }: OptionalNetwork<OwnerCountQueryVariables>) =>
     this.sdk.ownerCount({
       where,
       networks,
