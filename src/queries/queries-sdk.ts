@@ -622,10 +622,12 @@ export type SearchQueryInput = {
 
 export type SearchResult = {
   __typename?: 'SearchResult';
-  address: Scalars['String'];
+  collectionAddress: Scalars['String'];
   description?: Maybe<Scalars['String']>;
+  entity?: Maybe<TokenCollection>;
   entityType: Scalars['String'];
   name?: Maybe<Scalars['String']>;
+  networkInfo: NetworkInfo;
   tokenId?: Maybe<Scalars['String']>;
 };
 
@@ -677,6 +679,8 @@ export type TokenAttribute = {
   traitType?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
 };
+
+export type TokenCollection = Collection | Token;
 
 export type TokenContentMedia = {
   __typename?: 'TokenContentMedia';
@@ -1155,6 +1159,12 @@ export const SaleInfoFragmentDoc = gql`
 }
     ${TransactionDetailsFragmentDoc}
 ${PriceSummaryFragmentDoc}`;
+export const NetworkInfoDetailsFragmentDoc = gql`
+    fragment NetworkInfoDetails on NetworkInfo {
+  chain
+  network
+}
+    `;
 export const MarketInfoFragmentDoc = gql`
     fragment MarketInfo on Market {
   collectionAddress
@@ -1168,12 +1178,12 @@ export const MarketInfoFragmentDoc = gql`
   }
   status
   networkInfo {
-    chain
-    network
+    ...NetworkInfoDetails
   }
 }
     ${TransactionDetailsFragmentDoc}
-${PriceSummaryFragmentDoc}`;
+${PriceSummaryFragmentDoc}
+${NetworkInfoDetailsFragmentDoc}`;
 export const V2AuctionMarketPropertiesFragmentDoc = gql`
     fragment V2AuctionMarketProperties on V2Auction {
   __typename
@@ -1566,10 +1576,25 @@ export const CollectionInfoFragmentDoc = gql`
   name
   symbol
   totalSupply
+  networkInfo {
+    ...NetworkInfoDetails
+  }
+}
+    ${NetworkInfoDetailsFragmentDoc}`;
+export const CollectionInfoSearchResultFragmentDoc = gql`
+    fragment CollectionInfoSearchResult on Collection {
+  address
+  collectionDescription: description
+  name
+  symbol
+  totalSupply
 }
     `;
 export const CollectionDetailsFragmentDoc = gql`
     fragment CollectionDetails on Collection {
+  networkInfo {
+    ...NetworkInfoDetails
+  }
   attributes {
     traitType
     valueMetrics {
@@ -1579,7 +1604,7 @@ export const CollectionDetailsFragmentDoc = gql`
     }
   }
 }
-    `;
+    ${NetworkInfoDetailsFragmentDoc}`;
 export const PageInfoDefaultFragmentDoc = gql`
     fragment PageInfoDefault on PageInfo {
   limit
@@ -1906,15 +1931,29 @@ export const FullTextSearchDocument = gql`
       offset
     }
     nodes {
-      address
+      name
       description
       entityType
-      name
+      collectionAddress
+      networkInfo {
+        chain
+        network
+      }
       tokenId
+      entity {
+        __typename
+        ... on Token {
+          ...TokenInfo
+        }
+        ... on Collection {
+          ...CollectionInfoSearchResult
+        }
+      }
     }
   }
 }
-    `;
+    ${TokenInfoFragmentDoc}
+${CollectionInfoSearchResultFragmentDoc}`;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string) => Promise<T>;
 
@@ -2003,6 +2042,8 @@ type MarketPropertiesFull_V3Ask_Fragment = { __typename: 'V3Ask', buyer?: string
 
 export type MarketPropertiesFullFragment = MarketPropertiesFull_V1Ask_Fragment | MarketPropertiesFull_V1BidShare_Fragment | MarketPropertiesFull_V1Offer_Fragment | MarketPropertiesFull_V2Auction_Fragment | MarketPropertiesFull_V3Ask_Fragment;
 
+export type NetworkInfoDetailsFragment = { __typename?: 'NetworkInfo', chain: Chain, network: Network };
+
 export type MarketInfoFragment = { __typename?: 'Market', collectionAddress: string, marketAddress: string, marketType: MarketType, status: string, transactionInfo: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null }, price?: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } | null, networkInfo: { __typename?: 'NetworkInfo', chain: Chain, network: Network } };
 
 export type MarketDetailsFragment = { __typename?: 'Market', properties: { __typename: 'V1Ask', currency: string, offerStatus: V1MarketEntityStatus, amount: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } } | { __typename: 'V1BidShare' } | { __typename: 'V1Offer', sellOnShare: string, bidder: string, currency: string, offerStatus: V1MarketEntityStatus, amount: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } } | { __typename: 'V2Auction', firstBidTime?: any | null, highestBidder?: string | null, curator: string, collectionAddress: string, curatorFeePercentage: number, tokenId: string, auctionCurrency: string, duration: string, estimatedExpirationTime?: any | null, tokenOwner: string, address: string, auctionId: string, approved: boolean, auctionStatus: V2AuctionStatus, reservePrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, highestBidPrice?: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } | null } | { __typename: 'V3Ask', buyer?: string | null, finder?: string | null, findersFeeBps: number, sellerFundsRecipient: string, seller: string, address: string, askCurrency: string, collectionAddress: string, askStatus: V3AskStatus, askPrice: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null } } };
@@ -2053,9 +2094,11 @@ export type EventInfoFragment = { __typename?: 'Event', eventType: EventType, co
 
 export type TokenDetailsFragment = { __typename?: 'Token', metadata?: any | null, tokenUrl?: string | null, tokenUrlMimeType?: string | null, attributes?: Array<{ __typename?: 'TokenAttribute', traitType?: string | null, value?: string | null, displayType?: string | null }> | null };
 
-export type CollectionInfoFragment = { __typename?: 'Collection', address: string, description: string, name?: string | null, symbol?: string | null, totalSupply?: number | null };
+export type CollectionInfoFragment = { __typename?: 'Collection', address: string, description: string, name?: string | null, symbol?: string | null, totalSupply?: number | null, networkInfo: { __typename?: 'NetworkInfo', chain: Chain, network: Network } };
 
-export type CollectionDetailsFragment = { __typename?: 'Collection', attributes?: Array<{ __typename?: 'CollectionAttribute', traitType?: string | null, valueMetrics: Array<{ __typename?: 'CollectionAttributeValue', count: number, percent: number, value: string }> }> | null };
+export type CollectionInfoSearchResultFragment = { __typename?: 'Collection', address: string, name?: string | null, symbol?: string | null, totalSupply?: number | null, collectionDescription: string };
+
+export type CollectionDetailsFragment = { __typename?: 'Collection', networkInfo: { __typename?: 'NetworkInfo', chain: Chain, network: Network }, attributes?: Array<{ __typename?: 'CollectionAttribute', traitType?: string | null, valueMetrics: Array<{ __typename?: 'CollectionAttributeValue', count: number, percent: number, value: string }> }> | null };
 
 export type PageInfoDefaultFragment = { __typename?: 'PageInfo', limit: number, offset: number };
 
@@ -2105,7 +2148,7 @@ export type CollectionsQueryVariables = Exact<{
 }>;
 
 
-export type CollectionsQuery = { __typename?: 'RootQuery', collections: { __typename: 'CollectionConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Collection', address: string, description: string, name?: string | null, symbol?: string | null, totalSupply?: number | null, attributes?: Array<{ __typename?: 'CollectionAttribute', traitType?: string | null, valueMetrics: Array<{ __typename?: 'CollectionAttributeValue', count: number, percent: number, value: string }> }> | null }> } };
+export type CollectionsQuery = { __typename?: 'RootQuery', collections: { __typename: 'CollectionConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'Collection', address: string, description: string, name?: string | null, symbol?: string | null, totalSupply?: number | null, networkInfo: { __typename?: 'NetworkInfo', chain: Chain, network: Network }, attributes?: Array<{ __typename?: 'CollectionAttribute', traitType?: string | null, valueMetrics: Array<{ __typename?: 'CollectionAttributeValue', count: number, percent: number, value: string }> }> | null }> } };
 
 export type SalesQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;
@@ -2206,4 +2249,4 @@ export type FullTextSearchQueryVariables = Exact<{
 }>;
 
 
-export type FullTextSearchQuery = { __typename?: 'RootQuery', search: { __typename: 'SearchResultConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'SearchResult', address: string, description?: string | null, entityType: string, name?: string | null, tokenId?: string | null }> } };
+export type FullTextSearchQuery = { __typename?: 'RootQuery', search: { __typename: 'SearchResultConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'SearchResult', name?: string | null, description?: string | null, entityType: string, collectionAddress: string, tokenId?: string | null, networkInfo: { __typename?: 'NetworkInfo', chain: Chain, network: Network }, entity?: { __typename: 'Collection', address: string, name?: string | null, symbol?: string | null, totalSupply?: number | null, collectionDescription: string } | { __typename: 'Token', tokenId: string, collectionAddress: string, lastRefreshTime?: any | null, owner?: string | null, name?: string | null, description?: string | null, tokenContract?: { __typename?: 'TokenContract', name?: string | null, network: string, description?: string | null, collectionAddress: string, symbol?: string | null, chain: number } | null, mintInfo?: { __typename?: 'MintInfo', originatorAddress: string, toAddress: string, price: { __typename?: 'PriceAtTime', blockNumber: number, ethPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null, nativePrice: { __typename?: 'CurrencyAmount', decimal: number, raw: string, currency: { __typename?: 'Currency', address: string, decimals: number, name: string } }, usdcPrice?: { __typename?: 'CurrencyAmount', decimal: number, raw: string } | null }, mintContext: { __typename?: 'TransactionInfo', blockNumber: number, blockTimestamp: any, transactionHash?: string | null, logIndex?: number | null } } | null, image?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'AudioEncodingTypes', original: string, mp3?: string | null } | { __typename?: 'ImageEncodingTypes', original: string, large?: string | null, poster?: string | null, thumbnail?: string | null } | { __typename?: 'UnsupportedEncodingTypes', original: string } | { __typename?: 'VideoEncodingTypes', original: string, large?: string | null, poster?: string | null, preview?: string | null, thumbnail?: string | null } | null } | null, content?: { __typename?: 'TokenContentMedia', size?: string | null, url?: string | null, mimeType?: string | null, mediaEncoding?: { __typename?: 'AudioEncodingTypes', original: string, mp3?: string | null } | { __typename?: 'ImageEncodingTypes', original: string, large?: string | null, poster?: string | null, thumbnail?: string | null } | { __typename?: 'UnsupportedEncodingTypes', original: string } | { __typename?: 'VideoEncodingTypes', original: string, large?: string | null, poster?: string | null, preview?: string | null, thumbnail?: string | null } | null } | null } | null }> } };

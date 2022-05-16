@@ -156,6 +156,11 @@ fragment MarketPropertiesFull on MarketProperties {
   ...V1AskProperties
 }
 
+fragment NetworkInfoDetails on NetworkInfo {
+  chain
+  network
+}
+
 fragment MarketInfo on Market {
   collectionAddress
   marketAddress
@@ -168,8 +173,7 @@ fragment MarketInfo on Market {
   }
   status
   networkInfo {
-    chain
-    network
+    ...NetworkInfoDetails
   }
 }
 
@@ -429,9 +433,24 @@ fragment CollectionInfo on Collection {
   name
   symbol
   totalSupply
+  networkInfo {
+    ...NetworkInfoDetails
+  }
+}
+
+# todo: overlapping types with union require a rename of description
+fragment CollectionInfoSearchResult on Collection {
+  address
+  collectionDescription: description
+  name
+  symbol
+  totalSupply
 }
 
 fragment CollectionDetails on Collection {
+  networkInfo {
+    ...NetworkInfoDetails
+  }
   attributes {
     traitType
     valueMetrics {
@@ -791,11 +810,25 @@ query fullTextSearch(
       offset
     }
     nodes {
-      address
+      name
       description
       entityType
-      name
+      collectionAddress
+      networkInfo {
+        chain
+        network
+      }
       tokenId
+
+      entity {
+        __typename
+        ... on Token {
+          ...TokenInfo
+        }
+        ... on Collection {
+          ...CollectionInfoSearchResult
+        }
+      }
     }
   }
 }
