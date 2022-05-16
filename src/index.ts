@@ -287,7 +287,7 @@ export class ZDK {
     network,
     includeFullDetails = true,
   }: CollectionQueryArgs) => {
-    this.sdk.collections({
+    const collectionsResponse = await this.sdk.collections({
       where: {
         collectionAddresses: [address],
       },
@@ -302,6 +302,15 @@ export class ZDK {
       includeFullDetails,
       ...this.getNetworksOption(network ? [network] : undefined),
     });
+
+    const items = collectionsResponse.collections.nodes;
+    if (items.length === 0) {
+      throw new Error('No collections found');
+    }
+    if (items.length === 2) {
+      throw new Error('Invariant: multiple collections found, expecting 1');
+    }
+    return items[0];
   };
 
   public ownersByCount = async ({
