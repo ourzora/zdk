@@ -95,8 +95,8 @@ type SalesQueryArgs = {
 } & SharedQueryParams;
 
 type CollectionStatsAggregateQuery = {
-  collectionAddress: !string;
-  network: !NetworkInput;
+  collectionAddress: string;
+  network: NetworkInput;
 };
 
 export interface ListOptions<SortInput> {
