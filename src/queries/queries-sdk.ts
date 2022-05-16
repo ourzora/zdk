@@ -622,10 +622,12 @@ export type SearchQueryInput = {
 
 export type SearchResult = {
   __typename?: 'SearchResult';
-  address: Scalars['String'];
+  collectionAddress: Scalars['String'];
   description?: Maybe<Scalars['String']>;
+  entity?: Maybe<TokenCollection>;
   entityType: Scalars['String'];
   name?: Maybe<Scalars['String']>;
+  networkInfo: NetworkInfo;
   tokenId?: Maybe<Scalars['String']>;
 };
 
@@ -677,6 +679,8 @@ export type TokenAttribute = {
   traitType?: Maybe<Scalars['String']>;
   value?: Maybe<Scalars['String']>;
 };
+
+export type TokenCollection = Collection | Token;
 
 export type TokenContentMedia = {
   __typename?: 'TokenContentMedia';
@@ -1892,7 +1896,7 @@ export const FullTextSearchDocument = gql`
       offset
     }
     nodes {
-      address
+      name
       description
       entityType
       name
@@ -2183,4 +2187,4 @@ export type FullTextSearchQueryVariables = Exact<{
 }>;
 
 
-export type FullTextSearchQuery = { __typename?: 'RootQuery', search: { __typename: 'SearchResultConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'SearchResult', address: string, description?: string | null, entityType: string, name?: string | null, tokenId?: string | null }> } };
+export type FullTextSearchQuery = { __typename?: 'RootQuery', search: { __typename: 'SearchResultConnection', hasNextPage: boolean, pageInfo: { __typename?: 'PageInfo', limit: number, offset: number }, nodes: Array<{ __typename?: 'SearchResult', name?: string | null, description?: string | null, entityType: string, tokenId?: string | null }> } };

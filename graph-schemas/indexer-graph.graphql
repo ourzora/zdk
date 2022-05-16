@@ -494,7 +494,9 @@ type SearchResult {
   name: String
   description: String
   entityType: String!
-  address: String!
+  collectionAddress: String!
+  networkInfo: NetworkInfo!
+  entity: TokenCollection
   tokenId: String
 }
 
@@ -538,6 +540,8 @@ type TokenAttribute {
   value: String
   displayType: String
 }
+
+union TokenCollection = Token | Collection
 
 type TokenContentMedia {
   url: String
