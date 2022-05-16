@@ -94,6 +94,12 @@ type SalesQueryArgs = {
   includeFullDetails: boolean;
 } & SharedQueryParams;
 
+export type CollectionQueryArgs = {
+  address: string;
+  network?: NetworkInput;
+  includeFullDetails?: boolean;
+};
+
 export interface ListOptions<SortInput> {
   networks?: OverrideNetworksOption;
   pagination?: OverridePaginationOptions;
@@ -275,6 +281,37 @@ export class ZDK {
         sortKey: sort?.sortKey || CollectionSortKey.Created,
       },
     });
+
+  public collection = async ({
+    address,
+    network,
+    includeFullDetails = true,
+  }: CollectionQueryArgs) => {
+    const collectionsResponse = await this.sdk.collections({
+      where: {
+        collectionAddresses: [address],
+      },
+      pagination: {
+        limit: 2,
+        offset: 0,
+      },
+      sort: {
+        sortKey: CollectionSortKey.Created,
+        sortDirection: SortDirection.Asc,
+      },
+      includeFullDetails,
+      ...this.getNetworksOption(network ? [network] : undefined),
+    });
+
+    const items = collectionsResponse.collections.nodes;
+    if (items.length === 0) {
+      throw new Error('No collections found');
+    }
+    if (items.length === 2) {
+      throw new Error('Invariant: multiple collections found, expecting 1');
+    }
+    return items[0];
+  };
 
   public ownersByCount = async ({
     where,
