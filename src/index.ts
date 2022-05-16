@@ -94,6 +94,11 @@ type SalesQueryArgs = {
   includeFullDetails: boolean;
 } & SharedQueryParams;
 
+type CollectionStatsAggregateQuery = {
+  collectionAddress: string;
+  network: NetworkInput;
+};
+
 export type CollectionQueryArgs = {
   address: string;
   network?: NetworkInput;
@@ -280,6 +285,15 @@ export class ZDK {
         sortDirection: sort?.sortDirection || SortDirection.Desc,
         sortKey: sort?.sortKey || CollectionSortKey.Created,
       },
+    });
+
+  public collectionStatsAggregate = async ({
+    collectionAddress,
+    network,
+  }: CollectionStatsAggregateQuery) =>
+    this.sdk.collectionStatsAggregate({
+      collectionAddress,
+      ...this.getNetworksOption(network ? [network] : undefined),
     });
 
   public collection = async ({
