@@ -13,6 +13,7 @@ fragment FullMedia on TokenContentMedia {
   size
   mimeType
   mediaEncoding {
+    __typename
     ... on ImageEncodingTypes {
       original
       large
@@ -59,11 +60,13 @@ fragment PriceSummary on PriceAtTime {
 
 fragment MintDetails on MintInfo {
   price {
+    __typename
     ...PriceSummary
   }
   originatorAddress
   toAddress
   mintContext {
+    __typename
     ...TransactionDetails
   }
 }
@@ -624,6 +627,24 @@ query sales(
   }
 }
 
+fragment TokensSalesInfo on TokenWithMarketsSummary {
+  sales(
+    pagination: { limit: 10, offset: 0 }
+    sort: { sortKey: TIME, sortDirection: DESC }
+  ) {
+    ...SaleInfo
+  }
+}
+
+fragment TokensEventsInfo on TokenWithMarketsSummary {
+  events(
+    pagination: { limit: 10, offset: 0 }
+    sort: { sortKey: CREATED, sortDirection: DESC }
+  ) {
+    ...EventInfo
+  }
+}
+
 query tokens(
   $networks: [NetworkInput!]!
   $where: TokensQueryInput
@@ -655,19 +676,24 @@ query tokens(
         ...TokenInfo
         ...TokenDetails @include(if: $includeFullDetails)
       }
-      sales(
-        pagination: { limit: 10, offset: 0 }
-        sort: { sortKey: TIME, sortDirection: DESC }
-      ) {
-        ...SaleInfo @include(if: $includeSalesHistory)
-      }
-      events(
-        pagination: { limit: 10, offset: 0 }
-        sort: { sortKey: CREATED, sortDirection: DESC }
-      ) {
-        ...EventInfo
-      }
+      ...TokensSalesInfo @include(if: $includeSalesHistory)
+      ...TokensEventsInfo @include(if: $includeFullDetails)
     }
+  }
+}
+
+fragment TokenFullDetails on TokenWithFullMarketHistory {
+  sales(
+    pagination: { limit: 10, offset: 0 }
+    sort: { sortKey: TIME, sortDirection: DESC }
+  ) {
+    ...SaleInfo @include(if: $includeFullDetails)
+  }
+  events(
+    pagination: { limit: 10, offset: 0 }
+    sort: { sortKey: NONE, sortDirection: DESC }
+  ) {
+    ...EventInfo
   }
 }
 
@@ -678,18 +704,9 @@ query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: B
       ...TokenInfo
       ...TokenDetails @include(if: $includeFullDetails)
     }
-    sales(
-      pagination: { limit: 10, offset: 0 }
-      sort: { sortKey: TIME, sortDirection: DESC }
-    ) {
-      ...SaleInfo @include(if: $includeFullDetails)
-    }
-    events(
-      pagination: { limit: 10, offset: 0 }
-      sort: { sortKey: NONE, sortDirection: DESC }
-    ) {
-      ...EventInfo
-    }
+
+    ...TokenFullDetails @include(if: $includeFullDetails)
+
     markets(
       pagination: { limit: 10, offset: 0 }
       sort: { sortKey: NONE, sortDirection: DESC }
