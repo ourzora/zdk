@@ -40,7 +40,7 @@ input AttributeFilter {
 
 type AudioEncodingTypes {
   original: String!
-  mp3: String
+  large: String
 }
 
 enum Chain {
@@ -392,7 +392,7 @@ type RootQuery {
   mints(networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: MintSortKeySortInput = null, filter: MintsQueryFilter = null, where: MintsQueryInput = null): MintWithTokenAndMarketsConnection!
 
   """Historical sales data from ZORA, OpenSea, LooksRare, 0x, and more"""
-  sales(where: SalesQueryInput!, networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: SaleSortKeySortInput = null, filter: SalesQueryFilter = null): SaleWithTokenConnection!
+  sales(where: SalesQueryInput = null, networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: SaleSortKeySortInput = null, filter: SalesQueryFilter = null): SaleWithTokenConnection!
 
   """Gets data for multiple tokens"""
   tokens(networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: TokenSortInput = null, where: TokensQueryInput = null, filter: TokensQueryFilter = null): TokenWithMarketsSummaryConnection!

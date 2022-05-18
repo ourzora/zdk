@@ -29,7 +29,7 @@ fragment FullMedia on TokenContentMedia {
     }
     ... on AudioEncodingTypes {
       original
-      mp3
+      large
     }
     ... on UnsupportedEncodingTypes {
       original
