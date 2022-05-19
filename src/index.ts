@@ -31,7 +31,6 @@ import {
   FloorPriceQueryVariables,
   NftCountQueryVariables,
   FullTextSearchQueryVariables,
-  TokenQueryVariables,
   SaleSortKey,
   SalesQueryInput,
   SaleSortKeySortInput,
@@ -54,13 +53,13 @@ type SharedQueryParams = {
   pagination?: OverridePaginationOptions;
 };
 
-type CollectionsQueryArgs = {
+export type CollectionsQueryArgs = {
   where: CollectionsQueryInput;
   includeFullDetails?: boolean;
   sort: CollectionSortKeySortInput;
 } & SharedQueryParams;
 
-type TokensQueryArgs = {
+export type TokensQueryArgs = {
   where: TokensQueryInput;
   filter?: TokensQueryFilter;
   sort?: TokenSortInput;
@@ -68,36 +67,43 @@ type TokensQueryArgs = {
   includeSalesHistory?: boolean;
 } & SharedQueryParams;
 
-type EventsQueryArgs = {
+export type EventsQueryArgs = {
   where: EventsQueryInput;
   sort?: EventSortKeySortInput;
   filter?: EventsQueryFilter;
 } & SharedQueryParams;
 
-type MarketQueryArgs = {
+export type MarketQueryArgs = {
   where: MarketsQueryInput;
   sort: MarketSortKeySortInput;
   filter: MarketsQueryFilter;
   includeFullDetails: boolean;
 } & SharedQueryParams;
 
-type MintsQueryArgs = {
+export type MintsQueryArgs = {
   where: MintsQueryInput;
-  sort: MintSortKeySortInput;
-  filter: MintsQueryFilter;
-  includeFullDetails: boolean;
+  sort?: MintSortKeySortInput;
+  filter?: MintsQueryFilter;
+  includeFullDetails?: boolean;
+  includeMarkets?: boolean;
 } & SharedQueryParams;
 
-type SalesQueryArgs = {
+export type SalesQueryArgs = {
   where: SalesQueryInput;
   sort: SaleSortKeySortInput;
   filter: SalesQueryFilter;
   includeFullDetails: boolean;
 } & SharedQueryParams;
 
-type CollectionStatsAggregateQuery = {
+export type CollectionStatsAggregateQuery = {
   collectionAddress: string;
   network: NetworkInput;
+};
+
+export type TokenQueryArgs = {
+  network?: NetworkInput;
+  token: TokenInput;
+  includeFullDetails?: boolean;
 };
 
 export type CollectionQueryArgs = {
@@ -184,8 +190,8 @@ export class ZDK {
   public token = async ({
     token,
     network = this.defaultNetworks[0],
-    includeFullDetails,
-  }: OptionalNetwork<TokenQueryVariables>) =>
+    includeFullDetails = false,
+  }: OptionalNetwork<TokenQueryArgs>) =>
     await this.sdk.token({
       token,
       network,
@@ -237,6 +243,7 @@ export class ZDK {
     sort,
     where,
     includeFullDetails = false,
+    includeMarkets = false,
   }: MintsQueryArgs) =>
     this.sdk.mints({
       filter,
@@ -248,6 +255,7 @@ export class ZDK {
         sortKey: sort?.sortKey || MintSortKey.None,
       },
       includeFullDetails,
+      includeMarkets,
     });
 
   public sales = async ({

@@ -1,67 +1,60 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`zdk queries long token information 1`] = `
+Object {
+  "collections": Object {
+    "__typename": "CollectionConnection",
+    "hasNextPage": false,
+    "nodes": Array [
+      Object {
+        "address": "0x5180db8f5c931aae63c74266b211f580155ecac8",
+        "description": "",
+        "name": "Crypto Coven",
+        "networkInfo": Object {
+          "chain": "MAINNET",
+          "network": "ETHEREUM",
+        },
+        "symbol": "WITCH",
+        "totalSupply": null,
+      },
+    ],
+    "pageInfo": Object {
+      "limit": 200,
+      "offset": 0,
+    },
+  },
+}
+`;
+
+exports[`zdk queries sort collection information 1`] = `
+Object {
+  "collections": Object {
+    "__typename": "CollectionConnection",
+    "hasNextPage": false,
+    "nodes": Array [
+      Object {
+        "address": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+        "description": "",
+        "name": "Zorbs",
+        "networkInfo": Object {
+          "chain": "MAINNET",
+          "network": "ETHEREUM",
+        },
+        "symbol": "ZORB",
+        "totalSupply": 56741,
+      },
+    ],
+    "pageInfo": Object {
+      "limit": 200,
+      "offset": 0,
+    },
+  },
+}
+`;
+
 exports[`zdk should fetch localhost collections empty object 1`] = `
 Object {
-  "events": Array [
-    Object {
-      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "eventType": "MINT_EVENT",
-      "properties": Object {
-        "__typename": "MintEvent",
-        "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "fee": Object {
-          "blockNumber": 13917526,
-          "ethPrice": Object {
-            "decimal": 0,
-            "raw": "0",
-          },
-          "nativePrice": Object {
-            "currency": Object {
-              "address": "0x0000000000000000000000000000000000000000",
-              "decimals": 18,
-              "name": "ETH",
-            },
-            "decimal": 0,
-            "raw": "0",
-          },
-          "usdcPrice": Object {
-            "decimal": 0,
-            "raw": "0",
-          },
-        },
-        "originatorAddress": "0x436a257ab8f9d8579594f493ffb81fa5245ada26",
-        "toAddress": "0x436a257ab8f9d8579594f493ffb81fa5245ada26",
-        "tokenId": "1",
-      },
-      "tokenId": "1",
-      "transactionInfo": Object {
-        "blockNumber": 13917526,
-        "blockTimestamp": "2022-01-01T05:00:10",
-        "logIndex": 57,
-        "transactionHash": "0xf46f3540ebfca6fd50eac66c8e600f33e53ad891cd47032e23ef488e62b5f72e",
-      },
-    },
-    Object {
-      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "eventType": "TRANSFER_EVENT",
-      "properties": Object {
-        "__typename": "TransferEvent",
-        "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "fromAddress": "0x0000000000000000000000000000000000000000",
-        "toAddress": "0x436a257ab8f9d8579594f493ffb81fa5245ada26",
-        "tokenId": "1",
-      },
-      "tokenId": "1",
-      "transactionInfo": Object {
-        "blockNumber": 13917526,
-        "blockTimestamp": "2022-01-01T05:00:10",
-        "logIndex": 57,
-        "transactionHash": "0xf46f3540ebfca6fd50eac66c8e600f33e53ad891cd47032e23ef488e62b5f72e",
-      },
-    },
-  ],
   "marketsSummary": Array [],
-  "sales": Array [],
   "token": Object {
     "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
     "content": null,
@@ -70,6 +63,7 @@ Object {
     "lastRefreshTime": null,
     "mintInfo": Object {
       "mintContext": Object {
+        "__typename": "TransactionInfo",
         "blockNumber": 13917526,
         "blockTimestamp": "2022-01-01T05:00:10",
         "logIndex": 57,
@@ -77,6 +71,7 @@ Object {
       },
       "originatorAddress": "0x436a257ab8f9d8579594f493ffb81fa5245ada26",
       "price": Object {
+        "__typename": "PriceAtTime",
         "blockNumber": 13917526,
         "ethPrice": Object {
           "decimal": 0,
@@ -115,70 +110,12 @@ Object {
 
 exports[`zdk should fetch localhost collections empty object 2`] = `
 Object {
-  "events": Array [
-    Object {
-      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "eventType": "MINT_EVENT",
-      "properties": Object {
-        "__typename": "MintEvent",
-        "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "fee": Object {
-          "blockNumber": 13917533,
-          "ethPrice": Object {
-            "decimal": 0,
-            "raw": "0",
-          },
-          "nativePrice": Object {
-            "currency": Object {
-              "address": "0x0000000000000000000000000000000000000000",
-              "decimals": 18,
-              "name": "ETH",
-            },
-            "decimal": 0,
-            "raw": "0",
-          },
-          "usdcPrice": Object {
-            "decimal": 0,
-            "raw": "0",
-          },
-        },
-        "originatorAddress": "0x72c7f49ae7b664cc09f6891b68eedb08aa2fc15b",
-        "toAddress": "0x72c7f49ae7b664cc09f6891b68eedb08aa2fc15b",
-        "tokenId": "4",
-      },
-      "tokenId": "4",
-      "transactionInfo": Object {
-        "blockNumber": 13917533,
-        "blockTimestamp": "2022-01-01T05:01:01",
-        "logIndex": 626,
-        "transactionHash": "0x3abfdfdc7c1f2841ae7771c0522eaf1babaea28e1446345bef1db74b0c4d83c6",
-      },
-    },
-    Object {
-      "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-      "eventType": "TRANSFER_EVENT",
-      "properties": Object {
-        "__typename": "TransferEvent",
-        "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-        "fromAddress": "0x0000000000000000000000000000000000000000",
-        "toAddress": "0x72c7f49ae7b664cc09f6891b68eedb08aa2fc15b",
-        "tokenId": "4",
-      },
-      "tokenId": "4",
-      "transactionInfo": Object {
-        "blockNumber": 13917533,
-        "blockTimestamp": "2022-01-01T05:01:01",
-        "logIndex": 626,
-        "transactionHash": "0x3abfdfdc7c1f2841ae7771c0522eaf1babaea28e1446345bef1db74b0c4d83c6",
-      },
-    },
-  ],
   "marketsSummary": Array [],
-  "sales": Array [],
   "token": Object {
     "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
     "content": Object {
       "mediaEncoding": Object {
+        "__typename": "UnsupportedEncodingTypes",
         "original": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/content/original",
       },
       "mimeType": null,
@@ -190,6 +127,7 @@ Object {
 View this NFT at [zorb.dev/nft/4](https://zorb.dev/nft/4)",
     "image": Object {
       "mediaEncoding": Object {
+        "__typename": "ImageEncodingTypes",
         "large": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/large",
         "original": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/original",
         "poster": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/poster",
@@ -202,6 +140,7 @@ View this NFT at [zorb.dev/nft/4](https://zorb.dev/nft/4)",
     "lastRefreshTime": "2022-04-23T20:50:34.829000",
     "mintInfo": Object {
       "mintContext": Object {
+        "__typename": "TransactionInfo",
         "blockNumber": 13917533,
         "blockTimestamp": "2022-01-01T05:01:01",
         "logIndex": 626,
@@ -209,6 +148,7 @@ View this NFT at [zorb.dev/nft/4](https://zorb.dev/nft/4)",
       },
       "originatorAddress": "0x72c7f49ae7b664cc09f6891b68eedb08aa2fc15b",
       "price": Object {
+        "__typename": "PriceAtTime",
         "blockNumber": 13917533,
         "ethPrice": Object {
           "decimal": 0,
@@ -426,12 +366,12 @@ Object {
             },
           },
         ],
-        "sales": Array [],
         "token": Object {
           "attributes": Array [],
           "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
           "content": Object {
             "mediaEncoding": Object {
+              "__typename": "UnsupportedEncodingTypes",
               "original": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/content/original",
             },
             "mimeType": null,
@@ -443,6 +383,7 @@ Object {
 View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
           "image": Object {
             "mediaEncoding": Object {
+              "__typename": "ImageEncodingTypes",
               "large": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/large",
               "original": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/original",
               "poster": "https://api.notzora.com/media/mainnet/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/poster",
@@ -462,6 +403,7 @@ View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
           },
           "mintInfo": Object {
             "mintContext": Object {
+              "__typename": "TransactionInfo",
               "blockNumber": 13927877,
               "blockTimestamp": "2022-01-02T19:17:42",
               "logIndex": 318,
@@ -469,6 +411,7 @@ View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
             },
             "originatorAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
             "price": Object {
+              "__typename": "PriceAtTime",
               "blockNumber": 13927877,
               "ethPrice": Object {
                 "decimal": 0,
