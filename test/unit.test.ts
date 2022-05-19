@@ -12,17 +12,39 @@ describe('unit zdk', () => {
     zdk = new ZDK(ZORA_TESTING_PATH);
   });
 
-  // it('should fetch mock token', async () => {
-  //   const token = await zdk.token('0xCa21d4228cDCc68D4e23807E5e370C07577Dd152', '12');
-  //   expect(token).toMatchSnapshot();
-  //   expect(querySpy).toBeCalledWith('token', {
-  //     network: {
-  //       network: 'ETHEREUM',
-  //       chain: 'MAINNET',
-  //     },
-  //     token: { tokenId: '12', address: '0xCa21d4228cDCc68D4e23807E5e370C07577Dd152' },
-  //   });
-  // });
+  xit('gets mints', async () => {
+    await zdk.mints({
+      where: {
+        minterAddresses: ['jacob.eth'],
+      },
+    });
+    expect(querySpy).toBeCalledWith('token', {
+      networks: [
+        {
+          network: 'ETHEREUM',
+          chain: 'MAINNET',
+        },
+      ],
+    });
+  });
+
+  it('should fetch mock token', async () => {
+    await zdk.token({
+      token: {
+        address: '0xCa21d4228cDCc68D4e23807E5e370C07577Dd152',
+        tokenId: '12',
+      },
+    });
+    // expect(token).toMatchSnapshot();
+    expect(querySpy).toBeCalledWith('token', {
+      network: {
+        network: 'ETHEREUM',
+        chain: 'MAINNET',
+      },
+      includeFullDetails: false,
+      token: { tokenId: '12', address: '0xCa21d4228cDCc68D4e23807E5e370C07577Dd152' },
+    });
+  });
 
   it('should fetch mock tokens', async () => {
     const tokens = await zdk.tokens({
@@ -30,15 +52,20 @@ describe('unit zdk', () => {
       pagination: { limit: 2 },
     });
     expect(tokens.tokens.nodes.length).toBe(2);
-    expect(tokens.tokens.hasNextPage).toBe(false);
     expect(querySpy).toBeCalledWith('tokens', {
       pagination: { limit: 2, offset: 0 },
-      sort: { sortDirection: 'DESC', sortKey: 'TOKEN_ID' },
-      network: {
-        network: 'ETHEREUM',
-        chain: 'MAINNET',
+      sort: { sortDirection: 'ASC', sortKey: 'TRANSFERRED' },
+      networks: [
+        {
+          network: 'ETHEREUM',
+          chain: 'MAINNET',
+        },
+      ],
+      where: {
+        collectionAddresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
       },
-      addresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
+      includeFullDetails: false,
+      includeSalesHistory: false,
     });
   });
 });
