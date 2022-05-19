@@ -534,6 +534,16 @@ query markets(
   }
 }
 
+fragment MarketsOnMintInfo on MintWithTokenAndMarkets {
+  markets(
+    pagination: { limit: 10, offset: 0 }
+    sort: { sortKey: NONE, sortDirection: DESC }
+  ) {
+    ...MarketInfo
+    ...MarketDetails
+  }
+}
+
 query mints(
   $networks: [NetworkInput!]!
   $filter: MintsQueryFilter
@@ -541,6 +551,7 @@ query mints(
   $sort: MintSortKeySortInput!
   $where: MintsQueryInput
   $includeFullDetails: Boolean!
+  $includeMarkets: Boolean!
 ) {
   mints(
     where: $where
@@ -565,10 +576,11 @@ query mints(
           ...TransactionDetails
         }
       }
-      markets(pagination: $pagination, sort: { sortKey: NONE, sortDirection: DESC }) {
-        ...MarketInfo
-        ...MarketDetails @include(if: $includeFullDetails)
+      token {
+        ...TokenInfo
+        ...TokenDetails @include(if: $includeFullDetails)
       }
+      ...MarketsOnMintInfo @include(if: $includeFullDetails)
     }
   }
 }
