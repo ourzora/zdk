@@ -82,7 +82,6 @@ type CollectionAttributeValue {
 type CollectionConnection {
   nodes: [Collection!]!
   pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 enum CollectionSortKey {
@@ -130,7 +129,6 @@ type Event {
 type EventConnection {
   nodes: [Event!]!
   pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 union EventProperties = MintEvent | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
@@ -149,6 +147,8 @@ input EventsQueryFilter {
   eventTypes: [EventType!] = null
   senderAddresses: [String!] = null
   recipientAddresses: [String!] = null
+  sellerAddresses: [String!] = null
+  bidderAddresses: [String!] = null
   timeFilter: TimeFilter = null
 }
 
@@ -249,7 +249,6 @@ type MarketWithToken {
 type MarketWithTokenConnection {
   nodes: [MarketWithToken!]!
   pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 enum MediaType {
@@ -319,7 +318,6 @@ type MintWithTokenAndMarkets {
 type MintWithTokenAndMarketsConnection {
   nodes: [MintWithTokenAndMarkets!]!
   pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 enum Network {
@@ -344,17 +342,17 @@ type OwnerCount {
 type OwnerCountConnection {
   nodes: [OwnerCount!]!
   pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 type PageInfo {
   limit: Int!
-  offset: Int!
+  endCursor: String
+  hasNextPage: Boolean!
 }
 
 input PaginationInput {
   limit: Int! = 10
-  offset: Int! = 0
+  after: String = null
 }
 
 type PriceAtTime {
@@ -383,7 +381,7 @@ type RootQuery {
   collections(where: CollectionsQueryInput = null, sort: CollectionSortKeySortInput = null, pagination: PaginationInput = null, networks: [NetworkInput!] = null): CollectionConnection!
 
   """Contract event information, e.g. Sales, Transfers, Mints, etc."""
-  events(where: EventsQueryInput!, pagination: PaginationInput = null, sort: EventSortKeySortInput = null, networks: [NetworkInput!] = null, filter: EventsQueryFilter = null): EventConnection!
+  events(where: EventsQueryInput = null, pagination: PaginationInput = null, sort: EventSortKeySortInput = null, networks: [NetworkInput!] = null, filter: EventsQueryFilter = null): EventConnection!
 
   """Data for specific ZORA markets, e.g. Buy Now, Auctions, Offers"""
   markets(networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: MarketSortKeySortInput = null, filter: MarketsQueryFilter = null, where: MarketsQueryInput = null): MarketWithTokenConnection!
@@ -468,7 +466,6 @@ type SaleWithToken {
 type SaleWithTokenConnection {
   nodes: [SaleWithToken!]!
   pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 enum SearchableEntity {
@@ -483,7 +480,7 @@ input SearchFilter {
 
 input SearchPaginationInput {
   limit: Int! = 10
-  offset: Int! = 0
+  after: String = null
 }
 
 input SearchQueryInput {
@@ -503,7 +500,6 @@ type SearchResult {
 type SearchResultConnection {
   nodes: [SearchResult!]!
   pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 enum SortDirection {
@@ -611,7 +607,6 @@ type TokenWithMarketsSummary {
 type TokenWithMarketsSummaryConnection {
   nodes: [TokenWithMarketsSummary!]!
   pageInfo: PageInfo!
-  hasNextPage: Boolean!
 }
 
 type TransactionInfo {
@@ -637,7 +632,7 @@ type V1Ask {
   tokenId: String!
   amount: PriceAtTime!
   currency: String!
-  status: V1MarketEntityStatus!
+  v1AskStatus: V1MarketEntityStatus!
 }
 
 type V1BidShare {
@@ -646,7 +641,7 @@ type V1BidShare {
   previousOwner: String!
   creator: String!
   owner: String!
-  status: V1MarketEntityStatus!
+  v1BidShareStatus: V1MarketEntityStatus!
 }
 
 type V1MarketAskCreatedEventProperties {
@@ -674,7 +669,7 @@ enum V1MarketEntityStatus {
 }
 
 type V1MarketEvent {
-  eventType: V1MarketEventType!
+  v1MarketEventType: V1MarketEventType!
   address: String!
   collectionAddress: String!
   tokenId: String!
@@ -727,7 +722,7 @@ type V1Offer {
   sellOnShare: String!
   tokenId: String!
   collectionAddress: String!
-  status: V1MarketEntityStatus!
+  v1OfferStatus: V1MarketEntityStatus!
 }
 
 type V2Auction {
@@ -735,7 +730,7 @@ type V2Auction {
   tokenId: String!
   collectionAddress: String!
   auctionId: String!
-  status: V2AuctionStatus!
+  v2AuctionStatus: V2AuctionStatus!
   approved: Boolean!
   auctionCurrency: String!
   highestBidPrice: PriceAtTime
@@ -791,7 +786,7 @@ type V2AuctionEndedEventProperties {
 }
 
 type V2AuctionEvent {
-  eventType: V2AuctionEventType!
+  v2AuctionEventType: V2AuctionEventType!
   address: String!
   auctionId: Int!
   collectionAddress: String!
@@ -820,10 +815,11 @@ enum V2AuctionStatus {
   ACTIVE
   CANCELED
   COMPLETED
+  EXPIRED
 }
 
 type V3Ask {
-  status: V3AskStatus!
+  v3AskStatus: V3AskStatus!
   address: String!
   collectionAddress: String!
   tokenId: String!
@@ -855,7 +851,7 @@ type V3AskCreatedEventProperties {
 }
 
 type V3AskEvent {
-  eventType: V3AskEventType!
+  v3AskEventType: V3AskEventType!
   address: String!
   collectionAddress: String!
   tokenId: String!

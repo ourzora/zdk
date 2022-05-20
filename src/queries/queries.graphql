@@ -104,7 +104,7 @@ fragment V2AuctionMarketProperties on V2Auction {
   auctionCurrency
   duration
   estimatedExpirationTime
-  auctionStatus: status
+  v2AuctionStatus
   tokenOwner
   address
   auctionId
@@ -123,7 +123,7 @@ fragment V3AskProperties on V3Ask {
   finder
   findersFeeBps
   sellerFundsRecipient
-  askStatus: status
+  v3AskStatus
   seller
   address
   askCurrency
@@ -134,7 +134,7 @@ fragment V3AskProperties on V3Ask {
 }
 
 fragment V1OfferProperties on V1Offer {
-  offerStatus: status
+  v1OfferStatus
   sellOnShare
   bidder
   currency
@@ -144,7 +144,7 @@ fragment V1OfferProperties on V1Offer {
 }
 
 fragment V1AskProperties on V1Ask {
-  offerStatus: status
+  v1AskStatus
   currency
   amount {
     ...PriceSummary
@@ -384,7 +384,7 @@ fragment EventInfo on Event {
       tokenId
     }
     ... on V1MarketEvent {
-      marketEventType: eventType
+      v1MarketEventType
       address
       collectionAddress
       tokenId
@@ -394,7 +394,7 @@ fragment EventInfo on Event {
       }
     }
     ... on V2AuctionEvent {
-      auctionEventType: eventType
+      v2AuctionEventType
       address
       auctionId
       collectionAddress
@@ -405,7 +405,7 @@ fragment EventInfo on Event {
       }
     }
     ... on V3AskEvent {
-      v3AskEventType: eventType
+      v3AskEventType
       address
       collectionAddress
       tokenId
@@ -465,8 +465,9 @@ fragment CollectionDetails on Collection {
 }
 
 fragment PageInfoDefault on PageInfo {
+  endCursor
+  hasNextPage
   limit
-  offset
 }
 
 fragment OwnerCountInfo on OwnerCount {
@@ -489,10 +490,10 @@ query events(
     where: $where
   ) {
     __typename
-    hasNextPage
     pageInfo {
+      endCursor
+      hasNextPage
       limit
-      offset
     }
     nodes {
       ...EventInfo
@@ -516,10 +517,10 @@ query markets(
     pagination: $pagination
   ) {
     __typename
-    hasNextPage
     pageInfo {
+      endCursor
+      hasNextPage
       limit
-      offset
     }
     nodes {
       token {
@@ -536,7 +537,7 @@ query markets(
 
 fragment MarketsOnMintInfo on MintWithTokenAndMarkets {
   markets(
-    pagination: { limit: 10, offset: 0 }
+    pagination: { limit: 10, after: null }
     sort: { sortKey: NONE, sortDirection: DESC }
   ) {
     ...MarketInfo
@@ -561,10 +562,10 @@ query mints(
     sort: $sort
   ) {
     __typename
-    hasNextPage
     pageInfo {
+      endCursor
+      hasNextPage
       limit
-      offset
     }
     nodes {
       mint {
@@ -594,10 +595,10 @@ query collections(
 ) {
   collections(where: $where, networks: $networks, pagination: $pagination, sort: $sort) {
     __typename
-    hasNextPage
     pageInfo {
+      endCursor
+      hasNextPage
       limit
-      offset
     }
     nodes {
       ...CollectionInfo
@@ -622,10 +623,10 @@ query sales(
     pagination: $pagination
   ) {
     __typename
-    hasNextPage
     pageInfo {
+      endCursor
+      hasNextPage
       limit
-      offset
     }
     nodes {
       sale {
@@ -641,7 +642,7 @@ query sales(
 
 fragment TokensSalesInfo on TokenWithMarketsSummary {
   sales(
-    pagination: { limit: 10, offset: 0 }
+    pagination: { limit: 10, after: null }
     sort: { sortKey: TIME, sortDirection: DESC }
   ) {
     ...SaleInfo
@@ -650,7 +651,7 @@ fragment TokensSalesInfo on TokenWithMarketsSummary {
 
 fragment TokensEventsInfo on TokenWithMarketsSummary {
   events(
-    pagination: { limit: 10, offset: 0 }
+    pagination: { limit: 10, after: null }
     sort: { sortKey: CREATED, sortDirection: DESC }
   ) {
     ...EventInfo
@@ -674,10 +675,10 @@ query tokens(
     filter: $filter
   ) {
     __typename
-    hasNextPage
     pageInfo {
+      endCursor
+      hasNextPage
       limit
-      offset
     }
     nodes {
       marketsSummary {
@@ -696,13 +697,13 @@ query tokens(
 
 fragment TokenFullDetails on TokenWithFullMarketHistory {
   sales(
-    pagination: { limit: 10, offset: 0 }
+    pagination: { limit: 10, after: null }
     sort: { sortKey: TIME, sortDirection: DESC }
   ) {
     ...SaleInfo @include(if: $includeFullDetails)
   }
   events(
-    pagination: { limit: 10, offset: 0 }
+    pagination: { limit: 10, after: null }
     sort: { sortKey: NONE, sortDirection: DESC }
   ) {
     ...EventInfo
@@ -720,7 +721,7 @@ query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: B
     ...TokenFullDetails @include(if: $includeFullDetails)
 
     markets(
-      pagination: { limit: 10, offset: 0 }
+      pagination: { limit: 10, after: null }
       sort: { sortKey: NONE, sortDirection: DESC }
     ) {
       ...MarketInfo
@@ -750,10 +751,10 @@ query ownersByCount(
 ) {
   aggregateStat {
     ownersByCount(networks: $networks, pagination: $pagination, where: $where) {
-      hasNextPage
       pageInfo {
+        endCursor
+        hasNextPage
         limit
-        offset
       }
       nodes {
         ...OwnerCountInfo
@@ -833,10 +834,10 @@ query fullTextSearch(
 ) {
   search(pagination: $pagination, query: $query, filter: $filter) {
     __typename
-    hasNextPage
     pageInfo {
+      endCursor
+      hasNextPage
       limit
-      offset
     }
     nodes {
       name

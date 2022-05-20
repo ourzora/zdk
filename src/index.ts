@@ -316,7 +316,7 @@ export class ZDK {
       },
       pagination: {
         limit: 2,
-        offset: 0,
+        after: null,
       },
       sort: {
         sortKey: CollectionSortKey.Created,
