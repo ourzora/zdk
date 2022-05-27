@@ -39,7 +39,7 @@ fragment FullMedia on TokenContentMedia {
 
 fragment PriceSummary on PriceAtTime {
   blockNumber
-  ethPrice {
+  chainTokenPrice {
     decimal
     raw
   }
@@ -536,10 +536,7 @@ query markets(
 }
 
 fragment MarketsOnMintInfo on MintWithTokenAndMarkets {
-  markets(
-    pagination: { limit: 10, after: null }
-    sort: { sortKey: NONE, sortDirection: DESC }
-  ) {
+  markets(pagination: { limit: 10 }, sort: { sortKey: NONE, sortDirection: DESC }) {
     ...MarketInfo
     ...MarketDetails
   }
@@ -641,19 +638,13 @@ query sales(
 }
 
 fragment TokensSalesInfo on TokenWithMarketsSummary {
-  sales(
-    pagination: { limit: 10, after: null }
-    sort: { sortKey: TIME, sortDirection: DESC }
-  ) {
+  sales(pagination: { limit: 10 }, sort: { sortKey: TIME, sortDirection: DESC }) {
     ...SaleInfo
   }
 }
 
 fragment TokensEventsInfo on TokenWithMarketsSummary {
-  events(
-    pagination: { limit: 10, after: null }
-    sort: { sortKey: CREATED, sortDirection: DESC }
-  ) {
+  events(pagination: { limit: 10 }, sort: { sortKey: CREATED, sortDirection: DESC }) {
     ...EventInfo
   }
 }
@@ -696,16 +687,10 @@ query tokens(
 }
 
 fragment TokenFullDetails on TokenWithFullMarketHistory {
-  sales(
-    pagination: { limit: 10, after: null }
-    sort: { sortKey: TIME, sortDirection: DESC }
-  ) {
+  sales(pagination: { limit: 10 }, sort: { sortKey: TIME, sortDirection: DESC }) {
     ...SaleInfo @include(if: $includeFullDetails)
   }
-  events(
-    pagination: { limit: 10, after: null }
-    sort: { sortKey: NONE, sortDirection: DESC }
-  ) {
+  events(pagination: { limit: 10 }, sort: { sortKey: CREATED, sortDirection: DESC }) {
     ...EventInfo
   }
 }
@@ -765,12 +750,12 @@ query ownersByCount(
 
 query salesVolume(
   $networks: [NetworkInput!]!
-  $where: CollectionAddressAndAttributesInput!
+  $where: CollectionAddressOwnerAddressAttributesInput!
   $timeFilter: TimeFilter
 ) {
   aggregateStat {
     salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter) {
-      ethPrice
+      chainTokenPrice
       usdcPrice
       totalCount
     }
@@ -820,7 +805,7 @@ query collectionStatsAggregate(
       where: { collectionAddresses: [$collectionAddress] }
       networks: $networks
     ) {
-      ethPrice
+      chainTokenPrice
       usdcPrice
       totalCount
     }

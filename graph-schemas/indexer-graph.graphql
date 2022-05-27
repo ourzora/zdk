@@ -30,7 +30,21 @@ type AggregateStat {
   nftCount(where: CollectionAddressOwnerAddressAttributesInput!, networks: [NetworkInput!] = null): Int!
   ownerCount(where: CollectionAddressAndAttributesInput!, networks: [NetworkInput!] = null): Int!
   ownersByCount(where: CollectionAddressAndAttributesInput!, pagination: PaginationInput = null, networks: [NetworkInput!] = null): OwnerCountConnection!
-  salesVolume(where: CollectionAddressAndAttributesInput!, timeFilter: TimeFilter = null, networks: [NetworkInput!] = null): SalesVolume!
+  salesVolume(where: CollectionAddressOwnerAddressAttributesInput!, timeFilter: TimeFilter = null, networks: [NetworkInput!] = null): SalesVolume!
+}
+
+type ApprovalEvent {
+  approvalEventType: ApprovalEventType!
+  collectionAddress: String!
+  ownerAddress: String!
+  approvedAddress: String!
+  tokenId: String
+  approved: Boolean
+}
+
+enum ApprovalEventType {
+  APPROVAL
+  APPROVAL_FOR_ALL
 }
 
 input AttributeFilter {
@@ -122,7 +136,7 @@ type Event {
   transactionInfo: TransactionInfo!
   eventType: EventType!
   collectionAddress: String!
-  tokenId: String!
+  tokenId: String
   properties: EventProperties!
 }
 
@@ -131,10 +145,9 @@ type EventConnection {
   pageInfo: PageInfo!
 }
 
-union EventProperties = MintEvent | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
+union EventProperties = ApprovalEvent | MintEvent | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
 
 enum EventSortKey {
-  NONE
   CREATED
 }
 
@@ -158,6 +171,7 @@ input EventsQueryInput {
 }
 
 enum EventType {
+  APPROVAL_EVENT
   MINT_EVENT
   TRANSFER_EVENT
   V1_MARKET_EVENT
@@ -201,7 +215,8 @@ union MarketProperties = V1Ask | V1Offer | V1BidShare | V2Auction | V3Ask
 
 enum MarketSortKey {
   NONE
-  ETH_PRICE
+  CREATED
+  CHAIN_TOKEN_PRICE
   NATIVE_PRICE
   TIMED_SALE_ENDING
 }
@@ -358,14 +373,14 @@ input PaginationInput {
 type PriceAtTime {
   nativePrice: CurrencyAmount!
   blockNumber: Int!
-  ethPrice: CurrencyAmount
+  chainTokenPrice: CurrencyAmount
   usdcPrice: CurrencyAmount
 }
 
 input PriceFilter {
   currencyAddress: String = null
-  minimumEthPrice: String = null
-  maximumEthPrice: String = null
+  minimumChainTokenPrice: String = null
+  maximumChainTokenPrice: String = null
   minimumNativePrice: String = null
   maximumNativePrice: String = null
 }
@@ -416,7 +431,7 @@ type Sale {
 
 enum SaleSortKey {
   NONE
-  ETH_PRICE
+  CHAIN_TOKEN_PRICE
   NATIVE_PRICE
   TIME
 }
@@ -440,7 +455,7 @@ input SalesQueryInput {
 }
 
 type SalesVolume {
-  ethPrice: Float!
+  chainTokenPrice: Float!
   usdcPrice: Float!
   totalCount: Int!
 }
@@ -516,6 +531,7 @@ input TimeFilter {
 type Token {
   collectionAddress: String!
   tokenId: String!
+  collectionName: String
   mintInfo: MintInfo
   networkInfo: NetworkInfo!
   tokenUrl: String
@@ -572,7 +588,7 @@ enum TokenSortKey {
   MINTED
   TOKEN_ID
   TRANSFERRED
-  ETH_PRICE
+  CHAIN_TOKEN_PRICE
   NATIVE_PRICE
   TIMED_SALE_ENDING
 }
