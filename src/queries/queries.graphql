@@ -812,7 +812,7 @@ query collectionStatsAggregate(
   }
 }
 
-query fullTextSearch(
+query search(
   $pagination: SearchPaginationInput!
   $query: SearchQueryInput!
   $filter: SearchFilter
