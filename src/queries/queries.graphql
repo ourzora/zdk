@@ -187,6 +187,7 @@ fragment MarketDetails on Market {
 }
 
 fragment TokenInfo on Token {
+  __typename
   tokenId
   tokenContract {
     ...TokenContractInfo
@@ -523,6 +524,7 @@ query markets(
       limit
     }
     nodes {
+      __typename
       token {
         ...TokenInfo
         ...TokenDetails @include(if: $includeFullDetails)
@@ -565,6 +567,7 @@ query mints(
       limit
     }
     nodes {
+      __typename
       mint {
         collectionAddress
         tokenId
@@ -672,6 +675,7 @@ query tokens(
       limit
     }
     nodes {
+      __typename
       marketsSummary {
         ...MarketInfo
         ...MarketDetails @include(if: $includeFullDetails)
