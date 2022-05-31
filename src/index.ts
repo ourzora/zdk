@@ -36,6 +36,7 @@ import {
   SaleSortKeySortInput,
   SalesQueryFilter,
   OwnerCountQueryVariables,
+  PaginationInput,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -43,11 +44,7 @@ export { Chain as ZDKChain, Network as ZDKNetwork };
 
 export type OverrideNetworksOption = NetworkInput[];
 
-export type OverridePaginationOptions = {
-  limit?: number;
-  offset?: number;
-};
-
+export type OverridePaginationOptions = PaginationInput;
 type SharedQueryParams = {
   networks?: NetworkInput[];
   pagination?: OverridePaginationOptions;
@@ -155,11 +152,11 @@ export class ZDK {
     };
   };
 
-  private getPaginationOptions = ({ limit, offset }: OverridePaginationOptions = {}) => {
+  private getPaginationOptions = ({ limit, after }: PaginationInput = {}) => {
     return {
       pagination: {
         limit: limit || this.defaultMaxPageSize,
-        offset: offset || 0,
+        after: after || null,
       },
     };
   };
@@ -316,7 +313,7 @@ export class ZDK {
       },
       pagination: {
         limit: 2,
-        offset: 0,
+        after: null,
       },
       sort: {
         sortKey: CollectionSortKey.Created,

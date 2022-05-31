@@ -4,7 +4,6 @@ exports[`zdk queries long token information 1`] = `
 Object {
   "collections": Object {
     "__typename": "CollectionConnection",
-    "hasNextPage": false,
     "nodes": Array [
       Object {
         "address": "0x5180db8f5c931aae63c74266b211f580155ecac8",
@@ -19,8 +18,9 @@ Object {
       },
     ],
     "pageInfo": Object {
+      "endCursor": "eyJza2lwIjogMjAwfQ==",
+      "hasNextPage": false,
       "limit": 200,
-      "offset": 0,
     },
   },
 }
@@ -30,7 +30,6 @@ exports[`zdk queries sort collection information 1`] = `
 Object {
   "collections": Object {
     "__typename": "CollectionConnection",
-    "hasNextPage": false,
     "nodes": Array [
       Object {
         "address": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
@@ -45,8 +44,9 @@ Object {
       },
     ],
     "pageInfo": Object {
+      "endCursor": "eyJza2lwIjogMjAwfQ==",
+      "hasNextPage": false,
       "limit": 200,
-      "offset": 0,
     },
   },
 }
@@ -73,7 +73,7 @@ Object {
       "price": Object {
         "__typename": "PriceAtTime",
         "blockNumber": 13917526,
-        "ethPrice": Object {
+        "chainTokenPrice": Object {
           "decimal": 0,
           "raw": "0",
         },
@@ -150,7 +150,7 @@ View this NFT at [zorb.dev/nft/4](https://zorb.dev/nft/4)",
       "price": Object {
         "__typename": "PriceAtTime",
         "blockNumber": 13917533,
-        "ethPrice": Object {
+        "chainTokenPrice": Object {
           "decimal": 0,
           "raw": "0",
         },
@@ -189,113 +189,9 @@ exports[`zdk should fetch localhost token full object 1`] = `
 Object {
   "tokens": Object {
     "__typename": "TokenWithMarketsSummaryConnection",
-    "hasNextPage": false,
     "nodes": Array [
       Object {
-        "events": Array [
-          Object {
-            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-            "eventType": "V3_ASK_EVENT",
-            "properties": Object {
-              "__typename": "V3AskEvent",
-              "address": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
-              "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-              "properties": Object {
-                "__typename": "V3AskCreatedEventProperties",
-                "askCurrency": "0x0000000000000000000000000000000000000000",
-                "askPrice": "50000000000000000",
-                "findersFeeBps": 100,
-                "price": Object {
-                  "blockNumber": 14036921,
-                  "ethPrice": Object {
-                    "decimal": 0.05,
-                    "raw": "50000000000000000",
-                  },
-                  "nativePrice": Object {
-                    "currency": Object {
-                      "address": "0x0000000000000000000000000000000000000000",
-                      "decimals": 18,
-                      "name": "ETH",
-                    },
-                    "decimal": 0.05,
-                    "raw": "50000000000000000",
-                  },
-                  "usdcPrice": Object {
-                    "decimal": 156.40084904014552,
-                    "raw": "156400849040145514496",
-                  },
-                },
-                "seller": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-                "sellerFundsRecipient": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              },
-              "tokenId": "48057",
-              "v3AskEventType": "V3_ASK_CREATED",
-            },
-            "tokenId": "48057",
-            "transactionInfo": Object {
-              "blockNumber": 14036921,
-              "blockTimestamp": "2022-01-19T16:04:04",
-              "logIndex": 438,
-              "transactionHash": "0x7d6e8224e9a85549384a96618c7ffa7dd5c0d14e73e35c2702a45f5159fc717e",
-            },
-          },
-          Object {
-            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-            "eventType": "MINT_EVENT",
-            "properties": Object {
-              "__typename": "MintEvent",
-              "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-              "fee": Object {
-                "blockNumber": 13927877,
-                "ethPrice": Object {
-                  "decimal": 0,
-                  "raw": "0",
-                },
-                "nativePrice": Object {
-                  "currency": Object {
-                    "address": "0x0000000000000000000000000000000000000000",
-                    "decimals": 18,
-                    "name": "ETH",
-                  },
-                  "decimal": 0,
-                  "raw": "0",
-                },
-                "usdcPrice": Object {
-                  "decimal": 0,
-                  "raw": "0",
-                },
-              },
-              "originatorAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              "tokenId": "48057",
-            },
-            "tokenId": "48057",
-            "transactionInfo": Object {
-              "blockNumber": 13927877,
-              "blockTimestamp": "2022-01-02T19:17:42",
-              "logIndex": 318,
-              "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
-            },
-          },
-          Object {
-            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-            "eventType": "TRANSFER_EVENT",
-            "properties": Object {
-              "__typename": "TransferEvent",
-              "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-              "fromAddress": "0x0000000000000000000000000000000000000000",
-              "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              "tokenId": "48057",
-            },
-            "tokenId": "48057",
-            "transactionInfo": Object {
-              "blockNumber": 13927877,
-              "blockTimestamp": "2022-01-02T19:17:42",
-              "logIndex": 318,
-              "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
-            },
-          },
-        ],
+        "events": Array [],
         "marketsSummary": Array [
           Object {
             "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
@@ -307,7 +203,7 @@ Object {
             },
             "price": Object {
               "blockNumber": 14036921,
-              "ethPrice": Object {
+              "chainTokenPrice": Object {
                 "decimal": 0.05,
                 "raw": "50000000000000000",
               },
@@ -331,7 +227,7 @@ Object {
               "askCurrency": "0x0000000000000000000000000000000000000000",
               "askPrice": Object {
                 "blockNumber": 14036921,
-                "ethPrice": Object {
+                "chainTokenPrice": Object {
                   "decimal": 0.05,
                   "raw": "50000000000000000",
                 },
@@ -349,13 +245,13 @@ Object {
                   "raw": "156400849040145514496",
                 },
               },
-              "askStatus": "ACTIVE",
               "buyer": null,
               "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
               "finder": null,
               "findersFeeBps": 100,
               "seller": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
               "sellerFundsRecipient": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+              "v3AskStatus": "ACTIVE",
             },
             "status": "ACTIVE",
             "transactionInfo": Object {
@@ -413,7 +309,7 @@ View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
             "price": Object {
               "__typename": "PriceAtTime",
               "blockNumber": 13927877,
-              "ethPrice": Object {
+              "chainTokenPrice": Object {
                 "decimal": 0,
                 "raw": "0",
               },
@@ -450,8 +346,9 @@ View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
       },
     ],
     "pageInfo": Object {
+      "endCursor": "eyJza2lwIjogMjAwfQ==",
+      "hasNextPage": false,
       "limit": 200,
-      "offset": 0,
     },
   },
 }
