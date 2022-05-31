@@ -53,7 +53,7 @@ describe('unit zdk', () => {
     });
     expect(tokens.tokens.nodes.length).toBe(2);
     expect(querySpy).toBeCalledWith('tokens', {
-      pagination: { limit: 2, offset: 0 },
+      pagination: { limit: 2, after: null },
       sort: { sortDirection: 'ASC', sortKey: 'TRANSFERRED' },
       networks: [
         {
