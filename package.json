@@ -1,6 +1,6 @@
 {
   "name": "@zoralabs/zdk",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "ZDK alpha for fetching data from graphql api",
   "repository": "https://github.com/ourzora/zdk-alpha",
   "author": "Zora",

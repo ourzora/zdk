@@ -13,14 +13,15 @@ fragment FullMedia on TokenContentMedia {
   size
   mimeType
   mediaEncoding {
-    __typename
     ... on ImageEncodingTypes {
+      __typename
       original
       large
       poster
       thumbnail
     }
     ... on VideoEncodingTypes {
+      __typename
       original
       large
       poster
@@ -28,10 +29,12 @@ fragment FullMedia on TokenContentMedia {
       thumbnail
     }
     ... on AudioEncodingTypes {
+      __typename
       original
       large
     }
     ... on UnsupportedEncodingTypes {
+      __typename
       original
     }
   }
@@ -374,7 +377,7 @@ fragment EventInfo on Event {
       collectionAddress
       originatorAddress
       toAddress
-      fee {
+      price {
         ...PriceSummary
       }
     }
@@ -524,7 +527,6 @@ query markets(
       limit
     }
     nodes {
-      __typename
       token {
         ...TokenInfo
         ...TokenDetails @include(if: $includeFullDetails)
@@ -703,6 +705,7 @@ query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: B
   token(network: $network, token: $token) {
     __typename
     token {
+      __typename
       ...TokenInfo
       ...TokenDetails @include(if: $includeFullDetails)
     }
