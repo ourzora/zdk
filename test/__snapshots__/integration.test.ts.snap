@@ -59,31 +59,10 @@ Object {
   "token": Object {
     "__typename": "Token",
     "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-    "content": Object {
-      "mediaEncoding": Object {
-        "__typename": "UnsupportedEncodingTypes",
-        "original": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/1/content/original",
-      },
-      "mimeType": null,
-      "size": null,
-      "url": null,
-    },
-    "description": "Zorbs were distributed for free by ZORA on New Year’s 2022. Each NFT imbues the properties of its wallet holder, and when sent to someone else, will transform.
-
-View this NFT at [zorb.dev/nft/1](https://zorb.dev/nft/1)",
-    "image": Object {
-      "mediaEncoding": Object {
-        "__typename": "ImageEncodingTypes",
-        "large": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/1/image/large",
-        "original": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/1/image/original",
-        "poster": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/1/image/poster",
-        "thumbnail": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/1/image/thumbnail",
-      },
-      "mimeType": "image/svg+xml",
-      "size": "860",
-      "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTAgMTEwIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9Imd6ciIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSg2Ni40NTc4IDI0LjM1NzUpIHNjYWxlKDc1LjI5MDgpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcj0iMSIgY3g9IjAiIGN5PSIwJSI+PHN0b3Agb2Zmc2V0PSIxNS42MiUiIHN0b3AtY29sb3I9ImhzbCgxMjIsIDcyJSwgOTAlKSIgLz48c3RvcCBvZmZzZXQ9IjM5LjU4JSIgc3RvcC1jb2xvcj0iaHNsKDEyMSwgODAlLCA4MCUpIiAvPjxzdG9wIG9mZnNldD0iNzIuOTIlIiBzdG9wLWNvbG9yPSJoc2woMTE1LCA5MiUsIDYyJSkiIC8+PHN0b3Agb2Zmc2V0PSI5MC42MyUiIHN0b3AtY29sb3I9ImhzbCgxMTMsIDk3JSwgNDYlKSIgLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9ImhzbCgxMTIsIDk3JSwgNDUlKSIgLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1LDUpIj48cGF0aCBkPSJNMTAwIDUwQzEwMCAyMi4zODU4IDc3LjYxNDIgMCA1MCAwQzIyLjM4NTggMCAwIDIyLjM4NTggMCA1MEMwIDc3LjYxNDIgMjIuMzg1OCAxMDAgNTAgMTAwQzc3LjYxNDIgMTAwIDEwMCA3Ny42MTQyIDEwMCA1MFoiIGZpbGw9InVybCgjZ3pyKSIgLz48cGF0aCBzdHJva2U9InJnYmEoMCwwLDAsMC4wNzUpIiBmaWxsPSJ0cmFuc3BhcmVudCIgc3Ryb2tlLXdpZHRoPSIxIiBkPSJNNTAsMC41YzI3LjMsMCw0OS41LDIyLjIsNDkuNSw0OS41Uzc3LjMsOTkuNSw1MCw5OS41UzAuNSw3Ny4zLDAuNSw1MFMyMi43LDAuNSw1MCwwLjV6IiAvPjwvZz48L3N2Zz4=",
-    },
-    "lastRefreshTime": "2022-05-18T04:37:19.404000",
+    "content": null,
+    "description": null,
+    "image": null,
+    "lastRefreshTime": null,
     "mintInfo": Object {
       "mintContext": Object {
         "__typename": "TransactionInfo",
@@ -116,7 +95,7 @@ View this NFT at [zorb.dev/nft/1](https://zorb.dev/nft/1)",
       },
       "toAddress": "0x436a257ab8f9d8579594f493ffb81fa5245ada26",
     },
-    "name": "Zorb #1",
+    "name": null,
     "owner": "0x436a257ab8f9d8579594f493ffb81fa5245ada26",
     "tokenContract": Object {
       "chain": 1,
@@ -141,7 +120,7 @@ Object {
     "content": Object {
       "mediaEncoding": Object {
         "__typename": "UnsupportedEncodingTypes",
-        "original": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/content/original",
+        "original": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/content/original",
       },
       "mimeType": null,
       "size": null,
@@ -153,16 +132,16 @@ View this NFT at [zorb.dev/nft/4](https://zorb.dev/nft/4)",
     "image": Object {
       "mediaEncoding": Object {
         "__typename": "ImageEncodingTypes",
-        "large": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/large",
-        "original": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/original",
-        "poster": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/poster",
-        "thumbnail": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/thumbnail",
+        "large": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/large",
+        "original": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/original",
+        "poster": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/poster",
+        "thumbnail": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/4/image/thumbnail",
       },
       "mimeType": "image/svg+xml",
       "size": "860",
       "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTAgMTEwIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9Imd6ciIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSg2Ni40NTc4IDI0LjM1NzUpIHNjYWxlKDc1LjI5MDgpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcj0iMSIgY3g9IjAiIGN5PSIwJSI+PHN0b3Agb2Zmc2V0PSIxNS42MiUiIHN0b3AtY29sb3I9ImhzbCgyODgsIDcyJSwgODQlKSIgLz48c3RvcCBvZmZzZXQ9IjM5LjU4JSIgc3RvcC1jb2xvcj0iaHNsKDI4OCwgNzglLCA3NCUpIiAvPjxzdG9wIG9mZnNldD0iNzIuOTIlIiBzdG9wLWNvbG9yPSJoc2woMjQzLCA4NSUsIDU1JSkiIC8+PHN0b3Agb2Zmc2V0PSI5MC42MyUiIHN0b3AtY29sb3I9ImhzbCgyMzgsIDg4JSwgMzklKSIgLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9ImhzbCgyMzgsIDg4JSwgMzglKSIgLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1LDUpIj48cGF0aCBkPSJNMTAwIDUwQzEwMCAyMi4zODU4IDc3LjYxNDIgMCA1MCAwQzIyLjM4NTggMCAwIDIyLjM4NTggMCA1MEMwIDc3LjYxNDIgMjIuMzg1OCAxMDAgNTAgMTAwQzc3LjYxNDIgMTAwIDEwMCA3Ny42MTQyIDEwMCA1MFoiIGZpbGw9InVybCgjZ3pyKSIgLz48cGF0aCBzdHJva2U9InJnYmEoMCwwLDAsMC4wNzUpIiBmaWxsPSJ0cmFuc3BhcmVudCIgc3Ryb2tlLXdpZHRoPSIxIiBkPSJNNTAsMC41YzI3LjMsMCw0OS41LDIyLjIsNDkuNSw0OS41Uzc3LjMsOTkuNSw1MCw5OS41UzAuNSw3Ny4zLDAuNSw1MFMyMi43LDAuNSw1MCwwLjV6IiAvPjwvZz48L3N2Zz4=",
     },
-    "lastRefreshTime": "2022-05-04T13:26:03.285000",
+    "lastRefreshTime": "2022-04-23T20:50:34.829000",
     "mintInfo": Object {
       "mintContext": Object {
         "__typename": "TransactionInfo",
@@ -277,82 +256,14 @@ Object {
               "findersFeeBps": 100,
               "seller": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
               "sellerFundsRecipient": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              "v3AskStatus": "CANCELED",
+              "v3AskStatus": "ACTIVE",
             },
-            "status": "CANCELED",
+            "status": "ACTIVE",
             "transactionInfo": Object {
               "blockNumber": 14036921,
               "blockTimestamp": "2022-01-19T16:04:04",
               "logIndex": 438,
               "transactionHash": "0x7d6e8224e9a85549384a96618c7ffa7dd5c0d14e73e35c2702a45f5159fc717e",
-            },
-          },
-          Object {
-            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-            "marketAddress": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
-            "marketType": "V3_ASK",
-            "networkInfo": Object {
-              "chain": "MAINNET",
-              "network": "ETHEREUM",
-            },
-            "price": Object {
-              "blockNumber": 14040390,
-              "chainTokenPrice": Object {
-                "decimal": 0.05,
-                "raw": "50000000000000000",
-              },
-              "nativePrice": Object {
-                "currency": Object {
-                  "address": "0x0000000000000000000000000000000000000000",
-                  "decimals": 18,
-                  "name": "ETH",
-                },
-                "decimal": 0.05,
-                "raw": "50000000000000000",
-              },
-              "usdcPrice": Object {
-                "decimal": 156.27094762581635,
-                "raw": "156270947625816358912",
-              },
-            },
-            "properties": Object {
-              "__typename": "V3Ask",
-              "address": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
-              "askCurrency": "0x0000000000000000000000000000000000000000",
-              "askPrice": Object {
-                "blockNumber": 14040390,
-                "chainTokenPrice": Object {
-                  "decimal": 0.05,
-                  "raw": "50000000000000000",
-                },
-                "nativePrice": Object {
-                  "currency": Object {
-                    "address": "0x0000000000000000000000000000000000000000",
-                    "decimals": 18,
-                    "name": "ETH",
-                  },
-                  "decimal": 0.05,
-                  "raw": "50000000000000000",
-                },
-                "usdcPrice": Object {
-                  "decimal": 156.27094762581635,
-                  "raw": "156270947625816358912",
-                },
-              },
-              "buyer": null,
-              "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-              "finder": null,
-              "findersFeeBps": 100,
-              "seller": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              "sellerFundsRecipient": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              "v3AskStatus": "CANCELED",
-            },
-            "status": "CANCELED",
-            "transactionInfo": Object {
-              "blockNumber": 14040390,
-              "blockTimestamp": "2022-01-20T04:57:09",
-              "logIndex": 439,
-              "transactionHash": "0xbc0158760124585c8589ba68c78011b1a13004f9cb20c0f24125122dec1de147",
             },
           },
         ],
@@ -363,7 +274,7 @@ Object {
           "content": Object {
             "mediaEncoding": Object {
               "__typename": "UnsupportedEncodingTypes",
-              "original": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/content/original",
+              "original": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/content/original",
             },
             "mimeType": null,
             "size": null,
@@ -375,16 +286,16 @@ View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
           "image": Object {
             "mediaEncoding": Object {
               "__typename": "ImageEncodingTypes",
-              "large": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/large",
-              "original": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/original",
-              "poster": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/poster",
-              "thumbnail": "https://api.zora.co/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/thumbnail",
+              "large": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/large",
+              "original": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/original",
+              "poster": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/poster",
+              "thumbnail": "https://api.notzora.com/media/ETHEREUM-MAINNET/0xca21d4228cdcc68d4e23807e5e370c07577dd152/48057/image/thumbnail",
             },
             "mimeType": "image/svg+xml",
             "size": "860",
             "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTAgMTEwIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9Imd6ciIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSg2Ni40NTc4IDI0LjM1NzUpIHNjYWxlKDc1LjI5MDgpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcj0iMSIgY3g9IjAiIGN5PSIwJSI+PHN0b3Agb2Zmc2V0PSIxNS42MiUiIHN0b3AtY29sb3I9ImhzbCgxNjMsIDcxJSwgODclKSIgLz48c3RvcCBvZmZzZXQ9IjM5LjU4JSIgc3RvcC1jb2xvcj0iaHNsKDE2MywgNzMlLCA3MSUpIiAvPjxzdG9wIG9mZnNldD0iNzIuOTIlIiBzdG9wLWNvbG9yPSJoc2woMTkwLCA3NyUsIDQ5JSkiIC8+PHN0b3Agb2Zmc2V0PSI5MC42MyUiIHN0b3AtY29sb3I9ImhzbCgxOTIsIDg3JSwgNDElKSIgLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9ImhzbCgxOTIsIDkxJSwgNDAlKSIgLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1LDUpIj48cGF0aCBkPSJNMTAwIDUwQzEwMCAyMi4zODU4IDc3LjYxNDIgMCA1MCAwQzIyLjM4NTggMCAwIDIyLjM4NTggMCA1MEMwIDc3LjYxNDIgMjIuMzg1OCAxMDAgNTAgMTAwQzc3LjYxNDIgMTAwIDEwMCA3Ny42MTQyIDEwMCA1MFoiIGZpbGw9InVybCgjZ3pyKSIgLz48cGF0aCBzdHJva2U9InJnYmEoMCwwLDAsMC4wNzUpIiBmaWxsPSJ0cmFuc3BhcmVudCIgc3Ryb2tlLXdpZHRoPSIxIiBkPSJNNTAsMC41YzI3LjMsMCw0OS41LDIyLjIsNDkuNSw0OS41Uzc3LjMsOTkuNSw1MCw5OS41UzAuNSw3Ny4zLDAuNSw1MFMyMi43LDAuNSw1MCwwLjV6IiAvPjwvZz48L3N2Zz4=",
           },
-          "lastRefreshTime": "2022-04-26T12:06:38.084000",
+          "lastRefreshTime": "2022-04-23T20:51:10.775000",
           "metadata": Object {
             "description": "Zorbs were distributed for free by ZORA on New Year’s 2022. Each NFT imbues the properties of its wallet holder, and when sent to someone else, will transform.
 
