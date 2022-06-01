@@ -374,7 +374,7 @@ fragment EventInfo on Event {
       collectionAddress
       originatorAddress
       toAddress
-      fee {
+      price {
         ...PriceSummary
       }
     }

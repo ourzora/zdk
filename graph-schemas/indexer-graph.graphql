@@ -280,7 +280,7 @@ type Mint {
   collectionAddress: String!
   originatorAddress: String!
   toAddress: String!
-  fee: PriceAtTime!
+  price: PriceAtTime!
   transactionInfo: TransactionInfo!
   networkInfo: NetworkInfo!
 }
@@ -290,7 +290,7 @@ type MintEvent {
   collectionAddress: String!
   originatorAddress: String!
   toAddress: String!
-  fee: PriceAtTime!
+  price: PriceAtTime!
 }
 
 type MintInfo {
@@ -462,7 +462,7 @@ type SalesVolume {
 
 enum SaleType {
   FOUNDATION_SALE
-  LARVA_LABS_SALE
+  CRYPTOPUNKS_SALE
   LOOKS_RARE_SALE
   OPENSEA_SINGLE_SALE
   OPENSEA_BUNDLE_SALE
