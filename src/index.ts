@@ -128,6 +128,12 @@ type OptionalNetwork<K> = Omit<K, 'networks'> & {
 
 const DEFAULT_PROD_ENDPOINT = 'https://api.zora.co/graphql';
 
+/**
+ * Main ZDK Class
+ * 
+ * @name zdk
+ * 
+ */
 export class ZDK {
   endpoint: string;
   defaultNetworks: OverrideNetworksOption;
@@ -184,6 +190,18 @@ export class ZDK {
       ...this.getNetworksOption(networks),
     });
 
+  /**
+   * Fetches a singlar NFT token
+   * 
+   * @param args.token Token parameters
+   * @param {string} args.token.address address of the token (req'd)
+   * @param {string} args.token.tokenId string ID of the token (req'd)
+   * @param {string} args.network the network to use to retrieve the token
+   * @param {string} args.network.chain Chain to use (default ETHEREUM)
+   * @param {string} args.network.network Network on the given chain to use (default MAINNET)
+   * @param {boolean} args.includeFullDetails should full details be added to the response 
+   * @returns {Promise<TokenQuery>} Token graphql response
+   */
   public token = async ({
     token,
     network = this.defaultNetworks[0],
