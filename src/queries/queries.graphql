@@ -583,7 +583,7 @@ query mints(
         ...TokenInfo
         ...TokenDetails @include(if: $includeFullDetails)
       }
-      ...MarketsOnMintInfo @include(if: $includeFullDetails)
+      ...MarketsOnMintInfo @include(if: $includeMarkets)
     }
   }
 }

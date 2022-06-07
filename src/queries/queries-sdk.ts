@@ -1755,7 +1755,7 @@ export const MintsDocument = gql`
         ...TokenInfo
         ...TokenDetails @include(if: $includeFullDetails)
       }
-      ...MarketsOnMintInfo @include(if: $includeFullDetails)
+      ...MarketsOnMintInfo @include(if: $includeMarkets)
     }
   }
 }
