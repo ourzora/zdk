@@ -144,7 +144,7 @@ type ZDKOptions = {
 export class ZDK {
   endpoint: string;
   defaultNetworks: OverrideNetworksOption;
-  defaultMaxPageSize: number = 500;
+  defaultPageSize: number = 50;
   apiKey?: string;
 
   public sdk: ReturnType<typeof getSdk>;
@@ -181,7 +181,7 @@ export class ZDK {
   private getPaginationOptions = ({ limit, after }: PaginationInput = {}) => {
     return {
       pagination: {
-        limit: limit || this.defaultMaxPageSize,
+        limit: limit || this.defaultPageSize,
         after: after || null,
       },
     };
