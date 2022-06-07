@@ -145,7 +145,7 @@ type EventConnection {
   pageInfo: PageInfo!
 }
 
-union EventProperties = ApprovalEvent | MintEvent | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
+union EventProperties = ApprovalEvent | MintEvent | Sale | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
 
 enum EventSortKey {
   CREATED
@@ -172,6 +172,7 @@ input EventsQueryInput {
 
 enum EventType {
   APPROVAL_EVENT
+  SALE_EVENT
   MINT_EVENT
   TRANSFER_EVENT
   V1_MARKET_EVENT
