@@ -37,6 +37,7 @@ import {
   SalesQueryFilter,
   OwnerCountQueryVariables,
   PaginationInput,
+  SdkFunctionWrapper,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -116,6 +117,12 @@ export interface ListOptions<SortInput> {
   includeFullDetails?: boolean;
 }
 
+export type SearchQueryArgs = {
+  query: string, 
+  filter?: SearchQueryVariables['filter'],
+  pagination?: SearchQueryVariables['pagination'],
+};
+
 export interface AggregateOptions {
   networks?: OverrideNetworksOption;
 }
@@ -128,22 +135,43 @@ type OptionalNetwork<K> = Omit<K, 'networks'> & {
 
 const DEFAULT_PROD_ENDPOINT = 'https://api.zora.co/graphql';
 
+type ZDKOptions = {
+  endpoint?: string,
+  networks?: OverrideNetworksOption,
+  apiKey?: string,
+};
+
 export class ZDK {
   endpoint: string;
   defaultNetworks: OverrideNetworksOption;
-  defaultMaxPageSize: number = 200;
+  defaultMaxPageSize: number = 500;
+  apiKey?: string;
 
   public sdk: ReturnType<typeof getSdk>;
 
-  constructor(
-    endpoint: string = DEFAULT_PROD_ENDPOINT,
-    networks: OverrideNetworksOption = [
+  constructor({
+    endpoint = DEFAULT_PROD_ENDPOINT,
+    networks = [
       { network: Network.Ethereum, chain: Chain.Mainnet },
-    ]
-  ) {
+    ],
+    apiKey = undefined,
+  }: ZDKOptions) {
     this.endpoint = endpoint;
     this.defaultNetworks = networks;
-    this.sdk = getSdk(new GraphQLClient(this.endpoint));
+    this.sdk = getSdk(new GraphQLClient(this.endpoint), this.apiKeyWrapper);
+    this.apiKey = apiKey;
+  }
+
+  private apiKeyWrapper: SdkFunctionWrapper = async <T>(
+    action: (requestHeaders?:Record<string, string>
+  ) => Promise<T>): Promise<T> => {
+    const headers: Record<string, string> = {};
+    if (this.apiKey) {
+      headers['X-API-KEY'] = this.apiKey;
+    }
+
+    const result = await action(headers);
+    return result
   }
 
   private getNetworksOption = (networks?: OverrideNetworksOption) => {
@@ -161,6 +189,11 @@ export class ZDK {
     };
   };
 
+  /**
+    * A function to query Zora API for a set of NFT collections.
+    * @param {TokenQueryArgs} - where, filter, pagination, networks, sort, includeFullDetails
+    * @returns {Promise<TokensQuery>}
+  */
   public tokens = async ({
     where,
     filter,
@@ -184,6 +217,12 @@ export class ZDK {
       ...this.getNetworksOption(networks),
     });
 
+  /**
+    * A function to query Zora API for a specific token.
+    * @param {TokenInput} - token
+    * @param {NetworkInput} - token
+    * @returns {Promise<TokenQuery>}
+  */
   public token = async ({
     token,
     network = this.defaultNetworks[0],
@@ -195,6 +234,11 @@ export class ZDK {
       includeFullDetails,
     });
 
+  /**
+    * A function to query Zora API for a collection's event set.
+    * @param {EventQueryArgs} - networks, filter, pagination, sort, where
+    * @returns {Promise<EventsQuery>}
+  */
   public events = async ({
     networks,
     filter,
@@ -213,6 +257,11 @@ export class ZDK {
       },
     });
 
+  /**
+    * A function to query Zora API for a collection's market data.
+    * @param {MarketQueryArgs} - networks, filter, pagination, sort, where, includeFullDetails
+    * @returns {Promise<MarketsQuery>}
+  */
   public markets = async ({
     networks,
     filter,
@@ -233,6 +282,11 @@ export class ZDK {
       },
     });
 
+  /**
+    * A function to query Zora API for a collection's mint data.
+    * @param {MintsQueryArgs} - networks, filter, pagination, sort, where, includeFullDetails, includeMarkets
+    * @returns {Promise<MintsQuery>}
+  */
   public mints = async ({
     networks,
     filter,
@@ -254,7 +308,12 @@ export class ZDK {
       includeFullDetails,
       includeMarkets,
     });
-
+  
+  /**
+    * A function to query Zora API for a collection's sales data.
+    * @param {SalesQueryArgs} - where, networks, filter, pagination, sort, includeFullDetails
+    * @returns {Promise<SalesQuery>}
+  */
   public sales = async ({
     where,
     pagination,
@@ -275,6 +334,11 @@ export class ZDK {
       includeFullDetails,
     });
 
+  /**
+    * A function to query Zora API for a set of NFT collection's data.
+    * @param {CollectionsQueryArgs} - where, networks, pagination, sort, includeFullDetails
+    * @returns {Promise<CollectionsQuery>}
+  */
   public collections = async ({
     where,
     pagination,
@@ -293,6 +357,11 @@ export class ZDK {
       },
     });
 
+  /**
+    * A function to query Zora API for an NFT collection's aggregate statistical data.
+    * @param {CollectionStatsAggregateQuery} - networks, collectionAddress
+    * @returns {Promise<CollectionStatsAggregateQuery>}
+  */
   public collectionStatsAggregate = async ({
     collectionAddress,
     network,
@@ -302,6 +371,12 @@ export class ZDK {
       ...this.getNetworksOption(network ? [network] : undefined),
     });
 
+
+  /**
+    * A function to query Zora API for an NFT collection's data.
+    * @param {CollectionQueryArgs} - address, networks, includeFullDetails
+    * @returns {Promise<CollectionQuery>}
+  */
   public collection = async ({
     address,
     network,
@@ -333,6 +408,11 @@ export class ZDK {
     return items[0];
   };
 
+  /**
+    * A function to query Zora API for a set of NFT collection's owners by count.
+    * @param {OwnersByCountQueryVariables} - where, networks, pagination
+    * @returns {Promise<OwnersByCountQuery>}
+  */
   public ownersByCount = async ({
     where,
     pagination,
@@ -344,12 +424,22 @@ export class ZDK {
       pagination,
     });
 
+  /**
+    * A function to query Zora API for a set of NFT aggregate attribute data.
+    * @param {AggregateAttributesQueryVariable} - where, networks
+    * @returns {Promise<AggregateAttributesQuery>}
+  */
   public aggregateAttributes = async ({
     where,
     networks = this.defaultNetworks,
   }: OptionalNetwork<AggregateAttributesQueryVariables>) =>
     this.sdk.aggregateAttributes({ where, networks });
 
+  /**
+    * A function to query Zora API for a set of NFT collection's sales volume data.
+    * @param {SalesVolumeQueryVariables} - where, networks, TimeFilter
+    * @returns {Promise<SalesVolumeQuery>}
+  */
   public salesVolume = async ({
     where,
     networks = this.defaultNetworks,
@@ -361,6 +451,11 @@ export class ZDK {
       timeFilter,
     });
 
+  /**
+    * A function to query Zora API for a set of NFT owner counts.
+    * @param {OwnerCountQueryVariables} - where, networks
+    * @returns {Promise<OwnerCountQuery>}
+  */
   public ownerCount = async ({
     where,
     networks = this.defaultNetworks,
@@ -370,6 +465,11 @@ export class ZDK {
       networks,
     });
 
+  /**
+    * A function to query Zora API for a set of NFT collection floor prices
+    * @param {FloorPriceQueryVariables} - where, networks
+    * @returns {Promise<FloorPriceQuery>}
+  */
   public floorPrice = async ({
     where,
     networks = this.defaultNetworks,
@@ -379,6 +479,11 @@ export class ZDK {
       networks,
     });
 
+  /**
+    * A function to query Zora API for a set of NFT collection count data.
+    * @param {NftCountQueryVariables} - where, networks
+    * @returns {Promise<NftCountQuery>}
+  */
   public nftCount = async ({
     where,
     networks = this.defaultNetworks,
@@ -388,10 +493,15 @@ export class ZDK {
       networks,
     });
 
-  public search = async ({ pagination, query, filter }: SearchQueryVariables) =>
+  /**
+    * A function to query Zora API to query for an NFT collection with a query string.
+    * @param {SearchQueryArgs} - pagination, query, filter
+    * @returns {Promise<SearchQuery>}
+  */
+  public search = async ({ pagination, query, filter }: SearchQueryArgs) =>
     this.sdk.search({
-      pagination,
       filter,
-      query,
+      query: {text: query},
+      ...this.getPaginationOptions(pagination),
     });
 }
