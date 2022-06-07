@@ -4,7 +4,7 @@ import { CollectionSortKey, SortDirection } from '../src/queries/queries-sdk';
 describe('zdk', () => {
   let zdk: ZDK;
   beforeEach(() => {
-    zdk = new ZDK(process.env.ZDK_ENDPOINT);
+    zdk = new ZDK({endpoint: process.env.ZDK_ENDPOINT});
   });
   it('should fetch localhost collections empty object', async () => {
     const apiResult = await zdk.tokens({

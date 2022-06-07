@@ -137,7 +137,7 @@ const DEFAULT_PROD_ENDPOINT = 'https://api.zora.co/graphql';
 
 type ZDKOptions = {
   endpoint?: string,
-  networks: OverrideNetworksOption,
+  networks?: OverrideNetworksOption,
   apiKey?: string,
 };
 
