@@ -37,6 +37,7 @@ import {
   SalesQueryFilter,
   OwnerCountQueryVariables,
   PaginationInput,
+  SdkFunctionWrapper,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -116,6 +117,12 @@ export interface ListOptions<SortInput> {
   includeFullDetails?: boolean;
 }
 
+export type SearchQueryArgs = {
+  query: string, 
+  filter?: SearchQueryVariables['filter'],
+  pagination?: SearchQueryVariables['pagination'],
+};
+
 export interface AggregateOptions {
   networks?: OverrideNetworksOption;
 }
@@ -128,22 +135,43 @@ type OptionalNetwork<K> = Omit<K, 'networks'> & {
 
 const DEFAULT_PROD_ENDPOINT = 'https://api.zora.co/graphql';
 
+type ZDKOptions = {
+  endpoint?: string,
+  networks?: OverrideNetworksOption,
+  apiKey?: string,
+};
+
 export class ZDK {
   endpoint: string;
   defaultNetworks: OverrideNetworksOption;
-  defaultMaxPageSize: number = 200;
+  defaultMaxPageSize: number = 500;
+  apiKey?: string;
 
   public sdk: ReturnType<typeof getSdk>;
 
-  constructor(
-    endpoint: string = DEFAULT_PROD_ENDPOINT,
-    networks: OverrideNetworksOption = [
+  constructor({
+    endpoint = DEFAULT_PROD_ENDPOINT,
+    networks = [
       { network: Network.Ethereum, chain: Chain.Mainnet },
-    ]
-  ) {
+    ],
+    apiKey = undefined,
+  }: ZDKOptions) {
     this.endpoint = endpoint;
     this.defaultNetworks = networks;
-    this.sdk = getSdk(new GraphQLClient(this.endpoint));
+    this.sdk = getSdk(new GraphQLClient(this.endpoint), this.apiKeyWrapper);
+    this.apiKey = apiKey;
+  }
+
+  private apiKeyWrapper: SdkFunctionWrapper = async <T>(
+    action: (requestHeaders?:Record<string, string>
+  ) => Promise<T>): Promise<T> => {
+    const headers: Record<string, string> = {};
+    if (this.apiKey) {
+      headers['X-API-KEY'] = this.apiKey;
+    }
+
+    const result = await action(headers);
+    return result
   }
 
   private getNetworksOption = (networks?: OverrideNetworksOption) => {
@@ -388,10 +416,10 @@ export class ZDK {
       networks,
     });
 
-  public search = async ({ pagination, query, filter }: SearchQueryVariables) =>
+  public search = async ({ pagination, query, filter }: SearchQueryArgs) =>
     this.sdk.search({
-      pagination,
       filter,
-      query,
+      query: {text: query},
+      ...this.getPaginationOptions(pagination),
     });
 }

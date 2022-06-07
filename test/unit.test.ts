@@ -9,7 +9,7 @@ describe('unit zdk', () => {
   let querySpy: any;
   beforeEach(() => {
     querySpy = spyOn(registry, 'query');
-    zdk = new ZDK(ZORA_TESTING_PATH);
+    zdk = new ZDK({endpoint: ZORA_TESTING_PATH});
   });
 
   xit('gets mints', async () => {

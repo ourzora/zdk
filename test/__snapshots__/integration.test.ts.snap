@@ -18,9 +18,9 @@ Object {
       },
     ],
     "pageInfo": Object {
-      "endCursor": "eyJza2lwIjogMjAwfQ==",
+      "endCursor": "eyJza2lwIjogNTAwfQ==",
       "hasNextPage": false,
-      "limit": 200,
+      "limit": 500,
     },
   },
 }
@@ -44,9 +44,9 @@ Object {
       },
     ],
     "pageInfo": Object {
-      "endCursor": "eyJza2lwIjogMjAwfQ==",
+      "endCursor": "eyJza2lwIjogNTAwfQ==",
       "hasNextPage": false,
-      "limit": 200,
+      "limit": 500,
     },
   },
 }
@@ -441,9 +441,9 @@ View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
       },
     ],
     "pageInfo": Object {
-      "endCursor": "eyJza2lwIjogMjAwfQ==",
+      "endCursor": "eyJza2lwIjogNTAwfQ==",
       "hasNextPage": false,
-      "limit": 200,
+      "limit": 500,
     },
   },
 }
