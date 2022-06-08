@@ -33,9 +33,8 @@ ZDK Main Interface class
 <a name="ZDK+tokens"></a>
 
 ### zdK.tokens(where, filter, pagination, networks, sort, includeFullDetails, includeSalesDetails) ⇒
-Tokens query
+Gets data on a group of tokens based on query parameters.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: Promise of response from tokens of type TokensQuery
 
 | Param | Description |
@@ -54,9 +53,8 @@ Tokens query
 <a name="ZDK+token"></a>
 
 ### zdK.token(args) ⇒ <code>Promise.&lt;TokenQuery&gt;</code>
-Fetches a singlar NFT token
+Gets data on a single NFT give a contract address and tokenId.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;TokenQuery&gt;</code> - Token graphql response
 
 | Param | Type | Description |
@@ -73,9 +71,8 @@ Fetches a singlar NFT token
 <a name="ZDK+events"></a>
 
 ### zdK.events(where, filter, pagination, networks, sort) ⇒
-Events query
+Gets all the events associated with a collection, token, or owner address e.g. Transfers, Mints, Sales, Approvals
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;EventsQuery&gt;</code> - Events graphql response
 
 | Param | Description | Type |
@@ -103,9 +100,8 @@ Events query
 <a name="ZDK+markets"></a>
 
 ### zdK.markets(where, filter, pagination, networks, sort, includeFullDetails) ⇒
-Markets query
+Gets NFTs that are active on the Zora markets e.g. Buy Now, Offers, Auctions
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;MarketsQuery&gt;</code> - Markets graphql response
 
 | Param | Description | Type |
@@ -136,9 +132,8 @@ Markets query
 <a name="ZDK+mints"></a>
 
 ### zdK.mints(where, filter, pagination, networks, sort, includeFullDetails, includeMarkets) ⇒
-Mints query
+Gets historic minting data for any NFT or any group of NFTs.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;MintsQuery&gt;</code> - Mints graphql response
 
 | Param | Description | Type |
@@ -174,9 +169,8 @@ Mints query
 <a name="ZDK+sales"></a>
 
 ### zdK.sales(where, filter, pagination, networks, sort, includeFullDetails) ⇒
-Sales query
+Gets sales data for any NFT or collection across multiple marketplaces e.g. Zora, OpenSea, LooksRare, Foundation, etc.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;SalesQuery&gt;</code> - Sales graphql response
 
 | Param | Description | Type |
@@ -207,9 +201,8 @@ Sales query
 | includeMarkets | include entire market details for these contracts |
 
 ### zdK.collections(where, pagination, networks, sort, includeFullDetails) ⇒
-Collections query
+Gets data for a group of NFT collections.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;CollectionsQuery&gt;</code> - Collections graphql response
 
 | Param | Description | Type |
@@ -228,9 +221,8 @@ Collections query
 | includeFullDetails | include entire token details (full uris, history etc.) |
 
 ### zdK.collectionStatsAggregate(collectionAddress, network) ⇒
-Collection stats query
+Gets statistics for a specific collection such as the total supply, number of owners and sales volume.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;CollectionStatsAggregateQuery&gt;</code> - Collection stats graphql response
 
 | Param | Description | Type |
@@ -241,9 +233,8 @@ Collection stats query
 | network.network | Network to query on (currently only ETHEREUM) |
 
 ### zdK.collection(address, network) ⇒
-Collection query
+Gets data for a specific NFT collection based on an address.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;CollectionQuery&gt;</code> - Collection graphql response
 
 | Param | Description | Type |
@@ -254,9 +245,8 @@ Collection query
 | network.network | Network to query on (currently only ETHEREUM) |
 
 ### zdK.ownersByCount(where, pagination, networks) ⇒
-Owners by count query
+Gets the number of NFTs held be certain owner addresses e.g. Top holders of a collection.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;OwnersByCountQuery&gt;</code> - Owners by count graphql response
 
 | Param | Description | Type |
@@ -274,9 +264,8 @@ Owners by count query
 | network.networks | Network to query on (currently only ETHEREUM) |
 
 ### zdK.aggregateAttributes(where, networks) ⇒
-Aggregate attributes query
+Gets statistics on all the attributes for a collection.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;AggregateAttributesQuery&gt;</code> - Aggregate attributes graphql response
 
 | Param | Description | Type |
@@ -292,9 +281,8 @@ Aggregate attributes query
 | network.network | Network to query on (currently only ETHEREUM) |
 
 ### zdK.salesVolume(where, networks, timeFilter) ⇒
-Sales volume query
+Gets the total sales volume for a collection across all marketplaces.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;SalesVolumeQuery&gt;</code> - Sales volume graphql response
 
 | Param | Description | Type |
@@ -313,9 +301,8 @@ Sales volume query
 | timeFilter.startDate | An enum specifying status of orders being returned | Active, Canceled, Completed
 
 ### zdK.ownerCount(where, networks) ⇒
-Owner count query
+Gets the number of NFTs held be certain owner addresses e.g. Top holders of a collection.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;OwnerCountQuery&gt;</code> - Owner count graphql response
 
 | Param | Description | Type |
@@ -330,9 +317,8 @@ Owner count query
 | network.networks | Network to query on (currently only ETHEREUM) |
 
 ### zdK.floorPrice(where, networks) ⇒
-Floor price query
+Gets data on the cheapest available NFT across all Zora marketplaces.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;FloorPriceQuery&gt;</code> - Floor price graphql response
 
 | Param | Description | Type |
@@ -347,9 +333,8 @@ Floor price query
 | network.networks | Network to query on (currently only ETHEREUM) |
 
 ### zdK.nftCount(where, networks) ⇒
-NFT count query
+Gets data on the total supply of NFTs in a collection.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;NftCountQuery&gt;</code> - NFT count graphql response
 
 | Param | Description | Type |
@@ -365,9 +350,8 @@ NFT count query
 | network.networks | Network to query on (currently only ETHEREUM) |
 
 ### zdK.search(pagination, query, filter) ⇒
-Search query
+Searchs for an NFT or collection based on a string input.
 
-**Kind**: instance method of [<code>ZDK</code>](#ZDK)
 **Returns**: <code>Promise.&lt;SearchQuery&gt;</code> - Search query graphql response
 
 | Param | Description | Type |
