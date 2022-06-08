@@ -144,18 +144,16 @@ type ZDKOptions = {
 export class ZDK {
   endpoint: string;
   defaultNetworks: OverrideNetworksOption;
-  defaultMaxPageSize: number = 500;
+  defaultPageSize: number = 50;
   apiKey?: string;
 
   public sdk: ReturnType<typeof getSdk>;
 
   constructor({
     endpoint = DEFAULT_PROD_ENDPOINT,
-    networks = [
-      { network: Network.Ethereum, chain: Chain.Mainnet },
-    ],
+    networks = [{ network: Network.Ethereum, chain: Chain.Mainnet }],
     apiKey = undefined,
-  }: ZDKOptions) {
+  }: ZDKOptions = {}) {
     this.endpoint = endpoint;
     this.defaultNetworks = networks;
     this.sdk = getSdk(new GraphQLClient(this.endpoint), this.apiKeyWrapper);
@@ -174,6 +172,18 @@ export class ZDK {
     return result
   }
 
+  private apiKeyWrapper: SdkFunctionWrapper = async <T>(
+    action: (requestHeaders?: Record<string, string>) => Promise<T>
+  ): Promise<T> => {
+    const headers: Record<string, string> = {};
+    if (this.apiKey) {
+      headers['X-API-KEY'] = this.apiKey;
+    }
+
+    const result = await action(headers);
+    return result;
+  };
+
   private getNetworksOption = (networks?: OverrideNetworksOption) => {
     return {
       networks: networks ?? this.defaultNetworks,
@@ -183,7 +193,7 @@ export class ZDK {
   private getPaginationOptions = ({ limit, after }: PaginationInput = {}) => {
     return {
       pagination: {
-        limit: limit || this.defaultMaxPageSize,
+        limit: limit || this.defaultPageSize,
         after: after || null,
       },
     };
@@ -371,7 +381,6 @@ export class ZDK {
       ...this.getNetworksOption(network ? [network] : undefined),
     });
 
-
   /**
     * A function to query Zora API for an NFT collection's data.
     * @param {CollectionQueryArgs} - address, networks, includeFullDetails
@@ -501,7 +510,7 @@ export class ZDK {
   public search = async ({ pagination, query, filter }: SearchQueryArgs) =>
     this.sdk.search({
       filter,
-      query: {text: query},
+      query: { text: query },
       ...this.getPaginationOptions(pagination),
     });
 }
