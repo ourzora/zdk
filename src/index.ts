@@ -161,18 +161,6 @@ export class ZDK {
   }
 
   private apiKeyWrapper: SdkFunctionWrapper = async <T>(
-    action: (requestHeaders?:Record<string, string>
-  ) => Promise<T>): Promise<T> => {
-    const headers: Record<string, string> = {};
-    if (this.apiKey) {
-      headers['X-API-KEY'] = this.apiKey;
-    }
-
-    const result = await action(headers);
-    return result
-  }
-
-  private apiKeyWrapper: SdkFunctionWrapper = async <T>(
     action: (requestHeaders?: Record<string, string>) => Promise<T>
   ): Promise<T> => {
     const headers: Record<string, string> = {};
