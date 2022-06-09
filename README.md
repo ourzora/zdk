@@ -144,10 +144,10 @@ Gets historic minting data for any NFT or any group of NFTs.
 | where.recipientAddresses | List of receiver addresses to filter by |
 | where.tokens: | Tuple of token and id to filter by an exact match as a list |
 | filter | Filter query parameters after the where query |
-| filter.timeFilter | Arguments for filtering market info expectations |
-| timeFilter.endDate | A string array of addresses that have bid for this NFT |
-| timeFilter.lookbackHours | An enum specifying the version of Zora the order is made on | V1Ask, V1BidShare, V1Offer, V2Auction, V3Ask
-| timeFilter.startDate | An enum specifying status of orders being returned | Active, Canceled, Completed
+| filter.timeFilter | An input of type TimeFilter for time partitioned event responses. |
+| timeFilter.endDate | A date string specifying when to stop collecting mint data|
+| timeFilter.lookbackHours | A string specifying how many hours to look back from an end date | 
+| timeFilter.startDate | A date string specifying when to start collecting mint data |
 | filter.priceFilter | Arguments for filtering price ranges |
 | priceFilter.currencyAddress | A string specifying the currency being used for the market transaction to be returned |
 | priceFilter.maximumChainTokenPrice | A string specifying the maximum price of the native chain token (ETH, MATIC, etc) to return |
@@ -180,11 +180,10 @@ Gets sales data for any NFT or collection across multiple marketplaces e.g. Zora
 | where.collectionAddresses | List of collection addresses to filter by |
 | where.sellerAddresses | List of receiver addresses to filter by |
 | where.tokens: | Tuple of token and id to filter by an exact match as a list |
-| filter | Filter query parameters after the where query |
-| filter.timeFilter | Arguments for filtering market info expectations |
-| timeFilter.endDate | A string array of addresses that have bid for this NFT |
-| timeFilter.lookbackHours | An enum specifying the version of Zora the order is made on | V1Ask, V1BidShare, V1Offer, V2Auction, V3Ask
-| timeFilter.startDate | An enum specifying status of orders being returned | Active, Canceled, Completed
+| filter.timeFilter | An input of type TimeFilter for time partitioned event responses. |
+| timeFilter.endDate | A date string specifying when to stop collecting mint data|
+| timeFilter.lookbackHours | A string specifying how many hours to look back from an end date | 
+| timeFilter.startDate | A date string specifying when to start collecting mint data |
 | filter.priceFilter | Arguments for filtering price ranges |
 | priceFilter.currencyAddress | A string specifying the currency being used for the market transaction to be returned |
 | priceFilter.maximumChainTokenPrice | A string specifying the maximum price of the native chain token (ETH, MATIC, etc) to return |
