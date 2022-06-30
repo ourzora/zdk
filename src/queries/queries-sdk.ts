@@ -663,9 +663,11 @@ export enum SortDirection {
 }
 
 export type TimeFilter = {
-  endDate?: InputMaybe<Scalars['String']>;
+  endDate?: InputMaybe<Scalars['DateTime']>;
   lookbackHours?: InputMaybe<Scalars['Int']>;
-  startDate?: InputMaybe<Scalars['String']>;
+  startDate?: InputMaybe<Scalars['DateTime']>;
+  startBlock?: InputMaybe<Scalars['Int']>;
+  endBlock?: InputMaybe<Scalars['Int']>;
 };
 
 export type Token = {
