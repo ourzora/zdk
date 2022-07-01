@@ -125,11 +125,7 @@ type CurrencyAmount {
   decimal: Float!
 }
 
-"""Date (isoformat)"""
-scalar Date
-
-"""Date with time (isoformat)"""
-scalar DateTime
+scalar datetime
 
 type Event {
   networkInfo: NetworkInfo!
@@ -145,7 +141,7 @@ type EventConnection {
   pageInfo: PageInfo!
 }
 
-union EventProperties = ApprovalEvent | MintEvent | Sale | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
+union EventProperties = ApprovalEvent | MintEvent | NounsAuctionEvent | Sale | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
 
 enum EventSortKey {
   CREATED
@@ -172,6 +168,7 @@ input EventsQueryInput {
 
 enum EventType {
   APPROVAL_EVENT
+  NOUNS_AUCTION_EVENT
   SALE_EVENT
   MINT_EVENT
   TRANSFER_EVENT
@@ -199,10 +196,10 @@ type Market {
   transactionInfo: TransactionInfo!
   status: String!
   marketAddress: String!
-  collectionAddress: String!
-  tokenId: String!
+  collectionAddress: String
+  tokenId: String
   marketType: MarketType!
-  properties: MarketProperties!
+  properties: MarketProperties
   price: PriceAtTime
 }
 
@@ -212,7 +209,7 @@ enum MarketCategory {
   AUCTION
 }
 
-union MarketProperties = V1Ask | V1Offer | V1BidShare | V2Auction | V3Ask
+union MarketProperties = NounsAuction | V1Ask | V1BidShare | V1Offer | V2Auction | V3Ask
 
 enum MarketSortKey {
   NONE
@@ -241,9 +238,11 @@ enum MarketStatus {
   ACTIVE
   CANCELED
   COMPLETED
+  INVALID
 }
 
 enum MarketType {
+  NOUNS_AUCTION
   V1_ASK
   V1_BID_SHARE
   V1_OFFER
@@ -348,6 +347,83 @@ type NetworkInfo {
 input NetworkInput {
   network: Network! = ETHEREUM
   chain: Chain! = MAINNET
+}
+
+type NounsAuction {
+  address: String!
+  tokenId: String!
+  collectionAddress: String!
+  auctionId: String!
+  auctionCurrency: String!
+  highestBidPrice: PriceAtTime
+  startTime: String!
+  endTime: String!
+  duration: String!
+  firstBidTime: datetime
+  highestBidder: String
+  estimatedDurationTime: datetime
+  reservePrice: PriceAtTime
+  amount: PriceAtTime
+  minBidIncrementPercentage: Int
+  winner: String
+  timeBuffer: Int
+}
+
+type NounsAuctionBidEventProperties {
+  nounId: String!
+  sender: String!
+  value: String!
+  extended: Boolean!
+}
+
+type NounsAuctionCreatedEventProperties {
+  nounId: String!
+  startTime: String!
+  endTime: String!
+}
+
+type NounsAuctionEvent {
+  nounsAuctionEventType: NounsAuctionEventType!
+  address: String!
+  collectionAddress: String!
+  tokenId: String!
+  properties: NounsAuctionEventProperties!
+}
+
+union NounsAuctionEventProperties = NounsAuctionCreatedEventProperties | NounsAuctionBidEventProperties | NounsAuctionExtendedEventProperties | NounsAuctionSettledEventProperties | NounsAuctionTimeBufferUpdatedEventProperties | NounsAuctionReservePriceUpdatedEventProperties | NounsAuctionMinBidIncrementPercentageUpdatedEventProperties
+
+enum NounsAuctionEventType {
+  NOUNS_AUCTION_HOUSE_AUCTION_CREATED_EVENT
+  NOUNS_AUCTION_HOUSE_AUCTION_BID_EVENT
+  NOUNS_AUCTION_HOUSE_AUCTION_EXTENDED_EVENT
+  NOUNS_AUCTION_HOUSE_AUCTION_SETTLED_EVENT
+  NOUNS_AUCTION_HOUSE_AUCTION_TIME_BUFFER_UPDATED_EVENT
+  NOUNS_AUCTION_HOUSE_AUCTION_RESERVE_PRICE_UPDATED_EVENT
+  NOUNS_AUCTION_HOUSE_AUCTION_MIN_BID_INCREMENT_PERCENTAGE_UPDATED
+}
+
+type NounsAuctionExtendedEventProperties {
+  nounId: String!
+  endTime: String!
+}
+
+type NounsAuctionMinBidIncrementPercentageUpdatedEventProperties {
+  minBidIncrementPercentage: String!
+}
+
+type NounsAuctionReservePriceUpdatedEventProperties {
+  reservePrice: String!
+}
+
+type NounsAuctionSettledEventProperties {
+  nounId: String!
+  winner: String!
+  amount: String!
+  price: PriceAtTime!
+}
+
+type NounsAuctionTimeBufferUpdatedEventProperties {
+  timeBuffer: String!
 }
 
 type OwnerCount {
@@ -464,6 +540,7 @@ type SalesVolume {
 enum SaleType {
   FOUNDATION_SALE
   NOUNS_AUCTION_SALE
+  LIL_NOUNS_AUCTION_SALE
   CRYPTOPUNKS_SALE
   LOOKS_RARE_SALE
   OPENSEA_SINGLE_SALE
@@ -525,8 +602,15 @@ enum SortDirection {
 }
 
 input TimeFilter {
+  """Date in YYYY-MM-DD format. Deprecating in favor of start_datetime"""
   startDate: String = null
+
+  """Date in YYYY-MM-DD format. Deprecating in favor of end_datetime"""
   endDate: String = null
+  startDatetime: String = null
+  endDatetime: String = null
+  startBlock: Int = null
+  endBlock: Int = null
   lookbackHours: Int = null
 }
 
@@ -546,7 +630,7 @@ type Token {
   description: String
   metadata: JSONScalar
   attributes: [TokenAttribute!]
-  lastRefreshTime: DateTime
+  lastRefreshTime: datetime
 }
 
 type TokenAttribute {
@@ -629,7 +713,7 @@ type TokenWithMarketsSummaryConnection {
 
 type TransactionInfo {
   blockNumber: Int!
-  blockTimestamp: Date!
+  blockTimestamp: datetime!
   transactionHash: String
   logIndex: Int
 }
@@ -646,20 +730,23 @@ type UnsupportedEncodingTypes {
 }
 
 type V1Ask {
+  v1AskStatus: String!
+  address: String!
   collectionAddress: String!
   tokenId: String!
   amount: PriceAtTime!
   currency: String!
-  v1AskStatus: V1MarketEntityStatus!
+  tokenOwner: String
 }
 
 type V1BidShare {
-  tokenId: String!
+  v1BidShareStatus: String!
+  address: String!
   collectionAddress: String!
+  tokenId: String!
   previousOwner: String!
   creator: String!
   owner: String!
-  v1BidShareStatus: V1MarketEntityStatus!
 }
 
 type V1MarketAskCreatedEventProperties {
@@ -678,12 +765,6 @@ type V1MarketBidShareUpdatedEventProperties {
   previousOwner: String!
   creator: String!
   owner: String!
-}
-
-enum V1MarketEntityStatus {
-  ACTIVE
-  CANCELED
-  COMPLETED
 }
 
 type V1MarketEvent {
@@ -733,33 +814,34 @@ type V1MarketOfferRemovedEventProperties {
 }
 
 type V1Offer {
+  v1OfferStatus: String!
+  address: String!
+  collectionAddress: String!
+  tokenId: String!
   amount: PriceAtTime!
   currency: String!
   bidder: String!
   recipient: String!
   sellOnShare: String!
-  tokenId: String!
-  collectionAddress: String!
-  v1OfferStatus: V1MarketEntityStatus!
 }
 
 type V2Auction {
+  v2AuctionStatus: String!
   address: String!
   tokenId: String!
   collectionAddress: String!
   auctionId: String!
-  v2AuctionStatus: V2AuctionStatus!
   approved: Boolean!
   auctionCurrency: String!
   highestBidPrice: PriceAtTime
   duration: String!
-  firstBidTime: DateTime
+  firstBidTime: datetime
   reservePrice: PriceAtTime!
   curatorFeePercentage: Int!
   tokenOwner: String!
   highestBidder: String
   curator: String!
-  estimatedExpirationTime: DateTime
+  estimatedExpirationTime: datetime
   amountCuratorReceived: PriceAtTime
   amountTokenOwnerReceived: PriceAtTime
 }
@@ -829,15 +911,8 @@ type V2AuctionReservePriceUpdatedEventProperties {
   price: PriceAtTime!
 }
 
-enum V2AuctionStatus {
-  ACTIVE
-  CANCELED
-  COMPLETED
-  EXPIRED
-}
-
 type V3Ask {
-  v3AskStatus: V3AskStatus!
+  v3AskStatus: String!
   address: String!
   collectionAddress: String!
   tokenId: String!
@@ -903,12 +978,6 @@ type V3AskPriceUpdatedEventProperties {
   askPrice: String!
   findersFeeBps: Int!
   price: PriceAtTime!
-}
-
-enum V3AskStatus {
-  ACTIVE
-  CANCELED
-  COMPLETED
 }
 
 type VideoEncodingTypes {
