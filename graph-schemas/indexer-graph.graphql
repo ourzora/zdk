@@ -131,7 +131,7 @@ type Event {
   networkInfo: NetworkInfo!
   transactionInfo: TransactionInfo!
   eventType: EventType!
-  collectionAddress: String!
+  collectionAddress: String
   tokenId: String
   properties: EventProperties!
 }
@@ -141,7 +141,7 @@ type EventConnection {
   pageInfo: PageInfo!
 }
 
-union EventProperties = ApprovalEvent | MintEvent | NounsAuctionEvent | Sale | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent
+union EventProperties = ApprovalEvent | LilNounsAuctionEvent | MintEvent | NounsAuctionEvent | Sale | SeaportEvent | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent | V3ReserveAuctionEvent
 
 enum EventSortKey {
   CREATED
@@ -168,13 +168,16 @@ input EventsQueryInput {
 
 enum EventType {
   APPROVAL_EVENT
+  LIL_NOUNS_AUCTION_EVENT
   NOUNS_AUCTION_EVENT
   SALE_EVENT
+  SEAPORT_EVENT
   MINT_EVENT
   TRANSFER_EVENT
   V1_MARKET_EVENT
   V2_AUCTION_EVENT
   V3_ASK_EVENT
+  V3_RESERVE_AUCTION_EVENT
 }
 
 type ImageEncodingTypes {
@@ -190,6 +193,83 @@ union ImageEncodingTypesVideoEncodingTypesAudioEncodingTypesUnsupportedEncodingT
 The GenericScalar scalar type represents a generic GraphQL scalar value that could be: List or Object.
 """
 scalar JSONScalar
+
+type LilNounsAuction {
+  address: String!
+  tokenId: String!
+  collectionAddress: String!
+  auctionId: String!
+  auctionCurrency: String!
+  highestBidPrice: PriceAtTime
+  startTime: String!
+  endTime: String!
+  duration: String!
+  firstBidTime: datetime
+  highestBidder: String
+  estimatedDurationTime: datetime
+  reservePrice: PriceAtTime
+  amount: PriceAtTime
+  minBidIncrementPercentage: Int
+  winner: String
+  timeBuffer: Int
+}
+
+type LilNounsAuctionBidEventProperties {
+  lilNounId: String!
+  sender: String!
+  value: String!
+  extended: Boolean!
+}
+
+type LilNounsAuctionCreatedEventProperties {
+  lilNounId: String!
+  startTime: String!
+  endTime: String!
+}
+
+type LilNounsAuctionEvent {
+  lilNounsAuctionEventType: LilNounsAuctionEventType!
+  address: String!
+  collectionAddress: String!
+  tokenId: String!
+  properties: LilNounsAuctionEventProperties!
+}
+
+union LilNounsAuctionEventProperties = LilNounsAuctionCreatedEventProperties | LilNounsAuctionBidEventProperties | LilNounsAuctionExtendedEventProperties | LilNounsAuctionSettledEventProperties | LilNounsAuctionTimeBufferUpdatedEventProperties | LilNounsAuctionReservePriceUpdatedEventProperties | LilNounsAuctionMinBidIncrementPercentageUpdatedEventProperties
+
+enum LilNounsAuctionEventType {
+  LIL_NOUNS_AUCTION_HOUSE_AUCTION_CREATED_EVENT
+  LIL_NOUNS_AUCTION_HOUSE_AUCTION_BID_EVENT
+  LIL_NOUNS_AUCTION_HOUSE_AUCTION_EXTENDED_EVENT
+  LIL_NOUNS_AUCTION_HOUSE_AUCTION_SETTLED_EVENT
+  LIL_NOUNS_AUCTION_HOUSE_AUCTION_TIME_BUFFER_UPDATED_EVENT
+  LIL_NOUNS_AUCTION_HOUSE_AUCTION_RESERVE_PRICE_UPDATED_EVENT
+  LIL_NOUNS_AUCTION_HOUSE_AUCTION_MIN_BID_INCREMENT_PERCENTAGE_UPDATED
+}
+
+type LilNounsAuctionExtendedEventProperties {
+  lilNounId: String!
+  endTime: String!
+}
+
+type LilNounsAuctionMinBidIncrementPercentageUpdatedEventProperties {
+  minBidIncrementPercentage: String!
+}
+
+type LilNounsAuctionReservePriceUpdatedEventProperties {
+  reservePrice: String!
+}
+
+type LilNounsAuctionSettledEventProperties {
+  lilNounId: String!
+  winner: String!
+  amount: String!
+  price: PriceAtTime!
+}
+
+type LilNounsAuctionTimeBufferUpdatedEventProperties {
+  timeBuffer: String!
+}
 
 type Market {
   networkInfo: NetworkInfo!
@@ -209,7 +289,7 @@ enum MarketCategory {
   AUCTION
 }
 
-union MarketProperties = NounsAuction | V1Ask | V1BidShare | V1Offer | V2Auction | V3Ask
+union MarketProperties = LilNounsAuction | NounsAuction | V1Ask | V1BidShare | V1Offer | V2Auction | V3Ask
 
 enum MarketSortKey {
   NONE
@@ -242,6 +322,7 @@ enum MarketStatus {
 }
 
 enum MarketType {
+  LIL_NOUNS_AUCTION
   NOUNS_AUCTION
   V1_ASK
   V1_BID_SHARE
@@ -426,6 +507,50 @@ type NounsAuctionTimeBufferUpdatedEventProperties {
   timeBuffer: String!
 }
 
+type OffchainOrder {
+  collectionAddress: String
+  tokenId: String
+  offerer: String!
+  startTime: datetime!
+  endTime: datetime!
+  orderType: String!
+  price: PriceAtTime!
+  properties: SeaportOrder!
+}
+
+enum OffchainOrderSortKey {
+  NONE
+  CHAIN_TOKEN_PRICE
+  NATIVE_PRICE
+  USDC_PRICE
+  END_TIME
+}
+
+input OffchainOrderSortKeySortInput {
+  sortKey: OffchainOrderSortKey!
+  sortDirection: SortDirection!
+}
+
+input OffchainOrdersQueryFilter {
+  priceFilter: PriceFilter = null
+}
+
+input OffchainOrdersQueryInput {
+  collectionAddresses: [String!] = null
+  sellerAddresses: [String!] = null
+  tokens: [TokenInput!] = null
+}
+
+type OffchainOrderWithToken {
+  offchainOrder: OffchainOrder!
+  token: Token
+}
+
+type OffchainOrderWithTokenConnection {
+  nodes: [OffchainOrderWithToken!]!
+  pageInfo: PageInfo!
+}
+
 type OwnerCount {
   owner: String!
   count: Int!
@@ -462,6 +587,15 @@ input PriceFilter {
   maximumNativePrice: String = null
 }
 
+type ReceivedItem {
+  itemType: String!
+  address: String!
+  tokenId: String!
+  amount: String!
+  recipient: String!
+  price: PriceAtTime
+}
+
 type RootQuery {
   """Gets counts, sales volume, and other statistics"""
   aggregateStat: AggregateStat!
@@ -480,6 +614,9 @@ type RootQuery {
 
   """Historical minting data"""
   mints(networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: MintSortKeySortInput = null, filter: MintsQueryFilter = null, where: MintsQueryInput = null): MintWithTokenAndMarketsConnection!
+
+  """Offchain liquidity"""
+  offchainOrders(where: OffchainOrdersQueryInput = null, networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: OffchainOrderSortKeySortInput = null, filter: OffchainOrdersQueryFilter = null): OffchainOrderWithTokenConnection!
 
   """Historical sales data from ZORA, OpenSea, LooksRare, 0x, and more"""
   sales(where: SalesQueryInput = null, networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: SaleSortKeySortInput = null, filter: SalesQueryFilter = null): SaleWithTokenConnection!
@@ -546,6 +683,7 @@ enum SaleType {
   OPENSEA_SINGLE_SALE
   OPENSEA_BUNDLE_SALE
   RARIBLE_SALE
+  SEAPORT_SALE
   SUPERRARE_SALE
   ZEROX_SALE
   ZORA_V2_AUCTION_SALE
@@ -560,6 +698,64 @@ type SaleWithToken {
 type SaleWithTokenConnection {
   nodes: [SaleWithToken!]!
   pageInfo: PageInfo!
+}
+
+type SeaportCounterIncrementedProperties {
+  newCounter: String!
+}
+
+type SeaportEvent {
+  address: String!
+  eventType: SeaportEventType!
+  offerer: String!
+  orderHash: String
+  zone: String
+  properties: SeaportEventProperties
+}
+
+union SeaportEventProperties = SeaportOrderFulfilledProperties | SeaportCounterIncrementedProperties
+
+enum SeaportEventType {
+  SEAPORT_COUNTER_INCREMENTED_EVENT
+  SEAPORT_ORDER_CANCELLED_EVENT
+  SEAPORT_ORDER_FULFILLED_EVENT
+  SEAPORT_ORDER_VALIDATED_EVENT
+}
+
+type SeaportOrder {
+  orderHash: String!
+  offerer: String!
+  startTime: datetime!
+  endTime: datetime!
+  orderType: String!
+  price: PriceAtTime!
+  offers: [SeaportOrderItem!]!
+  considerations: [SeaportOrderItem!]!
+  zone: String!
+  zoneHash: String!
+  salt: String!
+  conduitKey: String!
+  counter: String!
+  signature: String!
+  schemaHash: String!
+}
+
+type SeaportOrderFulfilledProperties {
+  recipient: String!
+  offer: [SpentItem!]!
+  consideration: [ReceivedItem!]!
+}
+
+type SeaportOrderItem {
+  itemType: String!
+  address: String!
+  tokenId: String
+  criteria: String
+  startAmount: String!
+  endAmount: String!
+  startPrice: PriceAtTime
+  endPrice: PriceAtTime
+  recipient: String
 }
 
 enum SearchableEntity {
@@ -599,6 +795,14 @@ type SearchResultConnection {
 enum SortDirection {
   ASC
   DESC
+}
+
+type SpentItem {
+  itemType: String!
+  address: String!
+  tokenId: String!
+  amount: String!
+  price: PriceAtTime
 }
 
 input TimeFilter {
@@ -917,10 +1121,10 @@ type V3Ask {
   collectionAddress: String!
   tokenId: String!
   seller: String!
-  sellerFundsRecipient: String!
   askCurrency: String!
   askPrice: PriceAtTime!
-  findersFeeBps: Int!
+  sellerFundsRecipient: String
+  findersFeeBps: Int
   buyer: String
   finder: String
 }
@@ -958,6 +1162,10 @@ enum V3AskEventType {
   V3_ASK_CANCELED
   V3_ASK_PRICE_UPDATED
   V3_ASK_FILLED
+  V3_PRIVATE_ASK_CREATED
+  V3_PRIVATE_ASK_CANCELED
+  V3_PRIVATE_ASK_PRICE_UPDATED
+  V3_PRIVATE_ASK_FILLED
 }
 
 type V3AskFilledEventProperties {
@@ -978,6 +1186,58 @@ type V3AskPriceUpdatedEventProperties {
   askPrice: String!
   findersFeeBps: Int!
   price: PriceAtTime!
+}
+
+type V3ReserveAuctionCoreEthV1AuctionProperties {
+  seller: String!
+  reservePrice: String!
+  sellerFundsRecipient: String!
+  highestBid: String!
+  highestBidder: String!
+  duration: String!
+  startTime: String!
+  firstBidTime: String!
+}
+
+type V3ReserveAuctionEvent {
+  eventType: V3ReserveAuctionEventType!
+  address: String!
+  tokenContract: String!
+  tokenId: String!
+  properties: V3ReserveAuctionEventProperties!
+}
+
+union V3ReserveAuctionEventProperties = V3ReserveAuctionV1AuctionBidProperties | V3ReserveAuctionV1AuctionCreatedProperties | V3ReserveAuctionV1AuctionReservePriceUpdatedProperties | V3ReserveAuctionV1AuctionCanceledProperties | V3ReserveAuctionV1AuctionEndedProperties
+
+enum V3ReserveAuctionEventType {
+  V3_RESERVE_AUCTION_CREATED
+  V3_RESERVE_AUCTION_CANCELED
+  V3_RESERVE_AUCTION_RESERVE_PRICE_UPDATED
+  V3_RESERVE_AUCTION_BID
+  V3_RESERVE_AUCTION_ENDED
+}
+
+type V3ReserveAuctionV1AuctionBidProperties {
+  firstBid: Boolean!
+  extended: Boolean!
+  auction: V3ReserveAuctionCoreEthV1AuctionProperties!
+  price: PriceAtTime!
+}
+
+type V3ReserveAuctionV1AuctionCanceledProperties {
+  auction: V3ReserveAuctionCoreEthV1AuctionProperties!
+}
+
+type V3ReserveAuctionV1AuctionCreatedProperties {
+  auction: V3ReserveAuctionCoreEthV1AuctionProperties!
+}
+
+type V3ReserveAuctionV1AuctionEndedProperties {
+  auction: V3ReserveAuctionCoreEthV1AuctionProperties!
+}
+
+type V3ReserveAuctionV1AuctionReservePriceUpdatedProperties {
+  auction: V3ReserveAuctionCoreEthV1AuctionProperties!
 }
 
 type VideoEncodingTypes {
