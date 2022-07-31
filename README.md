@@ -32,7 +32,7 @@ ZDK Main Interface class
 
 <a name="ZDK+tokens"></a>
 
-### zdK.tokens(where, filter, pagination, networks, sort, includeFullDetails, includeSalesDetails) ⇒
+### zdk.tokens(where, filter, pagination, networks, sort, includeFullDetails, includeSalesDetails) ⇒
 Gets data on a group of tokens based on query parameters.
 
 **Returns**: Promise of response from tokens of type TokensQuery
@@ -52,7 +52,7 @@ Gets data on a group of tokens based on query parameters.
 
 <a name="ZDK+token"></a>
 
-### zdK.token(args) ⇒ <code>Promise.&lt;TokenQuery&gt;</code>
+### zdk.token(args) ⇒ <code>Promise.&lt;TokenQuery&gt;</code>
 Gets data on a single NFT give a contract address and tokenId.
 
 **Returns**: <code>Promise.&lt;TokenQuery&gt;</code> - Token graphql response
@@ -70,7 +70,7 @@ Gets data on a single NFT give a contract address and tokenId.
 
 <a name="ZDK+events"></a>
 
-### zdK.events(where, filter, pagination, networks, sort) ⇒
+### zdk.events(where, filter, pagination, networks, sort) ⇒
 Gets all the events associated with a collection, token, or owner address e.g. Transfers, Mints, Sales, Approvals
 
 **Returns**: <code>Promise.&lt;EventsQuery&gt;</code> - Events graphql response
@@ -99,7 +99,7 @@ Gets all the events associated with a collection, token, or owner address e.g. T
 
 <a name="ZDK+markets"></a>
 
-### zdK.markets(where, filter, pagination, networks, sort, includeFullDetails) ⇒
+### zdk.markets(where, filter, pagination, networks, sort, includeFullDetails) ⇒
 Gets NFTs that are active on the Zora markets e.g. Buy Now, Offers, Auctions
 
 **Returns**: <code>Promise.&lt;MarketsQuery&gt;</code> - Markets graphql response
@@ -131,7 +131,7 @@ Gets NFTs that are active on the Zora markets e.g. Buy Now, Offers, Auctions
 
 <a name="ZDK+mints"></a>
 
-### zdK.mints(where, filter, pagination, networks, sort, includeFullDetails, includeMarkets) ⇒
+### zdk.mints(where, filter, pagination, networks, sort, includeFullDetails, includeMarkets) ⇒
 Gets historic minting data for any NFT or any group of NFTs.
 
 **Returns**: <code>Promise.&lt;MintsQuery&gt;</code> - Mints graphql response
@@ -168,7 +168,7 @@ Gets historic minting data for any NFT or any group of NFTs.
 
 <a name="ZDK+sales"></a>
 
-### zdK.sales(where, filter, pagination, networks, sort, includeFullDetails) ⇒
+### zdk.sales(where, filter, pagination, networks, sort, includeFullDetails) ⇒
 Gets sales data for any NFT or collection across multiple marketplaces e.g. Zora, OpenSea, LooksRare, Foundation, etc.
 
 **Returns**: <code>Promise.&lt;SalesQuery&gt;</code> - Sales graphql response
@@ -199,7 +199,7 @@ Gets sales data for any NFT or collection across multiple marketplaces e.g. Zora
 | includeFullDetails | include entire token details (full uris, history etc.) |
 | includeMarkets | include entire market details for these contracts |
 
-### zdK.collections(where, pagination, networks, sort, includeFullDetails) ⇒
+### zdk.collections(where, pagination, networks, sort, includeFullDetails) ⇒
 Gets data for a group of NFT collections.
 
 **Returns**: <code>Promise.&lt;CollectionsQuery&gt;</code> - Collections graphql response
@@ -219,7 +219,7 @@ Gets data for a group of NFT collections.
 | sort.sortKey | An enum value specifying the value to sort results by | ChainTokenPrice, Created, NativePrice, None, TimeSaleEnding
 | includeFullDetails | include entire token details (full uris, history etc.) |
 
-### zdK.collectionStatsAggregate(collectionAddress, network) ⇒
+### zdk.collectionStatsAggregate(collectionAddress, network) ⇒
 Gets statistics for a specific collection such as the total supply, number of owners and sales volume.
 
 **Returns**: <code>Promise.&lt;CollectionStatsAggregateQuery&gt;</code> - Collection stats graphql response
@@ -231,7 +231,7 @@ Gets statistics for a specific collection such as the total supply, number of ow
 | network.chain | Chain to query on (currently only MAINNET) |
 | network.network | Network to query on (currently only ETHEREUM) |
 
-### zdK.collection(address, network) ⇒
+### zdk.collection(address, network) ⇒
 Gets data for a specific NFT collection based on an address.
 
 **Returns**: <code>Promise.&lt;CollectionQuery&gt;</code> - Collection graphql response
@@ -243,7 +243,7 @@ Gets data for a specific NFT collection based on an address.
 | network.chain | Chain to query on (currently only MAINNET) |
 | network.network | Network to query on (currently only ETHEREUM) |
 
-### zdK.ownersByCount(where, pagination, networks) ⇒
+### zdk.ownersByCount(where, pagination, networks) ⇒
 Gets the number of NFTs held be certain owner addresses e.g. Top holders of a collection.
 
 **Returns**: <code>Promise.&lt;OwnersByCountQuery&gt;</code> - Owners by count graphql response
@@ -262,7 +262,7 @@ Gets the number of NFTs held be certain owner addresses e.g. Top holders of a co
 | network.chains | Chain to query on (currently only MAINNET) |
 | network.networks | Network to query on (currently only ETHEREUM) |
 
-### zdK.aggregateAttributes(where, networks) ⇒
+### zdk.aggregateAttributes(where, networks) ⇒
 Gets statistics on all the attributes for a collection.
 
 **Returns**: <code>Promise.&lt;AggregateAttributesQuery&gt;</code> - Aggregate attributes graphql response
@@ -279,7 +279,7 @@ Gets statistics on all the attributes for a collection.
 | network.chain | Chain to query on (currently only MAINNET) |
 | network.network | Network to query on (currently only ETHEREUM) |
 
-### zdK.salesVolume(where, networks, timeFilter) ⇒
+### zdk.salesVolume(where, networks, timeFilter) ⇒
 Gets the total sales volume for a collection across all marketplaces.
 
 **Returns**: <code>Promise.&lt;SalesVolumeQuery&gt;</code> - Sales volume graphql response
@@ -299,7 +299,7 @@ Gets the total sales volume for a collection across all marketplaces.
 | timeFilter.lookbackHours | An enum specifying the version of Zora the order is made on | V1Ask, V1BidShare, V1Offer, V2Auction, V3Ask
 | timeFilter.startDate | An enum specifying status of orders being returned | Active, Canceled, Completed
 
-### zdK.ownerCount(where, networks) ⇒
+### zdk.ownerCount(where, networks) ⇒
 Gets the number of NFTs held be certain owner addresses e.g. Top holders of a collection.
 
 **Returns**: <code>Promise.&lt;OwnerCountQuery&gt;</code> - Owner count graphql response
@@ -315,7 +315,7 @@ Gets the number of NFTs held be certain owner addresses e.g. Top holders of a co
 | network.chains | Chain to query on (currently only MAINNET) |
 | network.networks | Network to query on (currently only ETHEREUM) |
 
-### zdK.floorPrice(where, networks) ⇒
+### zdk.floorPrice(where, networks) ⇒
 Gets data on the cheapest available NFT across all Zora marketplaces.
 
 **Returns**: <code>Promise.&lt;FloorPriceQuery&gt;</code> - Floor price graphql response
@@ -331,7 +331,7 @@ Gets data on the cheapest available NFT across all Zora marketplaces.
 | network.chains | Chain to query on (currently only MAINNET) |
 | network.networks | Network to query on (currently only ETHEREUM) |
 
-### zdK.nftCount(where, networks) ⇒
+### zdk.nftCount(where, networks) ⇒
 Gets data on the total supply of NFTs in a collection.
 
 **Returns**: <code>Promise.&lt;NftCountQuery&gt;</code> - NFT count graphql response
@@ -348,7 +348,7 @@ Gets data on the total supply of NFTs in a collection.
 | network.chains | Chain to query on (currently only MAINNET) |
 | network.networks | Network to query on (currently only ETHEREUM) |
 
-### zdK.search(pagination, query, filter) ⇒
+### zdk.search(pagination, query, filter) ⇒
 Searchs for an NFT or collection based on a string input.
 
 **Returns**: <code>Promise.&lt;SearchQuery&gt;</code> - Search query graphql response
