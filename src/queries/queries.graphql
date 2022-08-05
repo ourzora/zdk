@@ -739,7 +739,7 @@ query aggregateAttributes(
 query ownersByCount(
   $networks: [NetworkInput!]!
   $pagination: PaginationInput!
-  $where: CollectionAddressAndAttributesInput!
+  $where: OwnersByCountQueryInput!
 ) {
   aggregateStat {
     ownersByCount(networks: $networks, pagination: $pagination, where: $where) {
@@ -758,10 +758,10 @@ query ownersByCount(
 query salesVolume(
   $networks: [NetworkInput!]!
   $where: CollectionAddressOwnerAddressAttributesInput!
-  $timeFilter: TimeFilter
+  $filter: SalesVolumeFilter
 ) {
   aggregateStat {
-    salesVolume(where: $where, networks: $networks, timeFilter: $timeFilter) {
+    salesVolume(where: $where, networks: $networks, filter: $filter) {
       chainTokenPrice
       usdcPrice
       totalCount
