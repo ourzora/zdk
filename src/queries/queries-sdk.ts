@@ -1728,6 +1728,7 @@ export const OwnerCountInfoFragmentDoc = gql`
     fragment OwnerCountInfo on OwnerCount {
   owner
   count
+  tokenIds
 }
     `;
 export const MarketInfoFragmentDoc = gql`
@@ -2569,7 +2570,7 @@ export type CollectionDetailsFragment = { __typename?: 'Collection', networkInfo
 
 export type PageInfoDefaultFragment = { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, limit: number };
 
-export type OwnerCountInfoFragment = { __typename?: 'OwnerCount', owner: string, count: number };
+export type OwnerCountInfoFragment = { __typename?: 'OwnerCount', owner: string, count: number, tokenIds: Array<string> };
 
 export type EventsQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;
@@ -2675,7 +2676,7 @@ export type OwnersByCountQueryVariables = Exact<{
 }>;
 
 
-export type OwnersByCountQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', ownersByCount: { __typename?: 'OwnerCountConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, limit: number }, nodes: Array<{ __typename?: 'OwnerCount', owner: string, count: number }> } } };
+export type OwnersByCountQuery = { __typename?: 'RootQuery', aggregateStat: { __typename?: 'AggregateStat', ownersByCount: { __typename?: 'OwnerCountConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, limit: number }, nodes: Array<{ __typename?: 'OwnerCount', owner: string, count: number, tokenIds: Array<string> }> } } };
 
 export type SalesVolumeQueryVariables = Exact<{
   networks: Array<NetworkInput> | NetworkInput;

@@ -477,6 +477,7 @@ fragment PageInfoDefault on PageInfo {
 fragment OwnerCountInfo on OwnerCount {
   owner
   count
+  tokenIds
 }
 
 query events(
