@@ -12,14 +12,14 @@ describe('zdk', () => {
         collectionAddresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'],
       },
       pagination: {
-        limit: 2,
+        limit: 20,
       },
     });
     expect(apiResult.tokens.nodes[0]).toMatchSnapshot();
     expect(apiResult.tokens.nodes[1]).toMatchSnapshot();
     expect(apiResult.tokens.nodes.length).toBe(2);
     // 20 sec timeout
-  }, 20_000);
+  }, 30_000);
   it('should fetch localhost token full object', async () => {
     expect(
       await zdk.tokens({
