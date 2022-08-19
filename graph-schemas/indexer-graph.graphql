@@ -407,7 +407,7 @@ type MintInfo {
   mintContext: TransactionInfo!
   originatorAddress: String!
   toAddress: String!
-  price: PriceAtTime!
+  price: PriceAtTime
 }
 
 enum MintSortKey {
@@ -536,6 +536,69 @@ type NounsAuctionTimeBufferUpdatedEventProperties {
   timeBuffer: String!
 }
 
+type NounsBuilderAuctionAuctionBidEventProperties {
+  tokenId: String!
+  bidder: String!
+  amount: String!
+  amountPrice: PriceAtTime!
+  extended: Boolean!
+  endTime: String!
+}
+
+type NounsBuilderAuctionAuctionCreatedEventProperties {
+  tokenId: String!
+  startTime: String!
+  endTime: String!
+}
+
+type NounsBuilderAuctionAuctionSettledEventProperties {
+  tokenId: String!
+  winner: String!
+  amount: String!
+  amountPrice: PriceAtTime!
+}
+
+type NounsBuilderAuctionDurationUpdatedEventProperties {
+  duration: String!
+}
+
+type NounsBuilderAuctionEvent {
+  nounsBuilderAuctionEventType: NounsBuilderAuctionEventType!
+  address: String!
+  collectionAddress: String!
+  manager: String!
+  metadata: String!
+  auction: String!
+  timelock: String!
+  governor: String!
+  properties: NounsBuilderAuctionEventProperties!
+}
+
+union NounsBuilderAuctionEventProperties = NounsBuilderAuctionAuctionBidEventProperties | NounsBuilderAuctionAuctionCreatedEventProperties | NounsBuilderAuctionAuctionSettledEventProperties | NounsBuilderAuctionDurationUpdatedEventProperties | NounsBuilderAuctionMinBidIncrementPercentageUpdatedEventProperties | NounsBuilderAuctionReservePriceUpdatedEventProperties | NounsBuilderAuctionTimeBufferUpdatedEventProperties
+
+enum NounsBuilderAuctionEventType {
+  NOUNS_BUILDER_AUCTION_AUCTION_BID_EVENT
+  NOUNS_BUILDER_AUCTION_AUCTION_CREATED_EVENT
+  NOUNS_BUILDER_AUCTION_AUCTION_SETTLED_EVENT
+  NOUNS_BUILDER_AUCTION_DURATION_UPDATED_EVENT
+  NOUNS_BUILDER_AUCTION_MIN_BID_INCREMENT_PERCENTAGE_UPDATED_EVENT
+  NOUNS_BUILDER_AUCTION_RESERVE_PRICE_UPDATED_EVENT
+  NOUNS_BUILDER_AUCTION_TIME_BUFFER_UPDATED_EVENT
+}
+
+type NounsBuilderAuctionMinBidIncrementPercentageUpdatedEventProperties {
+  minBidIncrementPercentage: String!
+}
+
+type NounsBuilderAuctionReservePriceUpdatedEventProperties {
+  reserve: String!
+  reservePrice: PriceAtTime!
+}
+
+type NounsBuilderAuctionTimeBufferUpdatedEventProperties {
+  timeBuffer: String!
+}
+
 type NounsBuilderGovernorEvent {
   nounsBuilderGovernorEventType: NounsBuilderGovernorEventType!
   address: String!
@@ -581,7 +644,7 @@ type NounsDao {
   contractAddress: String!
   collectionAddress: String!
   auctionAddress: String!
-  treasuryAddress: String!
+  timelockAddress: String!
   governorAddress: String!
   metadataAddress: String!
   description: String
@@ -609,15 +672,17 @@ type NounsEvent {
   properties: NounsEventProperties!
 }
 
-union NounsEventProperties = NounsBuilderManagerEvent | NounsBuilderGovernorEvent
+union NounsEventProperties = NounsBuilderAuctionEvent | NounsBuilderManagerEvent | NounsBuilderGovernorEvent
 
 enum NounsEventType {
   NOUNS_BUILDER_MANAGER_EVENT
   NOUNS_BUILDER_GOVERNOR_EVENT
+  NOUNS_BUILDER_AUCTION_EVENT
 }
 
 input NounsQueryInput {
-  collectionAddresses: [String!]!
+  collectionAddresses: [String!] = null
+  memberAddresses: [String!] = null
 }
 
 enum NounsSortKey {
