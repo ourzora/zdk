@@ -506,6 +506,141 @@ query events(
   }
 }
 
+fragment LilNounsAuctionInfo on LilNounsAuction {
+  address
+  tokenId
+  collectionAddress
+  auctionId
+  auctionCurrency
+  highestBidPrice {
+    __typename
+    ...PriceSummary
+  }
+  startTime
+  endTime
+  duration
+  firstBidTime
+  highestBidder
+  estimatedDurationTime
+  lilNounsReservePrice: reservePrice {
+    __typename
+    ...PriceSummary
+  }
+  amount {
+    __typename
+    ...PriceSummary
+  }
+  minBidIncrementPercentage
+  winner
+  timeBuffer
+}
+
+fragment NounsAuctionInfo on NounsAuction {
+  address
+  tokenId
+  collectionAddress
+  auctionId
+  auctionCurrency
+  highestBidPrice {
+    __typename
+    ...PriceSummary
+  }
+  startTime
+  endTime
+  duration
+  firstBidTime
+  highestBidder
+  estimatedDurationTime
+  nounsReservePrice: reservePrice {
+    __typename
+    ...PriceSummary
+  }
+  amount {
+    __typename
+    ...PriceSummary
+  }
+  minBidIncrementPercentage
+  winner
+  timeBuffer
+}
+
+fragment V3ReserveAuctionProperties on V3ReserveAuction {
+  address
+  tokenId
+  collectionAddress
+  status
+  firstBid
+  extended
+  price {
+    __typename
+    ...PriceSummary
+  }
+  seller
+  reserve
+  v3AuctionReservePrice: reservePrice {
+    __typename
+    ...PriceSummary
+  }
+  sellerFundsRecipient
+  highestBid
+  highestBidPrice {
+    __typename
+    ...PriceSummary
+  }
+  v3HighestBidder: highestBidder
+  duration
+  startTime
+  v3FirstBidTime: firstBidTime
+  currency
+  finder
+  findersFeeBps
+  estimatedDurationTime
+}
+
+fragment ActiveMarketInfo on ActiveMarket {
+  networkInfo {
+    __typename
+    ...NetworkInfoDetails
+  }
+  transactionInfo {
+    __typename
+    ...TransactionDetails
+  }
+  status
+  marketAddress
+  collectionAddress
+  tokenId
+  marketType
+  properties {
+    __typename
+    ... on LilNounsAuction {
+      ...LilNounsAuctionInfo
+    }
+    ... on NounsAuction {
+      ...NounsAuctionInfo
+    }
+    ... on V2Auction {
+      ...V2AuctionMarketProperties
+    }
+    ... on V3ReserveAuction {
+      ...V3ReserveAuctionProperties
+    }
+  }
+  price {
+    __typename
+    ...PriceSummary
+  }
+}
+
+query market(
+  $network: NetworkInput
+  $where: ActiveMarketQueryInput!
+) {
+  market(network: $network, where: $where) {
+    ...ActiveMarketInfo
+  }
+}
+
 query markets(
   $networks: [NetworkInput!]!
   $filter: MarketsQueryFilter
