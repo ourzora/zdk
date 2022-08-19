@@ -39,6 +39,9 @@ import {
   OwnerCountQueryVariables,
   PaginationInput,
   SdkFunctionWrapper,
+  OffchainOrdersQueryInput,
+  OffchainOrderSortKeySortInput,
+  OffchainOrdersQueryFilter,
 } from './queries/queries-sdk';
 
 // Export chain and network for API users
@@ -102,6 +105,14 @@ export type SalesQueryArgs = {
 export type CollectionStatsAggregateQuery = {
   collectionAddress: string;
   network: NetworkInput;
+};
+
+export type OffchainOrderQueryArgs = {
+  where?: OffchainOrdersQueryInput;
+  networks?: NetworkInput[];
+  pagination?: PaginationInput;
+  sort?: OffchainOrderSortKeySortInput;
+  filter?: OffchainOrdersQueryFilter;
 };
 
 export type TokenQueryArgs = {
@@ -287,6 +298,27 @@ export class ZDK {
     });
 
   /**
+   * A query for getting off-chain liquidity with a variety of protocols.
+   *
+   * @param {OffchainOrderQueryArgs} - networks, filter, pagiantion, sort, where
+   * @returns {Promise<OffchainOrdersQuery>}
+   */
+  public offchainOrders = async ({
+    networks,
+    filter,
+    pagination,
+    sort,
+    where,
+  }: OffchainOrderQueryArgs) =>
+    this.sdk.offchainOrders({
+      networks,
+      filter,
+      pagination,
+      sort,
+      where,
+    });
+
+  /*
    * A function to query Zora API for a collection's market data.
    * @param {MarketQueryArgs} - networks, filter, pagination, sort, where, includeFullDetails
    * @returns {Promise<MarketsQuery>}

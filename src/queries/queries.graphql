@@ -496,9 +496,8 @@ query events(
   ) {
     __typename
     pageInfo {
-      endCursor
-      hasNextPage
-      limit
+      __typename
+      ...PageInfoDefault
     }
     nodes {
       ...EventInfo
@@ -854,6 +853,105 @@ query token($network: NetworkInput!, $token: TokenInput!, $includeFullDetails: B
     ) {
       ...MarketInfo
       ...MarketDetails @include(if: $includeFullDetails)
+    }
+  }
+}
+
+fragment SeaportOrderItemDetails on SeaportOrderItem {
+  itemType
+  address
+  tokenId
+  criteria
+  startAmount
+  endAmount
+  startPrice {
+    __typename
+    ...PriceSummary
+  }
+  endPrice {
+    __typename
+    ...PriceSummary
+  }
+  recipient
+}
+
+fragment SeaportOrderDetails on SeaportOrder {
+  orderHash
+  offerer
+  startTime
+  endTime
+  orderType
+  price {
+    __typename
+    ...PriceSummary
+  }
+  offers {
+    __typename
+    ...SeaportOrderItemDetails
+  }
+  considerations {
+    __typename
+    ...SeaportOrderItemDetails
+  }
+  zone
+  zoneHash
+  salt
+  conduitKey
+  counter
+  signature
+  schemaHash
+}
+
+fragment OffchainOrderInfo on OffchainOrder {
+  networkInfo {
+    __typename
+    ...NetworkInfoDetails
+  }
+  contractAddress
+  collectionAddress
+  tokenId
+  offerer
+  startTime
+  endTime
+  orderType
+  price {
+    __typename
+    ...PriceSummary
+  }
+  properties {
+    ...SeaportOrderDetails
+  }
+  calldata
+}
+
+query offchainOrders(
+  $networks: [NetworkInput!]
+  $where: OffchainOrdersQueryInput
+  $filter: OffchainOrdersQueryFilter
+  $sort: OffchainOrderSortKeySortInput
+  $pagination: PaginationInput
+) {
+  offchainOrders(
+    networks: $networks,
+    where: $where,
+    filter: $filter,
+    sort: $sort,
+    pagination: $pagination
+  ) {
+    nodes {
+      __typename
+      token {
+        __typename
+        ...TokenInfo
+      }
+      offchainOrder {
+        __typename
+        ...OffchainOrderInfo
+      }
+    }
+    pageInfo {
+      __typename
+      ...PageInfoDefault
     }
   }
 }
