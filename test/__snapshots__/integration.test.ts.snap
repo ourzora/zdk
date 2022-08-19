@@ -18,9 +18,9 @@ Object {
       },
     ],
     "pageInfo": Object {
-      "endCursor": "eyJza2lwIjogNTAwfQ==",
+      "endCursor": "eyJza2lwIjogNTB9",
       "hasNextPage": false,
-      "limit": 500,
+      "limit": 50,
     },
   },
 }
@@ -44,9 +44,9 @@ Object {
       },
     ],
     "pageInfo": Object {
-      "endCursor": "eyJza2lwIjogNTAwfQ==",
+      "endCursor": "eyJza2lwIjogNTB9",
       "hasNextPage": false,
-      "limit": 500,
+      "limit": 50,
     },
   },
 }
@@ -217,76 +217,149 @@ Object {
     "nodes": Array [
       Object {
         "__typename": "TokenWithMarketsSummary",
-        "events": Array [],
-        "marketsSummary": Array [
+        "events": Array [
           Object {
             "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-            "marketAddress": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
-            "marketType": "V3_ASK",
-            "networkInfo": Object {
-              "chain": "MAINNET",
-              "network": "ETHEREUM",
-            },
-            "price": Object {
-              "blockNumber": 14036921,
-              "chainTokenPrice": Object {
-                "decimal": 0.05,
-                "raw": "50000000000000000",
-              },
-              "nativePrice": Object {
-                "currency": Object {
-                  "address": "0x0000000000000000000000000000000000000000",
-                  "decimals": 18,
-                  "name": "ETH",
-                },
-                "decimal": 0.05,
-                "raw": "50000000000000000",
-              },
-              "usdcPrice": Object {
-                "decimal": 156.40084904014552,
-                "raw": "156400849040145514496",
-              },
-            },
+            "eventType": "APPROVAL_EVENT",
             "properties": Object {
-              "__typename": "V3Ask",
-              "address": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
-              "askCurrency": "0x0000000000000000000000000000000000000000",
-              "askPrice": Object {
-                "blockNumber": 14036921,
-                "chainTokenPrice": Object {
-                  "decimal": 0.05,
-                  "raw": "50000000000000000",
-                },
-                "nativePrice": Object {
-                  "currency": Object {
-                    "address": "0x0000000000000000000000000000000000000000",
-                    "decimals": 18,
-                    "name": "ETH",
-                  },
-                  "decimal": 0.05,
-                  "raw": "50000000000000000",
-                },
-                "usdcPrice": Object {
-                  "decimal": 156.40084904014552,
-                  "raw": "156400849040145514496",
-                },
-              },
-              "buyer": null,
-              "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-              "finder": null,
-              "findersFeeBps": 100,
-              "seller": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              "sellerFundsRecipient": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              "v3AskStatus": "CANCELED",
+              "__typename": "ApprovalEvent",
             },
-            "status": "CANCELED",
+            "tokenId": null,
             "transactionInfo": Object {
-              "blockNumber": 14036921,
-              "blockTimestamp": "2022-01-19T16:04:04",
-              "logIndex": 438,
-              "transactionHash": "0x7d6e8224e9a85549384a96618c7ffa7dd5c0d14e73e35c2702a45f5159fc717e",
+              "blockNumber": 15372138,
+              "blockTimestamp": "2022-08-19T15:37:58+00:00",
+              "logIndex": 236,
+              "transactionHash": "0xaccd08d140c3603216f4f82ebaa0f3fdcae92079ceda1190e935e7a7aa2728cd",
             },
           },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "APPROVAL_EVENT",
+            "properties": Object {
+              "__typename": "ApprovalEvent",
+            },
+            "tokenId": null,
+            "transactionInfo": Object {
+              "blockNumber": 15372123,
+              "blockTimestamp": "2022-08-19T15:36:00+00:00",
+              "logIndex": 567,
+              "transactionHash": "0x45c3f17e5e3496a6fbcae456b8709aedb5527d1e2c49cde168c51bdc7167fa6f",
+            },
+          },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "APPROVAL_EVENT",
+            "properties": Object {
+              "__typename": "ApprovalEvent",
+            },
+            "tokenId": null,
+            "transactionInfo": Object {
+              "blockNumber": 15372009,
+              "blockTimestamp": "2022-08-19T15:11:41+00:00",
+              "logIndex": 564,
+              "transactionHash": "0xf1bca3d963d64060220b6a5a7213cfdaff465aee772d13a5e52548b08e7f68f2",
+            },
+          },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "APPROVAL_EVENT",
+            "properties": Object {
+              "__typename": "ApprovalEvent",
+            },
+            "tokenId": null,
+            "transactionInfo": Object {
+              "blockNumber": 15371796,
+              "blockTimestamp": "2022-08-19T14:21:23+00:00",
+              "logIndex": 32,
+              "transactionHash": "0x7b155fa5e9d3463e499553d09a67dffbc8ca1fc78672b8a994a3c318f783025b",
+            },
+          },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "APPROVAL_EVENT",
+            "properties": Object {
+              "__typename": "ApprovalEvent",
+            },
+            "tokenId": null,
+            "transactionInfo": Object {
+              "blockNumber": 15371630,
+              "blockTimestamp": "2022-08-19T13:45:45+00:00",
+              "logIndex": 475,
+              "transactionHash": "0x1cc3e3ec950ebcb20eb3b07e97d42ff5222bf27a57c82ba92433db8d8a465616",
+            },
+          },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "APPROVAL_EVENT",
+            "properties": Object {
+              "__typename": "ApprovalEvent",
+            },
+            "tokenId": null,
+            "transactionInfo": Object {
+              "blockNumber": 15371619,
+              "blockTimestamp": "2022-08-19T13:41:07+00:00",
+              "logIndex": 375,
+              "transactionHash": "0x75d307c005a0544289ad3d818911a1155f4e8212c971b083c51f6c09cb0bc57f",
+            },
+          },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "APPROVAL_EVENT",
+            "properties": Object {
+              "__typename": "ApprovalEvent",
+            },
+            "tokenId": null,
+            "transactionInfo": Object {
+              "blockNumber": 15371565,
+              "blockTimestamp": "2022-08-19T13:30:25+00:00",
+              "logIndex": 412,
+              "transactionHash": "0x31997d48b4ce360f5625489afa782e6587fec97c24443863c2ceb56eba9fa140",
+            },
+          },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "APPROVAL_EVENT",
+            "properties": Object {
+              "__typename": "ApprovalEvent",
+            },
+            "tokenId": null,
+            "transactionInfo": Object {
+              "blockNumber": 15371370,
+              "blockTimestamp": "2022-08-19T12:47:46+00:00",
+              "logIndex": 243,
+              "transactionHash": "0x7a11ef8cb09cae0db9caea63df98220d5a2ff832ffd58747a921967e59787c56",
+            },
+          },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "APPROVAL_EVENT",
+            "properties": Object {
+              "__typename": "ApprovalEvent",
+            },
+            "tokenId": null,
+            "transactionInfo": Object {
+              "blockNumber": 15371314,
+              "blockTimestamp": "2022-08-19T12:34:23+00:00",
+              "logIndex": 172,
+              "transactionHash": "0xba58b248b1ceebba981b44d316d20f24a19891d62870a3e4ad7e7e26c7d6302c",
+            },
+          },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "APPROVAL_EVENT",
+            "properties": Object {
+              "__typename": "ApprovalEvent",
+            },
+            "tokenId": null,
+            "transactionInfo": Object {
+              "blockNumber": 15371273,
+              "blockTimestamp": "2022-08-19T12:23:05+00:00",
+              "logIndex": 254,
+              "transactionHash": "0xe12e570237ea8956547df67fcc2d915d2e27ceba2eea9f1a147a7f1f0364bbfa",
+            },
+          },
+        ],
+        "marketsSummary": Array [
           Object {
             "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
             "marketAddress": "0xce6cef2a9028e1c3b21647ae3b4251038109f42a",
@@ -350,7 +423,7 @@ Object {
             "status": "CANCELED",
             "transactionInfo": Object {
               "blockNumber": 14040390,
-              "blockTimestamp": "2022-01-20T04:57:09",
+              "blockTimestamp": "2022-01-20T04:57:09+00:00",
               "logIndex": 439,
               "transactionHash": "0xbc0158760124585c8589ba68c78011b1a13004f9cb20c0f24125122dec1de147",
             },
@@ -384,7 +457,7 @@ View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
             "size": "860",
             "url": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTAgMTEwIj48ZGVmcz48cmFkaWFsR3JhZGllbnQgaWQ9Imd6ciIgZ3JhZGllbnRUcmFuc2Zvcm09InRyYW5zbGF0ZSg2Ni40NTc4IDI0LjM1NzUpIHNjYWxlKDc1LjI5MDgpIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgcj0iMSIgY3g9IjAiIGN5PSIwJSI+PHN0b3Agb2Zmc2V0PSIxNS42MiUiIHN0b3AtY29sb3I9ImhzbCgxNjMsIDcxJSwgODclKSIgLz48c3RvcCBvZmZzZXQ9IjM5LjU4JSIgc3RvcC1jb2xvcj0iaHNsKDE2MywgNzMlLCA3MSUpIiAvPjxzdG9wIG9mZnNldD0iNzIuOTIlIiBzdG9wLWNvbG9yPSJoc2woMTkwLCA3NyUsIDQ5JSkiIC8+PHN0b3Agb2Zmc2V0PSI5MC42MyUiIHN0b3AtY29sb3I9ImhzbCgxOTIsIDg3JSwgNDElKSIgLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9ImhzbCgxOTIsIDkxJSwgNDAlKSIgLz48L3JhZGlhbEdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1LDUpIj48cGF0aCBkPSJNMTAwIDUwQzEwMCAyMi4zODU4IDc3LjYxNDIgMCA1MCAwQzIyLjM4NTggMCAwIDIyLjM4NTggMCA1MEMwIDc3LjYxNDIgMjIuMzg1OCAxMDAgNTAgMTAwQzc3LjYxNDIgMTAwIDEwMCA3Ny42MTQyIDEwMCA1MFoiIGZpbGw9InVybCgjZ3pyKSIgLz48cGF0aCBzdHJva2U9InJnYmEoMCwwLDAsMC4wNzUpIiBmaWxsPSJ0cmFuc3BhcmVudCIgc3Ryb2tlLXdpZHRoPSIxIiBkPSJNNTAsMC41YzI3LjMsMCw0OS41LDIyLjIsNDkuNSw0OS41Uzc3LjMsOTkuNSw1MCw5OS41UzAuNSw3Ny4zLDAuNSw1MFMyMi43LDAuNSw1MCwwLjV6IiAvPjwvZz48L3N2Zz4=",
           },
-          "lastRefreshTime": "2022-04-26T12:06:38.084000",
+          "lastRefreshTime": "2022-04-26T12:06:38.084000+00:00",
           "metadata": Object {
             "description": "Zorbs were distributed for free by ZORA on New Year’s 2022. Each NFT imbues the properties of its wallet holder, and when sent to someone else, will transform.
 
@@ -396,7 +469,7 @@ View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
             "mintContext": Object {
               "__typename": "TransactionInfo",
               "blockNumber": 13927877,
-              "blockTimestamp": "2022-01-02T19:17:42",
+              "blockTimestamp": "2022-01-02T19:17:42+00:00",
               "logIndex": 318,
               "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
             },
@@ -441,9 +514,9 @@ View this NFT at [zorb.dev/nft/48057](https://zorb.dev/nft/48057)",
       },
     ],
     "pageInfo": Object {
-      "endCursor": "eyJza2lwIjogNTAwfQ==",
+      "endCursor": "eyJza2lwIjogNTB9",
       "hasNextPage": false,
-      "limit": 500,
+      "limit": 50,
     },
   },
 }
