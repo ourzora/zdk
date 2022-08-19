@@ -29,6 +29,7 @@ import {
   MintSortKey,
   MintSortKeySortInput,
   FloorPriceQueryVariables,
+  ActiveMarketQueryInput,
   NftCountQueryVariables,
   SearchQueryVariables,
   SaleSortKey,
@@ -71,12 +72,17 @@ export type EventsQueryArgs = {
   filter?: EventsQueryFilter;
 } & SharedQueryParams;
 
-export type MarketQueryArgs = {
+export type MarketsQueryArgs = {
   where: MarketsQueryInput;
   sort: MarketSortKeySortInput;
   filter: MarketsQueryFilter;
   includeFullDetails: boolean;
 } & SharedQueryParams;
+
+export type ActiveMarketQueryArgs = {
+  network?: NetworkInput;
+  where: ActiveMarketQueryInput;
+};
 
 export type MintsQueryArgs = {
   where: MintsQueryInput;
@@ -267,7 +273,7 @@ export class ZDK {
     sort,
     where,
     includeFullDetails = false,
-  }: MarketQueryArgs) =>
+  }: MarketsQueryArgs) =>
     this.sdk.markets({
       filter,
       where,
@@ -278,6 +284,17 @@ export class ZDK {
         sortDirection: sort?.sortDirection || SortDirection.Desc,
         sortKey: sort?.sortKey || MarketSortKey.None,
       },
+    });
+
+  /**
+   * A function to query Zora API for a collection's market data.
+   * @param {MarketQueryArgs} - networks, filter, pagination, sort, where, includeFullDetails
+   * @returns {Promise<MarketsQuery>}
+   */
+  public market = async ({ network, where }: ActiveMarketQueryArgs) =>
+    this.sdk.market({
+      network: network ?? this.defaultNetworks[0],
+      where,
     });
 
   /**
