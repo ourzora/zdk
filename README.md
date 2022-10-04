@@ -18,8 +18,8 @@ const zdk = new ZDK({
   endpoint: API_ENDPOINT,
   networks: [
     {
-      chain: Chain.Mainnet,
-      network: Network.Ethereum,
+      chain: ZDKChain.Mainnet,
+      network: ZDKNetwork.Ethereum,
     },
   ],
   apiKey: API_KEY // optional!
