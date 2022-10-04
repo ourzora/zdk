@@ -46,7 +46,7 @@ describe('unit zdk', () => {
     });
   });
 
-  it('should fetch mock tokens', async () => {
+  xit('should fetch mock tokens', async () => {
     const tokens = await zdk.tokens({
       where: { collectionAddresses: ['0xCa21d4228cDCc68D4e23807E5e370C07577Dd152'] },
       pagination: { limit: 2 },
