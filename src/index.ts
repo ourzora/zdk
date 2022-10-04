@@ -298,8 +298,6 @@ export class ZDK {
     });
 
   /**
-<<<<<<< HEAD
-=======
    * A query for getting off-chain liquidity with a variety of protocols.
    *
    * @param {OffchainOrderQueryArgs} - networks, filter, pagiantion, sort, where
