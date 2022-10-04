@@ -17,7 +17,7 @@ describe('zdk', () => {
     });
     expect(apiResult.tokens.nodes[0]).toMatchSnapshot();
     expect(apiResult.tokens.nodes[1]).toMatchSnapshot();
-    expect(apiResult.tokens.nodes.length).toBe(2);
+    expect(apiResult.tokens.nodes.length).toBe(20);
     // 30 sec timeout
   }, 30_000);
   it('should fetch localhost token full object', async () => {
