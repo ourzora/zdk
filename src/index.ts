@@ -319,7 +319,6 @@ export class ZDK {
     });
 
   /*
->>>>>>> origin/main
    * A function to query Zora API for a collection's market data.
    * @param {MarketQueryArgs} - networks, filter, pagination, sort, where, includeFullDetails
    * @returns {Promise<MarketsQuery>}
