@@ -8,6 +8,11 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
+input AccumulativeSalesQueryInput {
+  collectionAddress: String!
+  tokenId: String = null
+}
+
 type ActiveMarket {
   networkInfo: NetworkInfo!
   transactionInfo: TransactionInfo!
@@ -20,16 +25,18 @@ type ActiveMarket {
   price: PriceAtTime
 }
 
-union ActiveMarketProperties = LilNounsAuction | NounsAuction | V2Auction | V3ReserveAuction
+union ActiveMarketProperties = LilNounsAuction | NounsAuction | NounsBuilderAuction | V2Auction | V3ReserveAuction
 
 input ActiveMarketQueryInput {
   marketType: ActiveMarketType!
   token: TokenInput = null
+  collectionAddress: String = null
 }
 
 enum ActiveMarketType {
   ACTIVE_LIL_NOUNS_AUCTION
   ACTIVE_NOUNS_AUCTION
+  ACTIVE_NOUNS_BUILDER_AUCTION
   ACTIVE_V2_AUCTION
   ACTIVE_V3_RESERVE_AUCTION
 }
@@ -37,6 +44,17 @@ enum ActiveMarketType {
 type AggregateAttribute {
   traitType: String!
   valueMetrics: [AggregateAttributeValue!]!
+}
+
+enum AggregateAttributeSortKey {
+  NONE
+  VALUE
+  COUNT
+}
+
+input AggregateAttributeSortKeySortInput {
+  sortKey: AggregateAttributeSortKey!
+  sortDirection: SortDirection!
 }
 
 input AggregateAttributesQueryInput {
@@ -55,8 +73,10 @@ type AggregateStat {
   floorPrice(where: CollectionAddressAndAttributesInput!, networks: [NetworkInput!] = null): Float
   nftCount(where: CollectionAddressOwnerAddressAttributesInput!, networks: [NetworkInput!] = null): Int!
   ownerCount(where: CollectionAddressAndAttributesInput!, networks: [NetworkInput!] = null): Int!
-  ownersByCount(where: OwnersByCountQueryInput!, pagination: PaginationInput = null, networks: [NetworkInput!] = null): OwnerCountConnection!
+  ownersByCount(where: OwnersByCountQueryInput!, pagination: PaginationInput = null, sort: OwnerCountSortKeySortInput = null, networks: [NetworkInput!] = null): OwnerCountConnection!
+  ownersByCount1155(where: OwnersByCount1155QueryInput!): [OwnerCount!]!
   salesVolume(where: CollectionAddressOwnerAddressAttributesInput!, filter: SalesVolumeFilter = null, networks: [NetworkInput!] = null): SalesVolume!
+  accumulativeSales(where: AccumulativeSalesQueryInput!, networks: [NetworkInput!] = null): [SalesBucket!]!
 }
 
 type ApprovalEvent {
@@ -97,6 +117,7 @@ type Collection {
   totalSupply: Int
   networkInfo: NetworkInfo!
   attributes: [CollectionAttribute!]
+  tokenStandard: TokenStandard
 }
 
 input CollectionAddressAndAttributesInput {
@@ -169,7 +190,7 @@ type EventConnection {
   pageInfo: PageInfo!
 }
 
-union EventProperties = ApprovalEvent | LilNounsAuctionEvent | MintEvent | NounsAuctionEvent | Sale | SeaportEvent | TransferEvent | V1MarketEvent | V2AuctionEvent | V3AskEvent | V3ReserveAuctionEvent
+union EventProperties = ApprovalEvent | LilNounsAuctionEvent | MintEvent | NounsAuctionEvent | Sale | SeaportEvent | TransferEvent | V1MarketEvent | V1MediaEvent | V2AuctionEvent | V3AskEvent | V3ModuleManagerEvent | V3ReserveAuctionEvent
 
 enum EventSortKey {
   CREATED
@@ -190,8 +211,8 @@ input EventsQueryFilter {
 }
 
 input EventsQueryInput {
-  tokens: [TokenInput!] = null
   collectionAddresses: [String!] = null
+  tokens: [TokenInput!] = null
 }
 
 enum EventType {
@@ -203,8 +224,10 @@ enum EventType {
   MINT_EVENT
   TRANSFER_EVENT
   V1_MARKET_EVENT
+  V1_MEDIA_EVENT
   V2_AUCTION_EVENT
   V3_ASK_EVENT
+  V3_MODULE_MANAGER_EVENT
   V3_RESERVE_AUCTION_EVENT
 }
 
@@ -317,7 +340,7 @@ enum MarketCategory {
   AUCTION
 }
 
-union MarketProperties = LilNounsAuction | NounsAuction | V1Ask | V1BidShare | V1Offer | V2Auction | V3Ask | V3ReserveAuction
+union MarketProperties = LilNounsAuction | NounsAuction | NounsBuilderAuction | V1Ask | V1BidShare | V1Offer | V2Auction | V3Ask | V3ReserveAuction
 
 enum MarketSortKey {
   NONE
@@ -338,8 +361,8 @@ input MarketsQueryFilter {
 }
 
 input MarketsQueryInput {
-  tokens: [TokenInput!] = null
   collectionAddresses: [String!] = null
+  tokens: [TokenInput!] = null
 }
 
 enum MarketStatus {
@@ -352,6 +375,7 @@ enum MarketStatus {
 enum MarketType {
   LIL_NOUNS_AUCTION
   NOUNS_AUCTION
+  NOUNS_BUILDER_AUCTION
   V1_ASK
   V1_BID_SHARE
   V1_OFFER
@@ -395,12 +419,30 @@ type Mint {
   networkInfo: NetworkInfo!
 }
 
+type MintComment {
+  blockNumber: Int!
+  fromAddress: String!
+  comment: String!
+  collectionAddress: String!
+  tokenId: String!
+  quantity: Int!
+}
+
+type MintComments {
+  comments: [MintComment!]!
+}
+
+input MintCommentsQueryInput {
+  collectionAddress: String!
+  tokenId: String = null
+}
+
 type MintEvent {
   tokenId: String!
   collectionAddress: String!
   originatorAddress: String!
   toAddress: String!
-  price: PriceAtTime!
+  price: PriceAtTime
 }
 
 type MintInfo {
@@ -455,8 +497,22 @@ type NetworkInfo {
 }
 
 input NetworkInput {
-  network: Network! = ETHEREUM
-  chain: Chain! = MAINNET
+  network: Network!
+  chain: Chain!
+}
+
+type Nouns {
+  nounsDaos(where: NounsQueryInput = null, sort: NounsSortKeySortInput = null, pagination: PaginationInput = null, networks: [NetworkInput!] = null): NounsDaoConnection!
+  nounsEvents(where: NounsEventsQueryInput = null, pagination: PaginationInput = null, sort: EventSortKeySortInput = null, networks: [NetworkInput!] = null, filter: NounsEventsQueryFilter = null): NounsEventConnection!
+  nounsMarkets(where: NounsMarketsQueryInput = null, filter: NounsMarketsQueryFilter = null, pagination: PaginationInput = null, sort: MarketSortKeySortInput = null, networks: [NetworkInput!] = null): NounsBuilderAuctionConnection!
+  nounsActiveMarket(where: NounsActiveMarketQueryInput!, network: NetworkInput = null): NounsBuilderAuction
+  nounsSearch(query: NounsSearchQueryInput!, pagination: SearchPaginationInput!, filterModel: NounsSearchFilter = null, networks: [NetworkInput!] = null): NounsSearchResultConnection!
+  nounsProposal(where: NounsProposalQueryInput!, network: NetworkInput = null): NounsProposal
+  nounsProposals(where: NounsProposalsQueryInput = null, pagination: PaginationInput = null, sort: NounsProposalSortKeySortInput = null, networks: [NetworkInput!] = null): NounsProposalConnection!
+}
+
+input NounsActiveMarketQueryInput {
+  collectionAddress: String!
 }
 
 type NounsAuction {
@@ -536,6 +592,33 @@ type NounsAuctionTimeBufferUpdatedEventProperties {
   timeBuffer: String!
 }
 
+type NounsBuilderAuction {
+  networkInfo: NetworkInfo!
+  transactionInfo: TransactionInfo!
+  status: MarketStatus!
+  address: String!
+  tokenId: String!
+  collectionAddress: String!
+  highestBidPrice: PriceAtTime
+  startTime: String!
+  endTime: String!
+  duration: String!
+  firstBidTime: datetime
+  highestBidder: String
+  estimatedDurationTime: datetime
+  reservePrice: PriceAtTime
+  amount: PriceAtTime
+  minBidIncrementPercentage: Int
+  winner: String
+  extended: Boolean
+  timeBuffer: String
+  manager: String
+  metadata: String
+  auction: String
+  treasury: String
+  governor: String
+}
+
 type NounsBuilderAuctionAuctionBidEventProperties {
   tokenId: String!
   bidder: String!
@@ -558,6 +641,11 @@ type NounsBuilderAuctionAuctionSettledEventProperties {
   amountPrice: PriceAtTime!
 }
 
+type NounsBuilderAuctionConnection {
+  nodes: [NounsBuilderAuction!]!
+  pageInfo: PageInfo!
+}
+
 type NounsBuilderAuctionDurationUpdatedEventProperties {
   duration: String!
 }
@@ -569,7 +657,7 @@ type NounsBuilderAuctionEvent {
   manager: String!
   metadata: String!
   auction: String!
-  timelock: String!
+  treasury: String!
   governor: String!
   properties: NounsBuilderAuctionEventProperties!
 }
@@ -603,29 +691,106 @@ type NounsBuilderGovernorEvent {
   nounsBuilderGovernorEventType: NounsBuilderGovernorEventType!
   address: String!
   collectionAddress: String!
-  properties: NounsBuilderGovernorProposalCreatedEventProperties!
+  manager: String!
+  metadata: String!
+  auction: String!
+  treasury: String!
+  governor: String!
+  properties: NounsBuilderGovernorEventProperties!
 }
 
+union NounsBuilderGovernorEventProperties = NounsBuilderGovernorProposalCanceledEventProperties | NounsBuilderGovernorProposalCreatedEventProperties | NounsBuilderGovernorProposalExecutedEventProperties | NounsBuilderGovernorProposalQueuedEventProperties | NounsBuilderGovernorProposalVetoedEventProperties | NounsBuilderGovernorVetoerUpdatedEventProperties | NounsBuilderGovernorVoteCastEventProperties | NounsBuilderGovernorVotingDelayUpdatedEventProperties | NounsBuilderGovernorVotingPeriodUpdatedEventProperties | NounsBuilderGovernorProposalThresholdBpsUpdatedEventProperties | NounsBuilderGovernorQuorumVotesBpsUpdated
+
 enum NounsBuilderGovernorEventType {
+  NOUNS_BUILDER_GOVERNOR_PROPOSAL_CANCELED_EVENT
   NOUNS_BUILDER_GOVERNOR_PROPOSAL_CREATED_EVENT
+  NOUNS_BUILDER_GOVERNOR_PROPOSAL_EXECUTED_EVENT
+  NOUNS_BUILDER_GOVERNOR_PROPOSAL_QUEUED_EVENT
+  NOUNS_BUILDER_GOVERNOR_PROPOSAL_VETOED_EVENT
+  NOUNS_BUILDER_GOVERNOR_VETOER_UPDATED_EVENT
+  NOUNS_BUILDER_GOVERNOR_VOTE_CAST_EVENT
+  NOUNS_BUILDER_GOVERNOR_VOTING_DELAY_UPDATED_EVENT
+  NOUNS_BUILDER_GOVERNOR_VOTING_PERIOD_UPDATED_EVENT
+  NOUNS_BUILDER_PROPOSAL_THRESHOLD_BPS_UPDATED
+  NOUNS_BUILDER_QUORUM_VOTES_BPS_UPDATED
+}
+
+type NounsBuilderGovernorProposalCanceledEventProperties {
+  proposalId: String!
 }
 
 type NounsBuilderGovernorProposalCreatedEventProperties {
   proposalId: String!
-  proposer: String!
   targets: [String!]!
   values: [String!]!
-  signatures: [String!]!
   calldatas: [String!]!
-  startBlock: String!
-  endBlock: String!
   description: String!
+  descriptionHash: String!
+  proposer: String!
+  timeCreated: String!
+  againstVotes: String!
+  forVotes: String!
+  abstainVotes: String!
+  voteStart: String!
+  voteEnd: String!
+  proposalThreshold: String!
+  quorumVotes: String!
+  executed: Boolean!
+  canceled: Boolean!
+  vetoed: Boolean!
+  proposalNumber: String
+}
+
+type NounsBuilderGovernorProposalExecutedEventProperties {
+  proposalId: String!
+}
+
+type NounsBuilderGovernorProposalQueuedEventProperties {
+  proposalId: String!
+  eta: String!
+}
+
+type NounsBuilderGovernorProposalThresholdBpsUpdatedEventProperties {
+  prevBps: String!
+  newBps: String!
+}
+
+type NounsBuilderGovernorProposalVetoedEventProperties {
+  proposalId: String!
+}
+
+type NounsBuilderGovernorQuorumVotesBpsUpdated {
+  prevBps: String!
+  newBps: String!
+}
+
+type NounsBuilderGovernorVetoerUpdatedEventProperties {
+  prevVetoer: String!
+  newVetoer: String!
+}
+
+type NounsBuilderGovernorVoteCastEventProperties {
+  voter: String!
+  proposalId: String!
+  support: String!
+  weight: String!
+  reason: String!
+}
+
+type NounsBuilderGovernorVotingDelayUpdatedEventProperties {
+  prevVotingDelay: String!
+  newVotingDelay: String!
+}
+
+type NounsBuilderGovernorVotingPeriodUpdatedEventProperties {
+  prevVotingPeriod: String!
+  newVotingPeriod: String!
 }
 
 type NounsBuilderManagerDaoDeployedEventProperties {
   token: String!
   auction: String!
-  timelock: String!
+  treasury: String!
   governor: String!
   metadata: String!
 }
@@ -641,12 +806,12 @@ enum NounsBuilderManagerEventType {
 }
 
 type NounsDao {
-  contractAddress: String!
+  contractAddress: String
   collectionAddress: String!
-  auctionAddress: String!
-  timelockAddress: String!
-  governorAddress: String!
-  metadataAddress: String!
+  auctionAddress: String
+  treasuryAddress: String
+  governorAddress: String
+  metadataAddress: String
   description: String
   name: String
   symbol: String
@@ -654,13 +819,8 @@ type NounsDao {
   networkInfo: NetworkInfo!
 }
 
-type NounsDaoWithEvents {
-  nounsDao: NounsDao!
-  events: [NounsEvent!]!
-}
-
-type NounsDaoWithEventsConnection {
-  nodes: [NounsDaoWithEvents!]!
+type NounsDaoConnection {
+  nodes: [NounsDao!]!
   pageInfo: PageInfo!
 }
 
@@ -672,17 +832,155 @@ type NounsEvent {
   properties: NounsEventProperties!
 }
 
-union NounsEventProperties = NounsBuilderAuctionEvent | NounsBuilderManagerEvent | NounsBuilderGovernorEvent
+type NounsEventConnection {
+  nodes: [NounsEvent!]!
+  pageInfo: PageInfo!
+}
+
+union NounsEventProperties = LilNounsAuctionEvent | NounsAuctionEvent | NounsBuilderAuctionEvent | NounsBuilderManagerEvent | NounsBuilderGovernorEvent
+
+input NounsEventsQueryFilter {
+  nounsEventTypes: [NounsEventType!] = null
+  nounsBuilderGovernorEventType: NounsBuilderGovernorEventType = null
+  nounsBuilderAuctionEventType: NounsBuilderAuctionEventType = null
+  nounsBuilderManagerEventType: NounsBuilderManagerEventType = null
+  timeFilter: TimeFilter = null
+}
+
+input NounsEventsQueryInput {
+  governorAddresses: [String!] = null
+  auctionAddresses: [String!] = null
+  collectionAddresses: [String!] = null
+}
 
 enum NounsEventType {
+  LIL_NOUNS_AUCTION_EVENT
+  NOUNS_AUCTION_EVENT
   NOUNS_BUILDER_MANAGER_EVENT
   NOUNS_BUILDER_GOVERNOR_EVENT
   NOUNS_BUILDER_AUCTION_EVENT
 }
 
+input NounsMarketsQueryFilter {
+  nounsMarketType: NounsMarketType = null
+  status: MarketStatus = null
+}
+
+input NounsMarketsQueryInput {
+  collectionAddresses: [String!] = null
+  tokens: [TokenInput!] = null
+}
+
+enum NounsMarketType {
+  LIL_NOUNS_AUCTION
+  NOUNS_AUCTION
+  NOUNS_BUILDER_AUCTION
+}
+
+type NounsProposal {
+  networkInfo: NetworkInfo!
+  transactionInfo: TransactionInfo!
+  collectionAddress: String!
+  manager: String!
+  metadata: String!
+  auction: String!
+  treasury: String!
+  governor: String!
+  proposalId: String!
+  proposalNumber: Int!
+  targets: [String!]!
+  values: [String!]!
+  calldatas: [String!]!
+  title: String!
+  description: String!
+  descriptionHash: String!
+  proposer: String!
+  timeCreated: Int!
+  voteStart: Int!
+  voteEnd: Int!
+  proposalThreshold: Int!
+  quorumVotes: Int!
+  status: NounsProposalStatus!
+  executableFrom: Int
+  expiresAt: Int
+  forVotes: Int!
+  againstVotes: Int!
+  abstainVotes: Int!
+  votes: [NounsProposalVote!]!
+}
+
+type NounsProposalConnection {
+  nodes: [NounsProposal!]!
+  pageInfo: PageInfo!
+}
+
+input NounsProposalQueryInput {
+  proposalId: String = null
+  proposal: ProposalInput = null
+}
+
+enum NounsProposalSortKey {
+  NONE
+  CREATED
+}
+
+input NounsProposalSortKeySortInput {
+  sortKey: NounsProposalSortKey!
+  sortDirection: SortDirection!
+}
+
+input NounsProposalsQueryInput {
+  collectionAddresses: [String!] = null
+  proposalIds: [String!] = null
+  proposals: [ProposalInput!] = null
+}
+
+enum NounsProposalStatus {
+  CREATED
+  PENDING
+  ACTIVE
+  CANCELED
+  DEFEATED
+  SUCCEEDED
+  QUEUED
+  EXECUTABLE
+  EXPIRED
+  EXECUTED
+  VETOED
+}
+
+type NounsProposalVote {
+  transactionInfo: TransactionInfo!
+  voter: String!
+  proposalId: String!
+  support: Support!
+  weight: Int!
+  reason: String!
+}
+
 input NounsQueryInput {
   collectionAddresses: [String!] = null
   memberAddresses: [String!] = null
+}
+
+input NounsSearchFilter {
+  collectionAddresses: [String!] = null
+}
+
+input NounsSearchQueryInput {
+  text: String!
+}
+
+type NounsSearchResult {
+  name: String
+  entityType: String!
+  collectionAddress: String!
+  networkInfo: NetworkInfo!
+}
+
+type NounsSearchResultConnection {
+  nodes: [NounsSearchResult!]!
+  pageInfo: PageInfo!
 }
 
 enum NounsSortKey {
@@ -746,11 +1044,28 @@ type OwnerCount {
   owner: String!
   count: Int!
   tokenIds: [String!]!
+  latestMint: datetime!
 }
 
 type OwnerCountConnection {
   nodes: [OwnerCount!]!
   pageInfo: PageInfo!
+}
+
+enum OwnerCountSortKey {
+  NONE
+  COUNT
+  LATEST_MINT
+}
+
+input OwnerCountSortKeySortInput {
+  sortKey: OwnerCountSortKey!
+  sortDirection: SortDirection!
+}
+
+input OwnersByCount1155QueryInput {
+  collectionAddress: String!
+  tokenId: String!
 }
 
 input OwnersByCountQueryInput {
@@ -766,7 +1081,7 @@ type PageInfo {
 }
 
 input PaginationInput {
-  limit: Int! = 10
+  limit: Int!
   after: String = null
 }
 
@@ -785,6 +1100,11 @@ input PriceFilter {
   maximumNativePrice: String = null
 }
 
+input ProposalInput {
+  address: String!
+  proposalNumber: String!
+}
+
 type ReceivedItem {
   itemType: String!
   address: String!
@@ -799,7 +1119,7 @@ type RootQuery {
   aggregateStat: AggregateStat!
 
   """Gets the total set of NFT attributes"""
-  aggregateAttributes(where: AggregateAttributesQueryInput!, networks: [NetworkInput!] = null): [AggregateAttribute!]!
+  aggregateAttributes(where: AggregateAttributesQueryInput!, sort: AggregateAttributeSortKeySortInput = null, networks: [NetworkInput!] = null): [AggregateAttribute!]!
 
   """NFT collection data"""
   collections(where: CollectionsQueryInput = null, sort: CollectionSortKeySortInput = null, pagination: PaginationInput = null, networks: [NetworkInput!] = null): CollectionConnection!
@@ -816,8 +1136,8 @@ type RootQuery {
   """Historical minting data"""
   mints(networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: MintSortKeySortInput = null, filter: MintsQueryFilter = null, where: MintsQueryInput = null): MintWithTokenAndMarketsConnection!
 
-  """Noun daos"""
-  nouns(where: NounsQueryInput = null, sort: NounsSortKeySortInput = null, pagination: PaginationInput = null, networks: [NetworkInput!] = null): NounsDaoWithEventsConnection!
+  """Nouns Builder DAOs"""
+  nouns: Nouns!
 
   """Offchain liquidity"""
   offchainOrders(where: OffchainOrdersQueryInput = null, networks: [NetworkInput!] = null, pagination: PaginationInput = null, sort: OffchainOrderSortKeySortInput = null, filter: OffchainOrdersQueryFilter = null): OffchainOrderWithTokenConnection!
@@ -833,6 +1153,9 @@ type RootQuery {
 
   """Returns search results for a query"""
   search(query: SearchQueryInput!, pagination: SearchPaginationInput!, filter: SearchFilter = null): SearchResultConnection!
+
+  """Returns comments made while minting"""
+  mintComments(where: MintCommentsQueryInput!, networks: [NetworkInput!]!): MintComments!
 }
 
 type Sale {
@@ -841,10 +1164,15 @@ type Sale {
   networkInfo: NetworkInfo!
   buyerAddress: String!
   collectionAddress: String!
-  saleType: SaleType!
-  price: PriceAtTime!
+  saleType: String!
+  price: PriceAtTime
   sellerAddress: String!
   tokenId: String!
+}
+
+type SalesBucket {
+  date: datetime!
+  count: Int!
 }
 
 enum SaleSortKey {
@@ -886,6 +1214,7 @@ input SalesVolumeFilter {
 enum SaleType {
   FOUNDATION_SALE
   NOUNS_AUCTION_SALE
+  NOUNS_BUILDER_AUCTION_SALE
   LIL_NOUNS_AUCTION_SALE
   CRYPTOPUNKS_SALE
   LOOKS_RARE_SALE
@@ -979,7 +1308,7 @@ input SearchFilter {
 }
 
 input SearchPaginationInput {
-  limit: Int! = 10
+  limit: Int!
   after: String = null
 }
 
@@ -1015,14 +1344,17 @@ type SpentItem {
   price: PriceAtTime
 }
 
-input TimeFilter {
-  """Date in YYYY-MM-DD format. Deprecating in favor of start_datetime"""
-  startDate: String = null
+enum Support {
+  AGAINST
+  FOR
+  ABSTAIN
+}
 
-  """Date in YYYY-MM-DD format. Deprecating in favor of end_datetime"""
+input TimeFilter {
+  startDate: String = null
   endDate: String = null
-  startDatetime: String = null
-  endDatetime: String = null
+  startDatetime: datetime = null
+  endDatetime: datetime = null
   startBlock: Int = null
   endBlock: Int = null
   lookbackHours: Int = null
@@ -1031,6 +1363,7 @@ input TimeFilter {
 type Token {
   collectionAddress: String!
   tokenId: String!
+  tokenStandard: TokenStandard
   collectionName: String
   mintInfo: MintInfo
   networkInfo: NetworkInfo!
@@ -1098,12 +1431,18 @@ input TokensQueryFilter {
   mediaType: MediaType = null
   marketFilters: [MarketTypeFilter!] = null
   priceFilter: PriceFilter = null
+  timeFilter: TimeFilter = null
 }
 
 input TokensQueryInput {
   collectionAddresses: [String!] = null
   ownerAddresses: [String!] = null
   tokens: [TokenInput!] = null
+}
+
+enum TokenStandard {
+  ERC721
+  ERC1155
 }
 
 type TokenWithFullMarketHistory {
@@ -1225,6 +1564,20 @@ type V1MarketOfferRemovedEventProperties {
   bidder: String!
   recipient: String!
   sellOnShare: String!
+}
+
+type V1MediaEvent {
+  eventType: V1MediaEventType!
+  address: String!
+  collectionAddress: String!
+  tokenId: String!
+  owner: String!
+  uri: String!
+}
+
+enum V1MediaEventType {
+  V1_MEDIA_TOKEN_URI_UPDATED_EVENT
+  V1_MEDIA_TOKEN_METADATA_URI_UPDATED_EVENT
 }
 
 type V1Offer {
@@ -1365,7 +1718,7 @@ type V3AskEvent {
   properties: V3AskEventProperties!
 }
 
-union V3AskEventProperties = V3AskCreatedEventProperties | V3AskCanceledEventProperties | V3AskPriceUpdatedEventProperties | V3AskFilledEventProperties | V3PrivateAskEventProperties
+union V3AskEventProperties = V3AskCreatedEventProperties | V3AskCanceledEventProperties | V3AskPriceUpdatedEventProperties | V3AskFilledEventProperties | V3PrivateAskEventProperties | V3AsksCoreEthAskEventProperties | V3AsksCoreEthAskFilledEventProperties | V3AsksCoreEthRoyaltyPayoutEventProperties
 
 enum V3AskEventType {
   V3_ASK_CREATED
@@ -1376,6 +1729,11 @@ enum V3AskEventType {
   V3_PRIVATE_ASK_CANCELED
   V3_PRIVATE_ASK_PRICE_UPDATED
   V3_PRIVATE_ASK_FILLED
+  V3_ASKS_CORE_ETH_CREATED
+  V3_ASKS_CORE_ETH_CANCELED
+  V3_ASKS_CORE_ETH_PRICE_UPDATED
+  V3_ASKS_CORE_ETH_FILLED
+  V3_ASKS_CORE_ETH_ROYALTY_PAYOUT
 }
 
 type V3AskFilledEventProperties {
@@ -1396,6 +1754,46 @@ type V3AskPriceUpdatedEventProperties {
   askPrice: String!
   findersFeeBps: Int!
   price: PriceAtTime!
+}
+
+type V3AsksCoreEthAskEventProperties {
+  tokenContract: String!
+  tokenId: String!
+  seller: String!
+  price: PriceAtTime!
+  askCurrency: String!
+  askPrice: String!
+}
+
+type V3AsksCoreEthAskFilledEventProperties {
+  tokenContract: String!
+  tokenId: String!
+  seller: String!
+  price: PriceAtTime!
+  askCurrency: String!
+  askPrice: String!
+  buyer: String!
+}
+
+type V3AsksCoreEthRoyaltyPayoutEventProperties {
+  tokenContract: String!
+  tokenId: String!
+  recipient: String!
+  amount: PriceAtTime!
+  askCurrency: String!
+  askPrice: String!
+}
+
+type V3ModuleManagerEvent {
+  eventType: V3ModuleManagerEventType!
+  address: String!
+  moduleAddress: String!
+  approved: Boolean!
+  userAddress: String!
+}
+
+enum V3ModuleManagerEventType {
+  V3_MODULE_MANAGER_APPROVED
 }
 
 type V3PrivateAskEventProperties {

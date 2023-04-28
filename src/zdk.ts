@@ -1,6 +1,39 @@
-import { GraphQLClient } from "graphql-request";
-import { ActiveMarketQueryArgs, CollectionQueryArgs, CollectionsQueryArgs, CollectionStatsAggregateQuery, EventsQueryArgs, MarketsQueryArgs, MintsQueryArgs, OffchainOrderQueryArgs, OverrideNetworksOption, SalesQueryArgs, SearchQueryArgs, TokenQueryArgs, TokensQueryArgs } from "./types";
-import { AggregateAttributesQueryVariables, Chain, CollectionSortKey, EventSortKey, FloorPriceQueryVariables, getSdk, MarketSortKey, MintSortKey, Network, NftCountQueryVariables, OwnerCountQueryVariables, OwnersByCountQueryVariables, PaginationInput, SaleSortKey, SalesVolumeQueryVariables, SdkFunctionWrapper, SortDirection, TokenSortKey } from "./queries/queries-sdk";
+import { GraphQLClient } from 'graphql-request';
+import {
+  ActiveMarketQueryArgs,
+  CollectionQueryArgs,
+  CollectionsQueryArgs,
+  CollectionStatsAggregateQuery,
+  EventsQueryArgs,
+  MarketsQueryArgs,
+  MintsQueryArgs,
+  OffchainOrderQueryArgs,
+  OverrideNetworksOption,
+  SalesQueryArgs,
+  SearchQueryArgs,
+  TokenQueryArgs,
+  TokensQueryArgs,
+} from './types';
+import {
+  AggregateAttributesQueryVariables,
+  Chain,
+  CollectionSortKey,
+  EventSortKey,
+  FloorPriceQueryVariables,
+  getSdk,
+  MarketSortKey,
+  MintSortKey,
+  Network,
+  NftCountQueryVariables,
+  OwnerCountQueryVariables,
+  OwnersByCountQueryVariables,
+  PaginationInput,
+  SaleSortKey,
+  SalesVolumeQueryVariables,
+  SdkFunctionWrapper,
+  SortDirection,
+  TokenSortKey,
+} from './queries/queries-sdk';
 
 type OptionalNetwork<K> = Omit<K, 'networks'> & {
   networks?: OverrideNetworksOption;
@@ -51,7 +84,9 @@ export class ZDK {
     };
   };
 
-  private getPaginationOptions = ({ limit, after }: PaginationInput = {}) => {
+  private getPaginationOptions = (
+    { limit, after }: PaginationInput = { limit: this.defaultPageSize }
+  ) => {
     return {
       pagination: {
         limit: limit || this.defaultPageSize,
@@ -319,11 +354,13 @@ export class ZDK {
     where,
     pagination,
     networks = this.defaultNetworks,
+    sort = null,
   }: OptionalNetwork<OwnersByCountQueryVariables>) =>
     this.sdk.ownersByCount({
       where,
       networks,
       pagination,
+      sort,
     });
 
   /**

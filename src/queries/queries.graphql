@@ -974,9 +974,10 @@ query ownersByCount(
   $networks: [NetworkInput!]!
   $pagination: PaginationInput!
   $where: OwnersByCountQueryInput!
+  $sort: OwnerCountSortKeySortInput
 ) {
   aggregateStat {
-    ownersByCount(networks: $networks, pagination: $pagination, where: $where) {
+    ownersByCount(networks: $networks, pagination: $pagination, where: $where, sort: $sort) {
       pageInfo {
         endCursor
         hasNextPage
@@ -985,6 +986,16 @@ query ownersByCount(
       nodes {
         ...OwnerCountInfo
       }
+    }
+  }
+}
+
+query ownersByCount1155(
+  $where: OwnersByCount1155QueryInput!
+) {
+  aggregateStat {
+    ownersByCount1155(where: $where) {
+      ...OwnerCountInfo
     }
   }
 }
