@@ -312,24 +312,6 @@ Object {
           },
           Object {
             "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-            "eventType": "TRANSFER_EVENT",
-            "properties": Object {
-              "__typename": "TransferEvent",
-              "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
-              "fromAddress": "0x0000000000000000000000000000000000000000",
-              "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
-              "tokenId": "48057",
-            },
-            "tokenId": "48057",
-            "transactionInfo": Object {
-              "blockNumber": 13927877,
-              "blockTimestamp": "2022-01-02T19:17:42+00:00",
-              "logIndex": 318,
-              "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
-            },
-          },
-          Object {
-            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
             "eventType": "MINT_EVENT",
             "properties": Object {
               "__typename": "MintEvent",
@@ -355,6 +337,24 @@ Object {
                   "raw": "0",
                 },
               },
+              "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
+              "tokenId": "48057",
+            },
+            "tokenId": "48057",
+            "transactionInfo": Object {
+              "blockNumber": 13927877,
+              "blockTimestamp": "2022-01-02T19:17:42+00:00",
+              "logIndex": 318,
+              "transactionHash": "0x816a39f8017fe92e80d777569055a7549b5fb38b5d1c9f34bee5d940b510ed77",
+            },
+          },
+          Object {
+            "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+            "eventType": "TRANSFER_EVENT",
+            "properties": Object {
+              "__typename": "TransferEvent",
+              "collectionAddress": "0xca21d4228cdcc68d4e23807e5e370c07577dd152",
+              "fromAddress": "0x0000000000000000000000000000000000000000",
               "toAddress": "0xf90494e746be5674f3121c62a588dadd2b3d3d4e",
               "tokenId": "48057",
             },
