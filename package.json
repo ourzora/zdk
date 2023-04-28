@@ -1,6 +1,6 @@
 {
   "name": "@zoralabs/zdk",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "ZDK: ZORA Developer Kit",
   "repository": "https://github.com/ourzora/zdk",
   "author": "Zora",
@@ -26,7 +26,6 @@
     "@jagi/jest-transform-graphql": "1.0.2",
     "@types/big.js": "^6.0.2",
     "@types/jest": "^26.0.23",
-    "@types/react": "^17.0.4",
     "dotenv": "^16.0.0",
     "graphql-tools": "^7.0.4",
     "husky": "^6.0.0",
