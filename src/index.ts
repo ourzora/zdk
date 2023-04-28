@@ -195,7 +195,9 @@ export class ZDK {
     };
   };
 
-  private getPaginationOptions = ({ limit, after }: PaginationInput = {}) => {
+  private getPaginationOptions = (
+    { limit, after }: PaginationInput = { limit: this.defaultPageSize }
+  ) => {
     return {
       pagination: {
         limit: limit || this.defaultPageSize,
@@ -463,11 +465,13 @@ export class ZDK {
     where,
     pagination,
     networks = this.defaultNetworks,
+    sort = null,
   }: OptionalNetwork<OwnersByCountQueryVariables>) =>
     this.sdk.ownersByCount({
       where,
       networks,
       pagination,
+      sort,
     });
 
   /**
