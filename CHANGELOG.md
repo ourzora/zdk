@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.3.0
+
+### Minor Changes
+
+- a4efcad: Moving types to types.ts and zdk to zdk.ts, adding offchain and nouns queries
+- 2c46bb5: Adding new Chains from graphql
+
 ## 2.2.0
 
 ### Minor Changes

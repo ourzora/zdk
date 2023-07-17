@@ -107,6 +107,14 @@ enum Chain {
   MAINNET
   GOERLI
   RINKEBY
+  SEPOLIA
+  OPTIMISM_MAINNET
+  OPTIMISM_GOERLI
+  ZORA_GOERLI
+  ZORA_MAINNET
+  BASE_GOERLI
+  BASE_MAINNET
+  PGN_MAINNET
 }
 
 type Collection {
@@ -489,6 +497,10 @@ type MintWithTokenAndMarketsConnection {
 
 enum Network {
   ETHEREUM
+  OPTIMISM
+  ZORA
+  BASE
+  PGN
 }
 
 type NetworkInfo {
