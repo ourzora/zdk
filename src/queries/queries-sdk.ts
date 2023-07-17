@@ -164,9 +164,17 @@ export type AudioEncodingTypes = {
 };
 
 export enum Chain {
+  BaseGoerli = 'BASE_GOERLI',
+  BaseMainnet = 'BASE_MAINNET',
   Goerli = 'GOERLI',
   Mainnet = 'MAINNET',
-  Rinkeby = 'RINKEBY'
+  OptimismGoerli = 'OPTIMISM_GOERLI',
+  OptimismMainnet = 'OPTIMISM_MAINNET',
+  PgnMainnet = 'PGN_MAINNET',
+  Rinkeby = 'RINKEBY',
+  Sepolia = 'SEPOLIA',
+  ZoraGoerli = 'ZORA_GOERLI',
+  ZoraMainnet = 'ZORA_MAINNET'
 }
 
 export type Collection = {
@@ -576,7 +584,11 @@ export type MintsQueryInput = {
 };
 
 export enum Network {
-  Ethereum = 'ETHEREUM'
+  Base = 'BASE',
+  Ethereum = 'ETHEREUM',
+  Optimism = 'OPTIMISM',
+  Pgn = 'PGN',
+  Zora = 'ZORA'
 }
 
 export type NetworkInfo = {
