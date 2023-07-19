@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.0
+
+### Minor Changes
+
+- f70d9e0: Adding new Chains from graphql
+
 ## 2.3.0
 
 ### Minor Changes
